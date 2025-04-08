@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyctp"
+version = "0.0.1"
+description = "Python wrapper for CTP API"
+authors = [{name = "Wavy Wei", email = "bravewavy@gmail.com"}]
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# 添加这个部分
+[tool.setuptools.package-dir]
+"" = "."
+
+[tool.setuptools]
+include-package-data = true
+
+# 关键配置：自定义安装路径
+[tool.setuptools.data-files]
+"pyctp" = ["libs/*.dylib", "libs/*.so", "libs/*.dll"]
+
+# 包发现配置
+[tool.setuptools.packages.find]
+include = ["pyctp*"]

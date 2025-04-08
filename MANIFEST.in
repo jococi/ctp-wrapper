@@ -1,0 +1,5 @@
+# 包含所有动态库
+recursive-include libs *
+
+# 包含所有Python文件
+global-include *.py
