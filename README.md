@@ -39,7 +39,8 @@
 
 ### 1. 准备CTP SDK
 
-首先需要从CTP官网(http://www.sfit.com.cn/5_2_DocumentDown.htm)下载对应版本的SDK，并按照以下结构放置在`ctpapi`目录下：
+1. 从[http://www.sfit.com.cn/5_2_DocumentDown_2.htm](http://www.sfit.com.cn/5_2_DocumentDown_2.htm)下载对应的行情和交易API文件
+2. 将下载的不同系统的接口文件，按照项目根目录下的`csource/ctpapi`的`linux`、`macos`、`windows`文件夹里的命名格式进行命名，并存放/替换到对应文件夹。
 
 ```
 ctpapi/
@@ -116,6 +117,9 @@ clang++ -shared -fPIC -std=c++11 \
 
 __如果使用Xcode进行编译，需要在Xcode的 Build Settings -> Apple Clang - Code Generation -> Symbols Hidden by Default设置为`No`，或者在需要导出的函数前添加 `__attribute__((visibility("default")))`__
 
+1. 将生成动态链接库文件，默认在项目根目录`macos/DerivedData/Build/Products/Release`下面的`.dylib`文件拷贝到项目根目录`libs`下。
+2. 同时，也可以将该路径添加到系统环境变量。
+
 #### Linux平台 (使用G++)
 
 ```shell
@@ -124,7 +128,7 @@ g++ -shared -fPIC -std=c++11 \
   -I. -O3 \
   -L./ctpapi/linux \
   -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect \
-  -install_name @rpath/libctptrade_api.so \
+  -Wl,-rpath,'$ORIGIN' \
   csrc/linux/ctpquote_api.cpp
 
 g++ -shared -fPIC -std=c++11 \
@@ -132,13 +136,20 @@ g++ -shared -fPIC -std=c++11 \
   -I. -O3 \
   -L./ctpapi/linux \
   -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect \
-  -install_name @rpath/libctptrade_api.so \
+  -Wl,-rpath,'$ORIGIN' \
   csrc/linux/ctptrade_api.cpp
 ```
 
+2. 将 _SFIT接口下载_ 的`.so`文件拷贝到项目根目录`libs/`下，并且将动态链接库所在路径即项目根目录`libs/`添加到系统路径里面，命令语句：`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<root of project>/libs/` （添加完成后需要`source <configuration file>`，立即生效）
+
+
+3. 设置Linux信息采集库权限`chmod u+s libLinuxDataCollect.so`
+
 #### Windows平台 (使用Visual Studio)
 
-使用Visual Studio打开项目根目录的`windows`文件夹下的AlgoTrade解决方案，对其中项目进行编译。
+1. 使用Visual Studio打开项目根目录的`windows`文件夹下的AlgoTrade解决方案，对其中项目进行编译。
+2. 将生成动态链接库文件，默认在项目根目录`windows\x64\Release`下面的`.dll`文件和 _SFIT接口下载_ 的`.dll`文件拷贝到项目根目录`libs`下。
+3. 为了方便全局使用，将该路径添加到系统环境变量。（添加完成后，需要重启terminal/cmd）。
 
 ### 4. 安装和使用
 
