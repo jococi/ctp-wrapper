@@ -127,17 +127,17 @@ g++ -shared -fPIC -std=c++11 \
   -o libs/libctpquote_api.so \
   -I. -O3 \
   -L./ctpapi/linux \
-  -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect \
   -Wl,-rpath,'$ORIGIN' \
-  csrc/linux/ctpquote_api.cpp
+  csrc/linux/ctpquote_api.cpp \
+  -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect
 
 g++ -shared -fPIC -std=c++11 \
   -o libs/libctptrade_api.so \
   -I. -O3 \
   -L./ctpapi/linux \
-  -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect \
   -Wl,-rpath,'$ORIGIN' \
-  csrc/linux/ctptrade_api.cpp
+  csrc/linux/ctptrade_api.cpp \
+  -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect
 ```
 
 2. 将 _SFIT接口下载_ 的`.so`文件拷贝到项目根目录`libs/`下，并且将动态链接库所在路径即项目根目录`libs/`添加到系统路径里面，命令语句：`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<root of project>/libs/` （添加完成后需要`source <configuration file>`，立即生效）
