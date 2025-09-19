@@ -12,7 +12,7 @@ from pyctp.windows.ctp_struct import *
 
 class Trade(object):
 
-    def __init__(self, logdir="./log_trade/") -> None:
+    def __init__(self, pszFlowPath="./log_trade/") -> None:
         dllpath = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../libs/")
         if "Windows" in platform.system():
             dln = "ctptrade_api.dll"
@@ -25,9 +25,9 @@ class Trade(object):
             raise Exception("缺少DLL接口文件")
 
         # make log dir for api log
-        self.logdir = os.path.join(os.getcwd(), logdir)
-        if not os.path.exists(self.logdir):
-            os.mkdir(self.logdir)
+        self.pszFlowPath = os.path.join(os.getcwd(), pszFlowPath)
+        if not os.path.exists(self.pszFlowPath):
+            os.mkdir(self.pszFlowPath)
  
         dlldir = os.path.split(absolute_dllfile_path)[0]
         # change work directory
@@ -380,7 +380,7 @@ class Trade(object):
         os.chdir(cur_path)
 
     def CreateApi(self):
-        self.api = self.h.tCreateApi(c_char_p(self.logdir.encode("utf-8")))
+        self.api = self.h.tCreateApi(c_char_p(self.pszFlowPath.encode("utf-8")))
 
     def CreateSpi(self):
         self.pSpi = self.h.tCreateSpi()

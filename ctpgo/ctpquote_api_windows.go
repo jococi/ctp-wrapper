@@ -10,11 +10,13 @@ import (
 )
 
 type Quote struct {
-	h       *syscall.DLL
-	api     uintptr
-	pSpi    uintptr
-	version string
-	logdir  string
+	h              *syscall.DLL
+	api            uintptr
+	pSpi           uintptr
+	version        string
+	pszFlowPath    string
+	usingUdp       bool
+	usingMulticast bool
 
 	// 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
 	OnFrontConnected_ func()
@@ -44,7 +46,7 @@ type Quote struct {
 	OnRtnForQuoteRsp_ func(pForQuoteRsp *CThostFtdcForQuoteRspField)
 }
 
-func InitQuote() *Quote {
+func InitQuote(pszFlowPath string, usingUdp bool, usingMulticast bool) *Quote {
 	q := new(Quote)
 	// Load DLL
 	workPath, _ := os.Getwd()
@@ -55,11 +57,13 @@ func InitQuote() *Quote {
 	q.h = syscall.MustLoadDLL("ctpquote_api.dll")
 	os.Chdir(workPath)
 
-	q.logdir = "./log_quote/"
+	q.pszFlowPath = pszFlowPath
+	q.usingUdp = usingUdp
+	q.usingMulticast = usingMulticast
 	// 执行目录下创建 log目录
-	_, err := os.Stat("log_quote")
+	_, err := os.Stat(q.pszFlowPath)
 	if err != nil {
-		os.Mkdir("log_quote", os.ModePerm)
+		os.Mkdir(q.pszFlowPath, os.ModePerm)
 	}
 	q.api = q.CreateApi()
 	q.pSpi = q.CreateSpi()
@@ -69,8 +73,16 @@ func InitQuote() *Quote {
 }
 
 func (q *Quote) CreateApi() uintptr {
-	bs, _ := syscall.BytePtrFromString(q.logdir)
-	api, _, _ := q.h.MustFindProc("qCreateApi").Call(uintptr(unsafe.Pointer(bs)))
+	bs, _ := syscall.BytePtrFromString(q.pszFlowPath)
+	cUdp := 0
+	if q.usingUdp {
+		cUdp = 1
+	}
+	cMulticast := 0
+	if q.usingMulticast {
+		cMulticast = 1
+	}
+	api, _, _ := q.h.MustFindProc("qCreateApi").Call(uintptr(unsafe.Pointer(bs)), uintptr(cUdp), uintptr(cMulticast))
 	return api
 }
 
