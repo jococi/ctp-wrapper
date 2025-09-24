@@ -63,13 +63,13 @@ func (q *Quote) GetTradingDay() string {
 [[ range .Fn]][[ if eq .FuncRtn "void"]] [[if eq .FuncName "RegisterSpi"]]
 func (q *Quote) [[ .FuncName ]]() { [[else]]
 func (q *Quote) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) { [[end]]
-	[[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
-	C.q[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
+    [[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
+    C.q[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]]) [[ postSup .FuncFields ]]
 }[[ else ]]
 func (q *Quote) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) [[ .FuncRtn ]]32 {
-	[[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
-	res := C.q[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
-	return [[ .FuncRtn ]]32(res)
+    [[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
+    res := C.q[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
+    [[ postSup .FuncFields ]] return [[ .FuncRtn ]]32(res)
 }[[ end ]]
 [[ end ]]
 

@@ -145,19 +145,79 @@ func (q *Quote) RegisterSpi() {
 	q.h.MustFindProc("qRegisterSpi").Call(uintptr(q.api), uintptr(q.pSpi))
 }
 func (q *Quote) SubscribeMarketData(ppInstrumentID [][]byte, nCount int) int32 {
-	res, _, _ := q.h.MustFindProc("qSubscribeMarketData").Call(uintptr(q.api), uintptr(unsafe.Pointer(&ppInstrumentID[0])), uintptr(nCount))
+	var _ppPtr uintptr
+	if nCount > 0 {
+		ptrs := make([]*byte, nCount)
+		for i := 0; i < nCount; i++ {
+			if len(ppInstrumentID[i]) > 0 {
+				ptrs[i] = &ppInstrumentID[i][0]
+			} else {
+				ptrs[i] = nil
+			}
+		}
+		_ppPtr = uintptr(unsafe.Pointer(&ptrs[0]))
+		runtime.KeepAlive(ppInstrumentID)
+		runtime.KeepAlive(ptrs)
+	}
+
+	res, _, _ := q.h.MustFindProc("qSubscribeMarketData").Call(uintptr(q.api), _ppPtr, uintptr(nCount))
 	return int32(res)
 }
 func (q *Quote) UnSubscribeMarketData(ppInstrumentID [][]byte, nCount int) int32 {
-	res, _, _ := q.h.MustFindProc("qUnSubscribeMarketData").Call(uintptr(q.api), uintptr(unsafe.Pointer(&ppInstrumentID[0])), uintptr(nCount))
+	var _ppPtr uintptr
+	if nCount > 0 {
+		ptrs := make([]*byte, nCount)
+		for i := 0; i < nCount; i++ {
+			if len(ppInstrumentID[i]) > 0 {
+				ptrs[i] = &ppInstrumentID[i][0]
+			} else {
+				ptrs[i] = nil
+			}
+		}
+		_ppPtr = uintptr(unsafe.Pointer(&ptrs[0]))
+		runtime.KeepAlive(ppInstrumentID)
+		runtime.KeepAlive(ptrs)
+	}
+
+	res, _, _ := q.h.MustFindProc("qUnSubscribeMarketData").Call(uintptr(q.api), _ppPtr, uintptr(nCount))
 	return int32(res)
 }
 func (q *Quote) SubscribeForQuoteRsp(ppInstrumentID [][]byte, nCount int) int32 {
-	res, _, _ := q.h.MustFindProc("qSubscribeForQuoteRsp").Call(uintptr(q.api), uintptr(unsafe.Pointer(&ppInstrumentID[0])), uintptr(nCount))
+	var _ppPtr uintptr
+	if nCount > 0 {
+		ptrs := make([]*byte, nCount)
+		for i := 0; i < nCount; i++ {
+			if len(ppInstrumentID[i]) > 0 {
+				ptrs[i] = &ppInstrumentID[i][0]
+			} else {
+				ptrs[i] = nil
+			}
+		}
+		_ppPtr = uintptr(unsafe.Pointer(&ptrs[0]))
+		runtime.KeepAlive(ppInstrumentID)
+		runtime.KeepAlive(ptrs)
+	}
+
+	res, _, _ := q.h.MustFindProc("qSubscribeForQuoteRsp").Call(uintptr(q.api), _ppPtr, uintptr(nCount))
 	return int32(res)
 }
 func (q *Quote) UnSubscribeForQuoteRsp(ppInstrumentID [][]byte, nCount int) int32 {
-	res, _, _ := q.h.MustFindProc("qUnSubscribeForQuoteRsp").Call(uintptr(q.api), uintptr(unsafe.Pointer(&ppInstrumentID[0])), uintptr(nCount))
+	var _ppPtr uintptr
+	if nCount > 0 {
+		ptrs := make([]*byte, nCount)
+		for i := 0; i < nCount; i++ {
+			if len(ppInstrumentID[i]) > 0 {
+				ptrs[i] = &ppInstrumentID[i][0]
+			} else {
+				ptrs[i] = nil
+			}
+		}
+		_ppPtr = uintptr(unsafe.Pointer(&ptrs[0]))
+		runtime.KeepAlive(ppInstrumentID)
+		runtime.KeepAlive(ptrs)
+	}
+
+	res, _, _ := q.h.MustFindProc("qUnSubscribeForQuoteRsp").Call(uintptr(q.api), _ppPtr, uintptr(nCount))
 	return int32(res)
 }
 func (q *Quote) ReqUserLogin(pReqUserLoginField *CThostFtdcReqUserLoginField, nRequestID int) int32 {

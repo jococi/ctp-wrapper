@@ -423,7 +423,11 @@ func wgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 					return fmt.Sprintf("uintptr(t.%s)", strings.TrimPrefix(str, "*"))
 				}
 			} else {
+				// Windows: 对于 char *ppInstrumentID[]，改用预先准备的 _ppPtr
 				if structType == "char" {
+					if str == "*ppInstrumentID" {
+						return "_ppPtr"
+					}
 					return fmt.Sprintf("uintptr(unsafe.Pointer(&%s[0]))", strings.TrimPrefix(str, "*"))
 				} else {
 					return fmt.Sprintf("uintptr(unsafe.Pointer(%s))", strings.TrimPrefix(str, "*"))
@@ -440,6 +444,28 @@ func wgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 				return fmt.Sprintf("uintptr(%s)", str)
 			}
 		}
+	}
+	// 为 Windows 版生成 ppInstrumentID 的指针数组与 KeepAlive 代码
+	fm["supType"] = func(structType string, field string) string {
+		if field == "*ppInstrumentID" {
+			return fmt.Sprintf(`
+	var _ppPtr uintptr
+	if nCount > 0 {
+		ptrs := make([]*byte, nCount)
+		for i := 0; i < nCount; i++ {
+			if len(ppInstrumentID[i]) > 0 {
+				ptrs[i] = &ppInstrumentID[i][0]
+			} else {
+				ptrs[i] = nil
+			}
+		}
+		_ppPtr = uintptr(unsafe.Pointer(&ptrs[0]))
+		runtime.KeepAlive(ppInstrumentID)
+		runtime.KeepAlive(ptrs)
+	}
+	`)
+		}
+		return fmt.Sprintf("")
 	}
 	tmpl(title+"_win.go.tpl", mpCpp, fm, outpath)
 }
@@ -509,7 +535,7 @@ func xgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 	}
 	fm["fldType"] = func(structType string, field string) string {
 		if field == "*ppInstrumentID" {
-			return fmt.Sprintf("(**C.char)(unsafe.Pointer(&%s[0]))", "tmp_arr") // strings.TrimPrefix(field, "*")
+			return "_ppPtr"
 		}
 		if strings.HasSuffix(structType, "Field") {
 			return fmt.Sprintf("(*C.struct_%s)(unsafe.Pointer(%s))", structType, strings.TrimPrefix(field, "*"))
@@ -545,13 +571,25 @@ func xgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 	fm["supType"] = func(structType string, field string) string {
 		if field == "*ppInstrumentID" {
 			return fmt.Sprintf(`
-	tmp_arr := make([]*C.char, len(%s))
-		for i := 0; i < len(tmp_arr); i++ {
-			tmp_arr[i] = (*C.char)(unsafe.Pointer(C.CBytes(%s[i])))
-		}
-	`, strings.TrimPrefix(field, "*"), strings.TrimPrefix(field, "*"))
+    tmp_arr := make([]*C.char, nCount)
+    for i := 0; i < nCount; i++ {
+        tmp_arr[i] = C.CString(string(ppInstrumentID[i]))
+    }
+    var _ppPtr **C.char
+    if nCount > 0 {
+        _ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
+    }
+    `)
 		}
 		return fmt.Sprintf("")
+	}
+	fm["postSup"] = func(fields []fieldStruct) string {
+		for _, f := range fields {
+			if f.FieldName == "*ppInstrumentID" {
+				return "\tfor i := 0; i < nCount; i++ {\n\t\tif tmp_arr[i] != nil { C.free(unsafe.Pointer(tmp_arr[i])) }\n\t}\n"
+			}
+		}
+		return ""
 	}
 
 	tmpl(title+"_nix.go.tpl", funcs, fm, outpath)

@@ -122,45 +122,81 @@ func (q *Quote) RegisterSpi() {
 
 func (q *Quote) SubscribeMarketData(ppInstrumentID [][]byte, nCount int) int32 {
 
-	tmp_arr := make([]*C.char, len(ppInstrumentID))
-	for i := 0; i < len(tmp_arr); i++ {
-		tmp_arr[i] = (*C.char)(unsafe.Pointer(C.CBytes(ppInstrumentID[i])))
+	tmp_arr := make([]*C.char, nCount)
+	for i := 0; i < nCount; i++ {
+		tmp_arr[i] = C.CString(string(ppInstrumentID[i]))
+	}
+	var _ppPtr **C.char
+	if nCount > 0 {
+		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
 
-	res := C.qSubscribeMarketData(q.api, (**C.char)(unsafe.Pointer(&tmp_arr[0])), C.int(nCount))
+	res := C.qSubscribeMarketData(q.api, _ppPtr, C.int(nCount))
+	for i := 0; i < nCount; i++ {
+		if tmp_arr[i] != nil {
+			C.free(unsafe.Pointer(tmp_arr[i]))
+		}
+	}
 	return int32(res)
 }
 
 func (q *Quote) UnSubscribeMarketData(ppInstrumentID [][]byte, nCount int) int32 {
 
-	tmp_arr := make([]*C.char, len(ppInstrumentID))
-	for i := 0; i < len(tmp_arr); i++ {
-		tmp_arr[i] = (*C.char)(unsafe.Pointer(C.CBytes(ppInstrumentID[i])))
+	tmp_arr := make([]*C.char, nCount)
+	for i := 0; i < nCount; i++ {
+		tmp_arr[i] = C.CString(string(ppInstrumentID[i]))
+	}
+	var _ppPtr **C.char
+	if nCount > 0 {
+		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
 
-	res := C.qUnSubscribeMarketData(q.api, (**C.char)(unsafe.Pointer(&tmp_arr[0])), C.int(nCount))
+	res := C.qUnSubscribeMarketData(q.api, _ppPtr, C.int(nCount))
+	for i := 0; i < nCount; i++ {
+		if tmp_arr[i] != nil {
+			C.free(unsafe.Pointer(tmp_arr[i]))
+		}
+	}
 	return int32(res)
 }
 
 func (q *Quote) SubscribeForQuoteRsp(ppInstrumentID [][]byte, nCount int) int32 {
 
-	tmp_arr := make([]*C.char, len(ppInstrumentID))
-	for i := 0; i < len(tmp_arr); i++ {
-		tmp_arr[i] = (*C.char)(unsafe.Pointer(C.CBytes(ppInstrumentID[i])))
+	tmp_arr := make([]*C.char, nCount)
+	for i := 0; i < nCount; i++ {
+		tmp_arr[i] = C.CString(string(ppInstrumentID[i]))
+	}
+	var _ppPtr **C.char
+	if nCount > 0 {
+		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
 
-	res := C.qSubscribeForQuoteRsp(q.api, (**C.char)(unsafe.Pointer(&tmp_arr[0])), C.int(nCount))
+	res := C.qSubscribeForQuoteRsp(q.api, _ppPtr, C.int(nCount))
+	for i := 0; i < nCount; i++ {
+		if tmp_arr[i] != nil {
+			C.free(unsafe.Pointer(tmp_arr[i]))
+		}
+	}
 	return int32(res)
 }
 
 func (q *Quote) UnSubscribeForQuoteRsp(ppInstrumentID [][]byte, nCount int) int32 {
 
-	tmp_arr := make([]*C.char, len(ppInstrumentID))
-	for i := 0; i < len(tmp_arr); i++ {
-		tmp_arr[i] = (*C.char)(unsafe.Pointer(C.CBytes(ppInstrumentID[i])))
+	tmp_arr := make([]*C.char, nCount)
+	for i := 0; i < nCount; i++ {
+		tmp_arr[i] = C.CString(string(ppInstrumentID[i]))
+	}
+	var _ppPtr **C.char
+	if nCount > 0 {
+		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
 
-	res := C.qUnSubscribeForQuoteRsp(q.api, (**C.char)(unsafe.Pointer(&tmp_arr[0])), C.int(nCount))
+	res := C.qUnSubscribeForQuoteRsp(q.api, _ppPtr, C.int(nCount))
+	for i := 0; i < nCount; i++ {
+		if tmp_arr[i] != nil {
+			C.free(unsafe.Pointer(tmp_arr[i]))
+		}
+	}
 	return int32(res)
 }
 
