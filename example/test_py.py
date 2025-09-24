@@ -1,8 +1,12 @@
 import pyctp
 
-cq = pyctp.Quote()
+cq = pyctp.Quote("./log_quote222/")
+cq.CreateApi()
+cq.CreateSpi()
 print(cq.GetApiVersion())
 
-ctpgo = pyctp.Trade()
-print(ctpgo.GetApiVersion())
+ct = pyctp.Trade("./log_trade222/")
+ct.CreateApi()
+ct.CreateSpi()
+print(ct.GetApiVersion())
 

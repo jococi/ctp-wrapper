@@ -12,10 +12,10 @@ import (
 )
 
 type Trade struct {
-	api     unsafe.Pointer
-	pSpi    unsafe.Pointer
-	version string
-	logdir  string
+	api         unsafe.Pointer
+	pSpi        unsafe.Pointer
+	version     string
+	pszFlowPath string
 
     [[ range .On]]// [[ .Comment ]]
     [[ .FuncName ]]_ func([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]])
@@ -24,13 +24,13 @@ type Trade struct {
 
 var t *Trade
 
-func InitTrade() *Trade{
+func InitTrade(pszFlowPath string) *Trade {
 	t = new(Trade)
-	t.logdir = "./log_trade/"
+	t.pszFlowPath = pszFlowPath
 	// 执行目录下创建 log目录
-	_, err := os.Stat("log_trade")
+	_, err := os.Stat(t.pszFlowPath)
 	if err != nil {
-		os.Mkdir("log_trade", os.ModePerm)
+		os.Mkdir(t.pszFlowPath, os.ModePerm)
 	}
 	t.api = t.CreateApi()
 	t.pSpi = t.CreateSpi()
@@ -39,9 +39,8 @@ func InitTrade() *Trade{
 	return t
 }
 
-
 func (t *Trade) CreateApi() unsafe.Pointer {
-	api := C.tCreateApi(C.CString(t.logdir))
+	api := C.tCreateApi(C.CString(t.pszFlowPath))
 	return api
 }
 

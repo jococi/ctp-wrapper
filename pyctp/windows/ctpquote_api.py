@@ -12,7 +12,7 @@ from pyctp.windows.ctp_struct import *
 
 class Quote(object):
 
-    def __init__(self, logdir="./log_quote/") -> None:
+    def __init__(self, pszFlowPath="./log_quote/", usingUdp=False, usingMulticast=False) -> None:
         dllpath = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../libs/")
         if "Windows" in platform.system():
             dln = "ctpquote_api.dll"
@@ -25,9 +25,11 @@ class Quote(object):
             raise Exception("缺少DLL接口文件")
 
         # make log dir for api log
-        self.logdir = os.path.join(os.getcwd(), logdir)
-        if not os.path.exists(self.logdir):
-            os.mkdir(self.logdir)
+        self.pszFlowPath = os.path.join(os.getcwd(), pszFlowPath)
+        self.usingUdp = usingUdp
+        self.usingMulticast = usingMulticast
+        if not os.path.exists(self.pszFlowPath):
+            os.mkdir(self.pszFlowPath)
  
         dlldir = os.path.split(absolute_dllfile_path)[0]
         # change work directory
@@ -98,7 +100,7 @@ class Quote(object):
         os.chdir(cur_path)
 
     def CreateApi(self):
-        self.api = self.h.qCreateApi(c_char_p(self.logdir.encode("utf-8")), c_bool(False), c_bool(False))
+        self.api = self.h.qCreateApi(c_char_p(self.pszFlowPath.encode("utf-8")), c_bool(self.usingUdp), c_bool(self.usingMulticast))
 
     def CreateSpi(self):
         self.pSpi = self.h.qCreateSpi()

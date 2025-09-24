@@ -12,10 +12,10 @@ import (
 )
 
 type Trade struct {
-	api     unsafe.Pointer
-	pSpi    unsafe.Pointer
-	version string
-	logdir  string
+	api         unsafe.Pointer
+	pSpi        unsafe.Pointer
+	version     string
+	pszFlowPath string
 
 	// 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
 	OnFrontConnected_ func()
@@ -297,13 +297,13 @@ type Trade struct {
 
 var t *Trade
 
-func InitTrade() *Trade {
+func InitTrade(pszFlowPath string) *Trade {
 	t = new(Trade)
-	t.logdir = "./log_trade/"
+	t.pszFlowPath = pszFlowPath
 	// 执行目录下创建 log目录
-	_, err := os.Stat("log_trade")
+	_, err := os.Stat(t.pszFlowPath)
 	if err != nil {
-		os.Mkdir("log_trade", os.ModePerm)
+		os.Mkdir(t.pszFlowPath, os.ModePerm)
 	}
 	t.api = t.CreateApi()
 	t.pSpi = t.CreateSpi()
@@ -313,7 +313,7 @@ func InitTrade() *Trade {
 }
 
 func (t *Trade) CreateApi() unsafe.Pointer {
-	api := C.tCreateApi(C.CString(t.logdir))
+	api := C.tCreateApi(C.CString(t.pszFlowPath))
 	return api
 }
 

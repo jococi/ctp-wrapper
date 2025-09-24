@@ -10,11 +10,11 @@ import (
 )
 
 type Trade struct {
-	h       *syscall.DLL
-	api     uintptr
-	pSpi    uintptr
-	version string
-	logdir  string
+	h           *syscall.DLL
+	api         uintptr
+	pSpi        uintptr
+	version     string
+	pszFlowPath string
 
 	// 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
 	OnFrontConnected_ func()
@@ -294,7 +294,7 @@ type Trade struct {
 	OnRspQryInvestorProdSPBMDetail_ func(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 }
 
-func InitTrade() *Trade {
+func InitTrade(pszFlowPath string) *Trade {
 	t := new(Trade)
 	// Load DLL
 	workPath, _ := os.Getwd()
@@ -305,11 +305,11 @@ func InitTrade() *Trade {
 	t.h = syscall.MustLoadDLL("ctptrade_api.dll")
 	os.Chdir(workPath)
 
-	t.logdir = "./log_trade/"
+	t.pszFlowPath = pszFlowPath
 	// 执行目录下创建 log目录
-	_, err := os.Stat("log_trade")
+	_, err := os.Stat(t.pszFlowPath)
 	if err != nil {
-		os.Mkdir("log_trade", os.ModePerm)
+		os.Mkdir(t.pszFlowPath, os.ModePerm)
 	}
 	t.api = t.CreateApi()
 	t.pSpi = t.CreateSpi()
@@ -319,7 +319,7 @@ func InitTrade() *Trade {
 }
 
 func (t *Trade) CreateApi() uintptr {
-	bs, _ := syscall.BytePtrFromString(t.logdir)
+	bs, _ := syscall.BytePtrFromString(t.pszFlowPath)
 	api, _, _ := t.h.MustFindProc("tCreateApi").Call(uintptr(unsafe.Pointer(bs)))
 	return api
 }

@@ -12,10 +12,12 @@ import (
 )
 
 type Quote struct {
-	api     unsafe.Pointer
-	pSpi    unsafe.Pointer
-	version string
-	logdir  string
+	api            unsafe.Pointer
+	pSpi           unsafe.Pointer
+	version        string
+	pszFlowPath    string
+	usingUdp       bool
+	usingMulticast bool
 
 	// 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
 	OnFrontConnected_ func()
@@ -47,13 +49,15 @@ type Quote struct {
 
 var q *Quote
 
-func InitQuote() *Quote {
+func InitQuote(pszFlowPath string, usingUdp bool, usingMulticast bool) *Quote {
 	q = new(Quote)
-	q.logdir = "./log_quote/"
+	q.pszFlowPath = pszFlowPath
+	q.usingUdp = usingUdp
+	q.usingMulticast = usingMulticast
 	// 执行目录下创建 log目录
-	_, err := os.Stat("log_quote")
+	_, err := os.Stat(q.pszFlowPath)
 	if err != nil {
-		os.Mkdir("log_quote", os.ModePerm)
+		os.Mkdir(q.pszFlowPath, os.ModePerm)
 	}
 	q.api = q.CreateApi()
 	q.pSpi = q.CreateSpi()
@@ -63,7 +67,7 @@ func InitQuote() *Quote {
 }
 
 func (q *Quote) CreateApi() unsafe.Pointer {
-	api := C.qCreateApi(C.CString(q.logdir), C._Bool(false), C._Bool(false))
+	api := C.qCreateApi(C.CString(q.pszFlowPath), C._Bool(q.usingUdp), C._Bool(q.usingMulticast))
 	return api
 }
 
