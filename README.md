@@ -39,7 +39,7 @@
 
 ### 1. 准备CTP SDK
 
-1. 从[http://www.sfit.com.cn/5_2_DocumentDown_2.htm](http://www.sfit.com.cn/5_2_DocumentDown_2.htm)下载对应的行情和交易API文件
+1. 从[上期所仿真交易平台](https://www.simnow.com.cn/static/apiDownload.action)下载对应的行情和交易API文件
 2. 将下载的不同系统的接口文件，按照项目根目录下的`csource/ctpapi`的`linux`、`macos`、`windows`文件夹里的命名格式进行命名，并存放/替换到对应文件夹。
 
 ```
