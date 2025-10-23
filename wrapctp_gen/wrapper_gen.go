@@ -32,6 +32,7 @@ var (
 type fieldStruct struct {
 	FieldType string
 	FieldName string
+	FuncName  string
 	Comment   string
 }
 
@@ -199,17 +200,18 @@ func gen_datatype(srcpath string, fn func([]*tplStruct)) {
 	tss := make([]*tplStruct, 0)
 	for _, v := range types {
 		ts := &tplStruct{
-			Comment:      v[1], // 注释
-			FuncTypeName: v[3], // 基础类型
+			Comment:      strings.Replace(v[1], "\\", " ", -1), // 注释
+			FuncTypeName: v[3],                                 // 基础类型
 			FuncName:     v[4],
 		}
 		reSub := regexp.MustCompile(`/+(.*)\n#define\s+(\w+)\s+'(.+)'`) // 注释,名称,值 \w改为.因为有'#'的情况
 		defines := reSub.FindAllStringSubmatch(v[2], -1)
 		for _, v := range defines {
 			ts.FuncFields = append(ts.FuncFields, fieldStruct{
-				Comment:   v[1],
+				Comment:   strings.Replace(v[1], "\\", " ", -1),
 				FieldType: v[2],
 				FieldName: v[3],
+				FuncName:  ts.FuncName,
 			})
 		}
 		tss = append(tss, ts)
@@ -641,6 +643,12 @@ func godfm(ts []*tplStruct) {
 			return "byte"
 		}
 		return preType
+	}
+	fm["isString"] = func(preType string) bool {
+		if strings.Contains(preType, "[") {
+			return true
+		}
+		return false
 	}
 
 	tmpl("ctp_datatype.go.tpl", mpCpp, fm, outpath)
