@@ -2,7 +2,6 @@ package ctpgo
 
 import (
 	"os"
-	"path"
 	"path/filepath"
 	"runtime"
 	"syscall"
@@ -298,9 +297,13 @@ func InitTrade(pszFlowPath string) *Trade {
 	t := new(Trade)
 	// Load DLL
 	workPath, _ := os.Getwd()
-	_, curFile, _, _ := runtime.Caller(1)
+	// 使用 Caller(0) 获取当前文件路径（ctptrade_api_windows.go）
+	_, curFile, _, _ := runtime.Caller(0)
+	// 获取当前文件所在目录（ctp-wrapper/ctpgo/）
 	dllPath := filepath.Dir(curFile)
-	dllPath = path.Join(dllPath, "../libs/")
+	// 计算 libs 目录的绝对路径（ctp-wrapper/libs/）
+	dllPath = filepath.Join(dllPath, "..", "libs")
+	dllPath, _ = filepath.Abs(dllPath)
 	_ = os.Chdir(dllPath)
 	t.h = syscall.MustLoadDLL("ctptrade_api.dll")
 	os.Chdir(workPath)
