@@ -185,6 +185,8 @@ const.THOST_FTDC_FC_SyncOTP = "E"
 """同步动态令牌"""    
 const.THOST_FTDC_FC_DeleteOrder = "F"
 """删除未知单"""    
+const.THOST_FTDC_FC_ExitEmergency = "G"
+"""退出紧急状态"""    
 
 
 TThostFtdcBrokerFunctionCodeType = c_char
@@ -609,7 +611,13 @@ const.THOST_FTDC_FCC_Other = "6"
 const.THOST_FTDC_FCC_PersonDeliv = "7"
 """自然人临近交割"""    
 const.THOST_FTDC_FCC_Notverifycapital = "8"
-"""风控强平不验证资金"""    
+"""本地强平资金不足忽略敞口"""    
+const.THOST_FTDC_FCC_LocalLackDeposit = "9"
+"""本地强平资金不足"""    
+const.THOST_FTDC_FCC_LocalViolationNocheck = "a"
+"""本地强平违规持仓忽略敞口"""    
+const.THOST_FTDC_FCC_LocalViolation = "b"
+"""本地强平违规持仓"""    
 
 
 TThostFtdcOrderTypeType = c_char
@@ -785,6 +793,8 @@ const.THOST_FTDC_IS_AuctionMatch = "5"
 """集合竞价撮合"""    
 const.THOST_FTDC_IS_Closed = "6"
 """收盘"""    
+const.THOST_FTDC_IS_TransactionProcessing = "7"
+"""交易业务处理"""    
 
 
 TThostFtdcInstStatusEnterReasonType = c_char
@@ -1002,6 +1012,8 @@ const.THOST_FTDC_TPID_LoginFailMaxNumForIP = "U"
 """IP当日最大登陆失败次数"""    
 const.THOST_FTDC_TPID_PasswordPeriod = "V"
 """密码有效期"""    
+const.THOST_FTDC_TPID_PwdHistoryCmp = "X"
+"""历史密码重复限制次数"""    
 
 
 TThostFtdcFileIDType = c_char
@@ -1546,9 +1558,9 @@ const.THOST_FTDC_UET_Login = "1"
 const.THOST_FTDC_UET_Logout = "2"
 """登出"""    
 const.THOST_FTDC_UET_Trading = "3"
-"""交易成功"""    
+"""CTP校验通过"""    
 const.THOST_FTDC_UET_TradingError = "4"
-"""交易失败"""    
+"""CTP校验失败"""    
 const.THOST_FTDC_UET_UpdatePassword = "5"
 """修改密码"""    
 const.THOST_FTDC_UET_Authenticate = "6"
@@ -1559,6 +1571,8 @@ const.THOST_FTDC_UET_Transfer = "8"
 """转账"""    
 const.THOST_FTDC_UET_Other = "9"
 """其他"""    
+const.THOST_FTDC_UET_UpdateTradingAccountPassword = "a"
+"""修改资金密码"""    
 
 
 TThostFtdcCloseStyleType = c_char
@@ -4135,6 +4149,98 @@ const.THOST_FTDC_EPF_None = "0"
 """不使用新型组保算法"""    
 const.THOST_FTDC_EPF_SPBM = "1"
 """SPBM算法"""    
+const.THOST_FTDC_EPF_RULE = "2"
+"""RULE算法"""    
+const.THOST_FTDC_EPF_SPMM = "3"
+"""SPMM算法"""    
+const.THOST_FTDC_EPF_RCAMS = "4"
+"""RCAMS算法"""    
+
+
+TThostFtdcWithDrawParamIDType = c_char
+"""可提参数代码类型"""
+
+const.THOST_FTDC_WDPID_CashIn = "C"
+"""权利金收支是否可提 1 代表可提 0 不可提"""    
+
+
+TThostFtdcInvstTradingRightType = c_char
+"""投资者交易权限类型"""
+
+const.THOST_FTDC_ITR_CloseOnly = "1"
+"""只能平仓"""    
+const.THOST_FTDC_ITR_Forbidden = "2"
+"""不能交易"""    
+
+
+TThostFtdcInstMarginCalIDType = c_char
+"""SPMM合约保证金算法类型"""
+
+const.THOST_FTDC_IMID_BothSide = "1"
+"""标准算法收取双边"""    
+const.THOST_FTDC_IMID_MMSA = "2"
+"""单向大边"""    
+const.THOST_FTDC_IMID_SPMM = "3"
+"""新组保SPMM"""    
+
+
+TThostFtdcRCAMSCombinationTypeType = c_char
+"""RCAMS组合类型类型"""
+
+const.THOST_FTDC_ERComb_BUC = "0"
+"""牛市看涨价差组合"""    
+const.THOST_FTDC_ERComb_BEC = "1"
+"""熊市看涨价差组合"""    
+const.THOST_FTDC_ERComb_BEP = "2"
+"""熊市看跌价差组合"""    
+const.THOST_FTDC_ERComb_BUP = "3"
+"""牛市看跌价差组合"""    
+const.THOST_FTDC_ERComb_CAS = "4"
+"""日历价差组合"""    
+
+
+TThostFtdcPortfTypeType = c_char
+"""新组保算法启用类型类型"""
+
+const.THOST_FTDC_EET_None = "0"
+"""使用初版交易所算法"""    
+const.THOST_FTDC_EET_SPBM_AddOnHedge = "1"
+"""SPBM算法V1.1.0_附加保证金调整"""    
+
+
+TThostFtdcInstrumentClassType = c_char
+"""合约类型类型"""
+
+const.THOST_FTDC_EIC_Usual = "1"
+"""一般月份合约"""    
+const.THOST_FTDC_EIC_Delivery = "2"
+"""临近交割合约"""    
+const.THOST_FTDC_EIC_NonComb = "3"
+"""非组合合约"""    
+
+
+TThostFtdcProdChangeFlagType = c_char
+"""品种记录改变状态类型"""
+
+const.THOST_FTDC_PCF_None = "0"
+"""持仓量和冻结量均无变化"""    
+const.THOST_FTDC_PCF_OnlyFrozen = "1"
+"""持仓量无变化，冻结量有变化"""    
+const.THOST_FTDC_PCF_PositionChange = "2"
+"""持仓量有变化"""    
+
+
+TThostFtdcPwdRcdSrcType = c_char
+"""历史密码来源类型"""
+
+const.THOST_FTDC_PRS_Init = "0"
+"""来源于Sync初始化数据"""    
+const.THOST_FTDC_PRS_Sync = "1"
+"""来源于实时上场数据"""    
+const.THOST_FTDC_PRS_UserUpd = "2"
+"""来源于用户修改"""    
+const.THOST_FTDC_PRS_SuperUserUpd = "3"
+"""来源于超户修改，很可能来自主席同步数据"""    
 
 
 TThostFtdcTraderIDType = c_char*21
@@ -5535,6 +5641,9 @@ TThostFtdcDateTimeType = c_char*17
 TThostFtdcRandomStringType = c_char*17
 """随机串类型"""
 
+TThostFtdcOrderMemoType = c_char*13
+"""报单回显字段类型"""
+
 TThostFtdcAppIDType = c_char*33
 """App代码类型"""
 
@@ -5618,3 +5727,42 @@ TThostFtdcSpreadIdType = c_int32
 
 TThostFtdcPortfolioDefIDType = c_int32
 """SPBM组合套餐ID类型"""
+
+TThostFtdcWithDrawParamValueType = c_char*41
+"""可提控制参数内容类型"""
+
+TThostFtdcThostFunctionCodeType = c_int32
+"""Thost终端功能代码类型"""
+
+TThostFtdcSPMMDiscountRatioType = c_double
+"""SPMM折扣率类型"""
+
+TThostFtdcSPMMModelDescType = c_char*129
+"""SPMM模板描述类型"""
+
+TThostFtdcSPMMModelIDType = c_char*33
+"""SPMM模板ID类型"""
+
+TThostFtdcSPMMProductIDType = c_char*41
+"""SPMM商品群商品组ID类型"""
+
+TThostFtdcProductIDType = c_char*41
+"""产品ID类型"""
+
+TThostFtdcHedgeRateType = c_double
+"""HedgeRate类型类型"""
+
+TThostFtdcRCAMSPriorityType = c_int32
+"""优先级类型"""
+
+TThostFtdcAdjustValueType = c_double
+"""空头期权风险调整标准类型类型"""
+
+TThostFtdcRuleIdType = c_char*51
+"""策略id类型"""
+
+TThostFtdcCommodityGroupIDType = c_int32
+"""商品群号类型"""
+
+TThostFtdcStdPositionType = c_double
+"""标准持仓类型类型"""

@@ -42,9 +42,9 @@
 
 #define bool _Bool
 
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char* pSystemInfo, int nLen);
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char *pSystemInfo, int nLen);
 [[ if eq .Pf "macos" ]]#ifdef __APPLE__
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char* pSystemInfo, int nLen);
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char *pSystemInfo, int nLen);
 #endif[[ end ]]
 DLL_EXPORT_C_DECL void* WPCTP dCTP_GetDataCollectApiVersion();
 DLL_EXPORT_C_DECL void* WPCTP tCreateApi(const char *pszFlowPath);
@@ -54,9 +54,9 @@ DLL_EXPORT_C_DECL void* WPCTP tGetTradingDay(void *api);
 [[ range .On ]]
 // [[ .Comment ]]
 DLL_EXPORT_C_DECL void WPCTP t[[ .FuncName ]](void* spi, void* func);
-DLL_EXPORT_C_DECL int t[[ .FuncName ]]_([[ range $i, $v := .FuncFields ]][[ if gt $i 0]], [[ end ]][[ .FieldType|struct_Type ]] [[ .FieldName ]][[ end ]]);
+DLL_EXPORT_C_DECL int t[[ .FuncName ]]_([[ range $i, $v := .FuncFields ]][[ if gt $i 0]], [[ end ]][[ .FieldType|struct_Type ]] [[if or (hasPrefix .FieldName "*") (hasSuffix .FieldType "*")]]*[[end]][[trimPrefix .FieldName "*"]][[if .IsArray]][][[end]][[ end ]]);
 [[ end ]]
 [[ range .Fn ]]
 // [[ .Comment ]]
-DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP t[[ .FuncName ]](void *api[[ range .FuncFields ]], [[.FieldType|struct_Type]] [[.FieldName]][[if eq .FieldName "*ppInstrumentID"]][][[end]][[end]]);
+DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP t[[ .FuncName ]](void *api[[ range .FuncFields ]], [[.FieldType|struct_Type]] [[if or (hasPrefix .FieldName "*") (hasSuffix .FieldType "*")]]*[[end]][[trimPrefix .FieldName "*"]][[if .IsArray]][][[end]][[end]]);
 [[ end ]]

@@ -70,6 +70,9 @@ class Trade(object):
         # 等待接口线程结束运行
         self.h.tJoin.argtypes = [c_void_p]
         self.h.tJoin.restype = c_void_p
+        # 获取已连接的前置的信息
+        self.h.tGetFrontInfo.argtypes = [c_void_p, c_void_p]
+        self.h.tGetFrontInfo.restype = c_void_p
         # 注册前置机网络地址
         self.h.tRegisterFront.argtypes = [c_void_p, c_void_p]
         self.h.tRegisterFront.restype = c_void_p
@@ -379,6 +382,57 @@ class Trade(object):
         # 投资者产品SPBM明细查询
         self.h.tReqQryInvestorProdSPBMDetail.argtypes = [c_void_p, c_void_p, c_int32]
         self.h.tReqQryInvestorProdSPBMDetail.restype = c_void_p
+        # 投资者商品组SPMM记录查询
+        self.h.tReqQryInvestorCommoditySPMMMargin.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryInvestorCommoditySPMMMargin.restype = c_void_p
+        # 投资者商品群SPMM记录查询
+        self.h.tReqQryInvestorCommodityGroupSPMMMargin.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryInvestorCommodityGroupSPMMMargin.restype = c_void_p
+        # SPMM合约参数查询
+        self.h.tReqQrySPMMInstParam.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQrySPMMInstParam.restype = c_void_p
+        # SPMM产品参数查询
+        self.h.tReqQrySPMMProductParam.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQrySPMMProductParam.restype = c_void_p
+        # SPBM附加跨品种抵扣参数查询
+        self.h.tReqQrySPBMAddOnInterParameter.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQrySPBMAddOnInterParameter.restype = c_void_p
+        # RCAMS产品组合信息查询
+        self.h.tReqQryRCAMSCombProductInfo.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRCAMSCombProductInfo.restype = c_void_p
+        # RCAMS同合约风险对冲参数查询
+        self.h.tReqQryRCAMSInstrParameter.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRCAMSInstrParameter.restype = c_void_p
+        # RCAMS品种内风险对冲参数查询
+        self.h.tReqQryRCAMSIntraParameter.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRCAMSIntraParameter.restype = c_void_p
+        # RCAMS跨品种风险折抵参数查询
+        self.h.tReqQryRCAMSInterParameter.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRCAMSInterParameter.restype = c_void_p
+        # RCAMS空头期权风险调整参数查询
+        self.h.tReqQryRCAMSShortOptAdjustParam.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRCAMSShortOptAdjustParam.restype = c_void_p
+        # RCAMS策略组合持仓查询
+        self.h.tReqQryRCAMSInvestorCombPosition.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRCAMSInvestorCombPosition.restype = c_void_p
+        # 投资者品种RCAMS保证金查询
+        self.h.tReqQryInvestorProdRCAMSMargin.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryInvestorProdRCAMSMargin.restype = c_void_p
+        # RULE合约保证金参数查询
+        self.h.tReqQryRULEInstrParameter.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRULEInstrParameter.restype = c_void_p
+        # RULE品种内对锁仓折扣参数查询
+        self.h.tReqQryRULEIntraParameter.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRULEIntraParameter.restype = c_void_p
+        # RULE跨品种抵扣参数查询
+        self.h.tReqQryRULEInterParameter.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryRULEInterParameter.restype = c_void_p
+        # 投资者产品RULE保证金查询
+        self.h.tReqQryInvestorProdRULEMargin.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryInvestorProdRULEMargin.restype = c_void_p
+        # 投资者投资者新组保设置查询
+        self.h.tReqQryInvestorPortfSetting.argtypes = [c_void_p, c_void_p, c_int32]
+        self.h.tReqQryInvestorPortfSetting.restype = c_void_p
         
         os.chdir(cur_path)
 
@@ -1078,6 +1132,91 @@ class Trade(object):
         self.h.tOnRspQryInvestorProdSPBMDetail.restype = None
         self.FP_OnRspQryInvestorProdSPBMDetail = CFUNCTYPE(None, POINTER(CThostFtdcInvestorProdSPBMDetailField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryInvestorProdSPBMDetail)
         self.h.tOnRspQryInvestorProdSPBMDetail(self.pSpi, self.FP_OnRspQryInvestorProdSPBMDetail)
+        # 投资者商品组SPMM记录查询响应
+        self.h.tOnRspQryInvestorCommoditySPMMMargin.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryInvestorCommoditySPMMMargin.restype = None
+        self.FP_OnRspQryInvestorCommoditySPMMMargin = CFUNCTYPE(None, POINTER(CThostFtdcInvestorCommoditySPMMMarginField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryInvestorCommoditySPMMMargin)
+        self.h.tOnRspQryInvestorCommoditySPMMMargin(self.pSpi, self.FP_OnRspQryInvestorCommoditySPMMMargin)
+        # 投资者商品群SPMM记录查询响应
+        self.h.tOnRspQryInvestorCommodityGroupSPMMMargin.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryInvestorCommodityGroupSPMMMargin.restype = None
+        self.FP_OnRspQryInvestorCommodityGroupSPMMMargin = CFUNCTYPE(None, POINTER(CThostFtdcInvestorCommodityGroupSPMMMarginField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryInvestorCommodityGroupSPMMMargin)
+        self.h.tOnRspQryInvestorCommodityGroupSPMMMargin(self.pSpi, self.FP_OnRspQryInvestorCommodityGroupSPMMMargin)
+        # SPMM合约参数查询响应
+        self.h.tOnRspQrySPMMInstParam.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQrySPMMInstParam.restype = None
+        self.FP_OnRspQrySPMMInstParam = CFUNCTYPE(None, POINTER(CThostFtdcSPMMInstParamField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQrySPMMInstParam)
+        self.h.tOnRspQrySPMMInstParam(self.pSpi, self.FP_OnRspQrySPMMInstParam)
+        # SPMM产品参数查询响应
+        self.h.tOnRspQrySPMMProductParam.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQrySPMMProductParam.restype = None
+        self.FP_OnRspQrySPMMProductParam = CFUNCTYPE(None, POINTER(CThostFtdcSPMMProductParamField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQrySPMMProductParam)
+        self.h.tOnRspQrySPMMProductParam(self.pSpi, self.FP_OnRspQrySPMMProductParam)
+        # SPBM附加跨品种抵扣参数查询响应
+        self.h.tOnRspQrySPBMAddOnInterParameter.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQrySPBMAddOnInterParameter.restype = None
+        self.FP_OnRspQrySPBMAddOnInterParameter = CFUNCTYPE(None, POINTER(CThostFtdcSPBMAddOnInterParameterField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQrySPBMAddOnInterParameter)
+        self.h.tOnRspQrySPBMAddOnInterParameter(self.pSpi, self.FP_OnRspQrySPBMAddOnInterParameter)
+        # RCAMS产品组合信息查询响应
+        self.h.tOnRspQryRCAMSCombProductInfo.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRCAMSCombProductInfo.restype = None
+        self.FP_OnRspQryRCAMSCombProductInfo = CFUNCTYPE(None, POINTER(CThostFtdcRCAMSCombProductInfoField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRCAMSCombProductInfo)
+        self.h.tOnRspQryRCAMSCombProductInfo(self.pSpi, self.FP_OnRspQryRCAMSCombProductInfo)
+        # RCAMS同合约风险对冲参数查询响应
+        self.h.tOnRspQryRCAMSInstrParameter.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRCAMSInstrParameter.restype = None
+        self.FP_OnRspQryRCAMSInstrParameter = CFUNCTYPE(None, POINTER(CThostFtdcRCAMSInstrParameterField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRCAMSInstrParameter)
+        self.h.tOnRspQryRCAMSInstrParameter(self.pSpi, self.FP_OnRspQryRCAMSInstrParameter)
+        # RCAMS品种内风险对冲参数查询响应
+        self.h.tOnRspQryRCAMSIntraParameter.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRCAMSIntraParameter.restype = None
+        self.FP_OnRspQryRCAMSIntraParameter = CFUNCTYPE(None, POINTER(CThostFtdcRCAMSIntraParameterField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRCAMSIntraParameter)
+        self.h.tOnRspQryRCAMSIntraParameter(self.pSpi, self.FP_OnRspQryRCAMSIntraParameter)
+        # RCAMS跨品种风险折抵参数查询响应
+        self.h.tOnRspQryRCAMSInterParameter.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRCAMSInterParameter.restype = None
+        self.FP_OnRspQryRCAMSInterParameter = CFUNCTYPE(None, POINTER(CThostFtdcRCAMSInterParameterField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRCAMSInterParameter)
+        self.h.tOnRspQryRCAMSInterParameter(self.pSpi, self.FP_OnRspQryRCAMSInterParameter)
+        # RCAMS空头期权风险调整参数查询响应
+        self.h.tOnRspQryRCAMSShortOptAdjustParam.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRCAMSShortOptAdjustParam.restype = None
+        self.FP_OnRspQryRCAMSShortOptAdjustParam = CFUNCTYPE(None, POINTER(CThostFtdcRCAMSShortOptAdjustParamField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRCAMSShortOptAdjustParam)
+        self.h.tOnRspQryRCAMSShortOptAdjustParam(self.pSpi, self.FP_OnRspQryRCAMSShortOptAdjustParam)
+        # RCAMS策略组合持仓查询响应
+        self.h.tOnRspQryRCAMSInvestorCombPosition.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRCAMSInvestorCombPosition.restype = None
+        self.FP_OnRspQryRCAMSInvestorCombPosition = CFUNCTYPE(None, POINTER(CThostFtdcRCAMSInvestorCombPositionField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRCAMSInvestorCombPosition)
+        self.h.tOnRspQryRCAMSInvestorCombPosition(self.pSpi, self.FP_OnRspQryRCAMSInvestorCombPosition)
+        # 投资者品种RCAMS保证金查询响应
+        self.h.tOnRspQryInvestorProdRCAMSMargin.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryInvestorProdRCAMSMargin.restype = None
+        self.FP_OnRspQryInvestorProdRCAMSMargin = CFUNCTYPE(None, POINTER(CThostFtdcInvestorProdRCAMSMarginField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryInvestorProdRCAMSMargin)
+        self.h.tOnRspQryInvestorProdRCAMSMargin(self.pSpi, self.FP_OnRspQryInvestorProdRCAMSMargin)
+        # RULE合约保证金参数查询响应
+        self.h.tOnRspQryRULEInstrParameter.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRULEInstrParameter.restype = None
+        self.FP_OnRspQryRULEInstrParameter = CFUNCTYPE(None, POINTER(CThostFtdcRULEInstrParameterField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRULEInstrParameter)
+        self.h.tOnRspQryRULEInstrParameter(self.pSpi, self.FP_OnRspQryRULEInstrParameter)
+        # RULE品种内对锁仓折扣参数查询响应
+        self.h.tOnRspQryRULEIntraParameter.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRULEIntraParameter.restype = None
+        self.FP_OnRspQryRULEIntraParameter = CFUNCTYPE(None, POINTER(CThostFtdcRULEIntraParameterField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRULEIntraParameter)
+        self.h.tOnRspQryRULEIntraParameter(self.pSpi, self.FP_OnRspQryRULEIntraParameter)
+        # RULE跨品种抵扣参数查询响应
+        self.h.tOnRspQryRULEInterParameter.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryRULEInterParameter.restype = None
+        self.FP_OnRspQryRULEInterParameter = CFUNCTYPE(None, POINTER(CThostFtdcRULEInterParameterField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryRULEInterParameter)
+        self.h.tOnRspQryRULEInterParameter(self.pSpi, self.FP_OnRspQryRULEInterParameter)
+        # 投资者产品RULE保证金查询响应
+        self.h.tOnRspQryInvestorProdRULEMargin.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryInvestorProdRULEMargin.restype = None
+        self.FP_OnRspQryInvestorProdRULEMargin = CFUNCTYPE(None, POINTER(CThostFtdcInvestorProdRULEMarginField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryInvestorProdRULEMargin)
+        self.h.tOnRspQryInvestorProdRULEMargin(self.pSpi, self.FP_OnRspQryInvestorProdRULEMargin)
+        # 投资者投资者新组保设置查询响应
+        self.h.tOnRspQryInvestorPortfSetting.argtypes = [c_void_p, c_void_p]
+        self.h.tOnRspQryInvestorPortfSetting.restype = None
+        self.FP_OnRspQryInvestorPortfSetting = CFUNCTYPE(None, POINTER(CThostFtdcInvestorPortfSettingField), POINTER(CThostFtdcRspInfoField), c_int32, c_bool)(self.__OnRspQryInvestorPortfSetting)
+        self.h.tOnRspQryInvestorPortfSetting(self.pSpi, self.FP_OnRspQryInvestorPortfSetting)
         
 
     def GetApiVersion(self):
@@ -1113,6 +1252,10 @@ class Trade(object):
         """ 等待接口线程结束运行 """ 
         return self.h.tJoin(self.api) 
     
+    def GetFrontInfo(self, pFrontInfo:CThostFtdcFrontInfoField): 
+        """ 获取已连接的前置的信息 """
+        self.h.tGetFrontInfo(self.api, byref(pFrontInfo))
+    
     def RegisterFront(self, pszFrontAddress:str): 
         """ 注册前置机网络地址 """
         self.h.tRegisterFront(self.api, bytes(pszFrontAddress, encoding='ascii'))
@@ -1121,9 +1264,9 @@ class Trade(object):
         """ @remark RegisterNameServer优先于RegisterFront """
         self.h.tRegisterNameServer(self.api, bytes(pszNsAddress, encoding='ascii'))
     
-    def RegisterFensUserInfo(self,  pFensUserInfo:CThostFtdcFensUserInfoField): 
+    def RegisterFensUserInfo(self, pFensUserInfo:CThostFtdcFensUserInfoField): 
         """ 注册名字服务器用户信息 """
-        self.h.tRegisterFensUserInfo(self.api, byref( pFensUserInfo))
+        self.h.tRegisterFensUserInfo(self.api, byref(pFensUserInfo))
     
     def RegisterSpi(self): 
         """ 注册回调接口 """
@@ -1529,6 +1672,74 @@ class Trade(object):
     def ReqQryInvestorProdSPBMDetail(self, pQryInvestorProdSPBMDetail:CThostFtdcQryInvestorProdSPBMDetailField, nRequestID:int): 
         """ 投资者产品SPBM明细查询 """ 
         return self.h.tReqQryInvestorProdSPBMDetail(self.api, byref(pQryInvestorProdSPBMDetail), nRequestID) 
+    
+    def ReqQryInvestorCommoditySPMMMargin(self, pQryInvestorCommoditySPMMMargin:CThostFtdcQryInvestorCommoditySPMMMarginField, nRequestID:int): 
+        """ 投资者商品组SPMM记录查询 """ 
+        return self.h.tReqQryInvestorCommoditySPMMMargin(self.api, byref(pQryInvestorCommoditySPMMMargin), nRequestID) 
+    
+    def ReqQryInvestorCommodityGroupSPMMMargin(self, pQryInvestorCommodityGroupSPMMMargin:CThostFtdcQryInvestorCommodityGroupSPMMMarginField, nRequestID:int): 
+        """ 投资者商品群SPMM记录查询 """ 
+        return self.h.tReqQryInvestorCommodityGroupSPMMMargin(self.api, byref(pQryInvestorCommodityGroupSPMMMargin), nRequestID) 
+    
+    def ReqQrySPMMInstParam(self, pQrySPMMInstParam:CThostFtdcQrySPMMInstParamField, nRequestID:int): 
+        """ SPMM合约参数查询 """ 
+        return self.h.tReqQrySPMMInstParam(self.api, byref(pQrySPMMInstParam), nRequestID) 
+    
+    def ReqQrySPMMProductParam(self, pQrySPMMProductParam:CThostFtdcQrySPMMProductParamField, nRequestID:int): 
+        """ SPMM产品参数查询 """ 
+        return self.h.tReqQrySPMMProductParam(self.api, byref(pQrySPMMProductParam), nRequestID) 
+    
+    def ReqQrySPBMAddOnInterParameter(self, pQrySPBMAddOnInterParameter:CThostFtdcQrySPBMAddOnInterParameterField, nRequestID:int): 
+        """ SPBM附加跨品种抵扣参数查询 """ 
+        return self.h.tReqQrySPBMAddOnInterParameter(self.api, byref(pQrySPBMAddOnInterParameter), nRequestID) 
+    
+    def ReqQryRCAMSCombProductInfo(self, pQryRCAMSCombProductInfo:CThostFtdcQryRCAMSCombProductInfoField, nRequestID:int): 
+        """ RCAMS产品组合信息查询 """ 
+        return self.h.tReqQryRCAMSCombProductInfo(self.api, byref(pQryRCAMSCombProductInfo), nRequestID) 
+    
+    def ReqQryRCAMSInstrParameter(self, pQryRCAMSInstrParameter:CThostFtdcQryRCAMSInstrParameterField, nRequestID:int): 
+        """ RCAMS同合约风险对冲参数查询 """ 
+        return self.h.tReqQryRCAMSInstrParameter(self.api, byref(pQryRCAMSInstrParameter), nRequestID) 
+    
+    def ReqQryRCAMSIntraParameter(self, pQryRCAMSIntraParameter:CThostFtdcQryRCAMSIntraParameterField, nRequestID:int): 
+        """ RCAMS品种内风险对冲参数查询 """ 
+        return self.h.tReqQryRCAMSIntraParameter(self.api, byref(pQryRCAMSIntraParameter), nRequestID) 
+    
+    def ReqQryRCAMSInterParameter(self, pQryRCAMSInterParameter:CThostFtdcQryRCAMSInterParameterField, nRequestID:int): 
+        """ RCAMS跨品种风险折抵参数查询 """ 
+        return self.h.tReqQryRCAMSInterParameter(self.api, byref(pQryRCAMSInterParameter), nRequestID) 
+    
+    def ReqQryRCAMSShortOptAdjustParam(self, pQryRCAMSShortOptAdjustParam:CThostFtdcQryRCAMSShortOptAdjustParamField, nRequestID:int): 
+        """ RCAMS空头期权风险调整参数查询 """ 
+        return self.h.tReqQryRCAMSShortOptAdjustParam(self.api, byref(pQryRCAMSShortOptAdjustParam), nRequestID) 
+    
+    def ReqQryRCAMSInvestorCombPosition(self, pQryRCAMSInvestorCombPosition:CThostFtdcQryRCAMSInvestorCombPositionField, nRequestID:int): 
+        """ RCAMS策略组合持仓查询 """ 
+        return self.h.tReqQryRCAMSInvestorCombPosition(self.api, byref(pQryRCAMSInvestorCombPosition), nRequestID) 
+    
+    def ReqQryInvestorProdRCAMSMargin(self, pQryInvestorProdRCAMSMargin:CThostFtdcQryInvestorProdRCAMSMarginField, nRequestID:int): 
+        """ 投资者品种RCAMS保证金查询 """ 
+        return self.h.tReqQryInvestorProdRCAMSMargin(self.api, byref(pQryInvestorProdRCAMSMargin), nRequestID) 
+    
+    def ReqQryRULEInstrParameter(self, pQryRULEInstrParameter:CThostFtdcQryRULEInstrParameterField, nRequestID:int): 
+        """ RULE合约保证金参数查询 """ 
+        return self.h.tReqQryRULEInstrParameter(self.api, byref(pQryRULEInstrParameter), nRequestID) 
+    
+    def ReqQryRULEIntraParameter(self, pQryRULEIntraParameter:CThostFtdcQryRULEIntraParameterField, nRequestID:int): 
+        """ RULE品种内对锁仓折扣参数查询 """ 
+        return self.h.tReqQryRULEIntraParameter(self.api, byref(pQryRULEIntraParameter), nRequestID) 
+    
+    def ReqQryRULEInterParameter(self, pQryRULEInterParameter:CThostFtdcQryRULEInterParameterField, nRequestID:int): 
+        """ RULE跨品种抵扣参数查询 """ 
+        return self.h.tReqQryRULEInterParameter(self.api, byref(pQryRULEInterParameter), nRequestID) 
+    
+    def ReqQryInvestorProdRULEMargin(self, pQryInvestorProdRULEMargin:CThostFtdcQryInvestorProdRULEMarginField, nRequestID:int): 
+        """ 投资者产品RULE保证金查询 """ 
+        return self.h.tReqQryInvestorProdRULEMargin(self.api, byref(pQryInvestorProdRULEMargin), nRequestID) 
+    
+    def ReqQryInvestorPortfSetting(self, pQryInvestorPortfSetting:CThostFtdcQryInvestorPortfSettingField, nRequestID:int): 
+        """ 投资者投资者新组保设置查询 """ 
+        return self.h.tReqQryInvestorPortfSetting(self.api, byref(pQryInvestorPortfSetting), nRequestID) 
     
     #################### 响应函数 #########################
     
@@ -2359,4 +2570,106 @@ class Trade(object):
     def OnRspQryInvestorProdSPBMDetail(self, pInvestorProdSPBMDetail:CThostFtdcInvestorProdSPBMDetailField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
         """ 投资者产品SPBM明细查询响应 """
         print('===OnRspQryInvestorProdSPBMDetail===:pInvestorProdSPBMDetail:CThostFtdcInvestorProdSPBMDetailField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryInvestorCommoditySPMMMargin(self, pInvestorCommoditySPMMMargin:CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryInvestorCommoditySPMMMargin(copy.deepcopy(POINTER(CThostFtdcInvestorCommoditySPMMMarginField).from_param(pInvestorCommoditySPMMMargin).contents) if pInvestorCommoditySPMMMargin else CThostFtdcInvestorCommoditySPMMMarginField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryInvestorCommoditySPMMMargin(self, pInvestorCommoditySPMMMargin:CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ 投资者商品组SPMM记录查询响应 """
+        print('===OnRspQryInvestorCommoditySPMMMargin===:pInvestorCommoditySPMMMargin:CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryInvestorCommodityGroupSPMMMargin(self, pInvestorCommodityGroupSPMMMargin:CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryInvestorCommodityGroupSPMMMargin(copy.deepcopy(POINTER(CThostFtdcInvestorCommodityGroupSPMMMarginField).from_param(pInvestorCommodityGroupSPMMMargin).contents) if pInvestorCommodityGroupSPMMMargin else CThostFtdcInvestorCommodityGroupSPMMMarginField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryInvestorCommodityGroupSPMMMargin(self, pInvestorCommodityGroupSPMMMargin:CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ 投资者商品群SPMM记录查询响应 """
+        print('===OnRspQryInvestorCommodityGroupSPMMMargin===:pInvestorCommodityGroupSPMMMargin:CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQrySPMMInstParam(self, pSPMMInstParam:CThostFtdcSPMMInstParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQrySPMMInstParam(copy.deepcopy(POINTER(CThostFtdcSPMMInstParamField).from_param(pSPMMInstParam).contents) if pSPMMInstParam else CThostFtdcSPMMInstParamField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQrySPMMInstParam(self, pSPMMInstParam:CThostFtdcSPMMInstParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ SPMM合约参数查询响应 """
+        print('===OnRspQrySPMMInstParam===:pSPMMInstParam:CThostFtdcSPMMInstParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQrySPMMProductParam(self, pSPMMProductParam:CThostFtdcSPMMProductParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQrySPMMProductParam(copy.deepcopy(POINTER(CThostFtdcSPMMProductParamField).from_param(pSPMMProductParam).contents) if pSPMMProductParam else CThostFtdcSPMMProductParamField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQrySPMMProductParam(self, pSPMMProductParam:CThostFtdcSPMMProductParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ SPMM产品参数查询响应 """
+        print('===OnRspQrySPMMProductParam===:pSPMMProductParam:CThostFtdcSPMMProductParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQrySPBMAddOnInterParameter(self, pSPBMAddOnInterParameter:CThostFtdcSPBMAddOnInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQrySPBMAddOnInterParameter(copy.deepcopy(POINTER(CThostFtdcSPBMAddOnInterParameterField).from_param(pSPBMAddOnInterParameter).contents) if pSPBMAddOnInterParameter else CThostFtdcSPBMAddOnInterParameterField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQrySPBMAddOnInterParameter(self, pSPBMAddOnInterParameter:CThostFtdcSPBMAddOnInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ SPBM附加跨品种抵扣参数查询响应 """
+        print('===OnRspQrySPBMAddOnInterParameter===:pSPBMAddOnInterParameter:CThostFtdcSPBMAddOnInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRCAMSCombProductInfo(self, pRCAMSCombProductInfo:CThostFtdcRCAMSCombProductInfoField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRCAMSCombProductInfo(copy.deepcopy(POINTER(CThostFtdcRCAMSCombProductInfoField).from_param(pRCAMSCombProductInfo).contents) if pRCAMSCombProductInfo else CThostFtdcRCAMSCombProductInfoField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRCAMSCombProductInfo(self, pRCAMSCombProductInfo:CThostFtdcRCAMSCombProductInfoField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RCAMS产品组合信息查询响应 """
+        print('===OnRspQryRCAMSCombProductInfo===:pRCAMSCombProductInfo:CThostFtdcRCAMSCombProductInfoField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRCAMSInstrParameter(self, pRCAMSInstrParameter:CThostFtdcRCAMSInstrParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRCAMSInstrParameter(copy.deepcopy(POINTER(CThostFtdcRCAMSInstrParameterField).from_param(pRCAMSInstrParameter).contents) if pRCAMSInstrParameter else CThostFtdcRCAMSInstrParameterField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRCAMSInstrParameter(self, pRCAMSInstrParameter:CThostFtdcRCAMSInstrParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RCAMS同合约风险对冲参数查询响应 """
+        print('===OnRspQryRCAMSInstrParameter===:pRCAMSInstrParameter:CThostFtdcRCAMSInstrParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRCAMSIntraParameter(self, pRCAMSIntraParameter:CThostFtdcRCAMSIntraParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRCAMSIntraParameter(copy.deepcopy(POINTER(CThostFtdcRCAMSIntraParameterField).from_param(pRCAMSIntraParameter).contents) if pRCAMSIntraParameter else CThostFtdcRCAMSIntraParameterField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRCAMSIntraParameter(self, pRCAMSIntraParameter:CThostFtdcRCAMSIntraParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RCAMS品种内风险对冲参数查询响应 """
+        print('===OnRspQryRCAMSIntraParameter===:pRCAMSIntraParameter:CThostFtdcRCAMSIntraParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRCAMSInterParameter(self, pRCAMSInterParameter:CThostFtdcRCAMSInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRCAMSInterParameter(copy.deepcopy(POINTER(CThostFtdcRCAMSInterParameterField).from_param(pRCAMSInterParameter).contents) if pRCAMSInterParameter else CThostFtdcRCAMSInterParameterField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRCAMSInterParameter(self, pRCAMSInterParameter:CThostFtdcRCAMSInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RCAMS跨品种风险折抵参数查询响应 """
+        print('===OnRspQryRCAMSInterParameter===:pRCAMSInterParameter:CThostFtdcRCAMSInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRCAMSShortOptAdjustParam(self, pRCAMSShortOptAdjustParam:CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRCAMSShortOptAdjustParam(copy.deepcopy(POINTER(CThostFtdcRCAMSShortOptAdjustParamField).from_param(pRCAMSShortOptAdjustParam).contents) if pRCAMSShortOptAdjustParam else CThostFtdcRCAMSShortOptAdjustParamField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRCAMSShortOptAdjustParam(self, pRCAMSShortOptAdjustParam:CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RCAMS空头期权风险调整参数查询响应 """
+        print('===OnRspQryRCAMSShortOptAdjustParam===:pRCAMSShortOptAdjustParam:CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRCAMSInvestorCombPosition(self, pRCAMSInvestorCombPosition:CThostFtdcRCAMSInvestorCombPositionField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRCAMSInvestorCombPosition(copy.deepcopy(POINTER(CThostFtdcRCAMSInvestorCombPositionField).from_param(pRCAMSInvestorCombPosition).contents) if pRCAMSInvestorCombPosition else CThostFtdcRCAMSInvestorCombPositionField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRCAMSInvestorCombPosition(self, pRCAMSInvestorCombPosition:CThostFtdcRCAMSInvestorCombPositionField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RCAMS策略组合持仓查询响应 """
+        print('===OnRspQryRCAMSInvestorCombPosition===:pRCAMSInvestorCombPosition:CThostFtdcRCAMSInvestorCombPositionField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryInvestorProdRCAMSMargin(self, pInvestorProdRCAMSMargin:CThostFtdcInvestorProdRCAMSMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryInvestorProdRCAMSMargin(copy.deepcopy(POINTER(CThostFtdcInvestorProdRCAMSMarginField).from_param(pInvestorProdRCAMSMargin).contents) if pInvestorProdRCAMSMargin else CThostFtdcInvestorProdRCAMSMarginField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryInvestorProdRCAMSMargin(self, pInvestorProdRCAMSMargin:CThostFtdcInvestorProdRCAMSMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ 投资者品种RCAMS保证金查询响应 """
+        print('===OnRspQryInvestorProdRCAMSMargin===:pInvestorProdRCAMSMargin:CThostFtdcInvestorProdRCAMSMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRULEInstrParameter(self, pRULEInstrParameter:CThostFtdcRULEInstrParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRULEInstrParameter(copy.deepcopy(POINTER(CThostFtdcRULEInstrParameterField).from_param(pRULEInstrParameter).contents) if pRULEInstrParameter else CThostFtdcRULEInstrParameterField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRULEInstrParameter(self, pRULEInstrParameter:CThostFtdcRULEInstrParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RULE合约保证金参数查询响应 """
+        print('===OnRspQryRULEInstrParameter===:pRULEInstrParameter:CThostFtdcRULEInstrParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRULEIntraParameter(self, pRULEIntraParameter:CThostFtdcRULEIntraParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRULEIntraParameter(copy.deepcopy(POINTER(CThostFtdcRULEIntraParameterField).from_param(pRULEIntraParameter).contents) if pRULEIntraParameter else CThostFtdcRULEIntraParameterField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRULEIntraParameter(self, pRULEIntraParameter:CThostFtdcRULEIntraParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RULE品种内对锁仓折扣参数查询响应 """
+        print('===OnRspQryRULEIntraParameter===:pRULEIntraParameter:CThostFtdcRULEIntraParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryRULEInterParameter(self, pRULEInterParameter:CThostFtdcRULEInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryRULEInterParameter(copy.deepcopy(POINTER(CThostFtdcRULEInterParameterField).from_param(pRULEInterParameter).contents) if pRULEInterParameter else CThostFtdcRULEInterParameterField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryRULEInterParameter(self, pRULEInterParameter:CThostFtdcRULEInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ RULE跨品种抵扣参数查询响应 """
+        print('===OnRspQryRULEInterParameter===:pRULEInterParameter:CThostFtdcRULEInterParameterField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryInvestorProdRULEMargin(self, pInvestorProdRULEMargin:CThostFtdcInvestorProdRULEMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryInvestorProdRULEMargin(copy.deepcopy(POINTER(CThostFtdcInvestorProdRULEMarginField).from_param(pInvestorProdRULEMargin).contents) if pInvestorProdRULEMargin else CThostFtdcInvestorProdRULEMarginField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryInvestorProdRULEMargin(self, pInvestorProdRULEMargin:CThostFtdcInvestorProdRULEMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ 投资者产品RULE保证金查询响应 """
+        print('===OnRspQryInvestorProdRULEMargin===:pInvestorProdRULEMargin:CThostFtdcInvestorProdRULEMarginField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
+    
+    def __OnRspQryInvestorPortfSetting(self, pInvestorPortfSetting:CThostFtdcInvestorPortfSettingField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        self.OnRspQryInvestorPortfSetting(copy.deepcopy(POINTER(CThostFtdcInvestorPortfSettingField).from_param(pInvestorPortfSetting).contents) if pInvestorPortfSetting else CThostFtdcInvestorPortfSettingField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents) if pRspInfo else CThostFtdcRspInfoField(), nRequestID, bIsLast)
+    def OnRspQryInvestorPortfSetting(self, pInvestorPortfSetting:CThostFtdcInvestorPortfSettingField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool):
+        """ 投资者投资者新组保设置查询响应 """
+        print('===OnRspQryInvestorPortfSetting===:pInvestorPortfSetting:CThostFtdcInvestorPortfSettingField, pRspInfo:CThostFtdcRspInfoField, nRequestID:int, bIsLast:bool')
     

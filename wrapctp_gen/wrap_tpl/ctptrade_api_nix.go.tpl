@@ -77,22 +77,24 @@ func (t *Trade) CTP_GetDataCollectApiVersion() string {
 	return C.GoString((*C.char)(C.dCTP_GetDataCollectApiVersion()))
 }
 [[ range .Fn]][[ if eq .FuncRtn "void"]][[if eq .FuncName "RegisterSpi"]]
-func (t *Trade) [[ .FuncName ]]() { [[else]]
-func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) { [[end]]
-	[[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
-	C.t[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
-}[[ else ]][[if eq .FuncName "ReqUserLogin"]]
-func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if lt $i 3 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]][[end]]) [[ .FuncRtn ]]32 {
+func (t *Trade) [[ .FuncName ]]() {
+	C.t[[ .FuncName ]](t.api, t.pSpi)
+}
+[[else]]
+func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]]) {
+	[[ range .FuncFields ]][[ supType .FieldType .FieldName ]][[ end ]]C.t[[ .FuncName ]](t.api[[ range $i,$v := .FuncFields ]][[ if ne .FieldName "api"]], [[ fldType .FieldType .FieldName ]][[end]][[ end ]])
+}
+[[end]][[ else ]][[if eq .FuncName "ReqUserLogin"]]
+func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]]) [[ .FuncRtn ]]32 {
 	[[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]][[ if eq $.Pf "macos"]]
 	var systemInfo TThostFtdcClientSystemInfoType
 	var length TThostFtdcSystemInfoLenType = 273
 	t.CTP_GetSystemInfoUnAesEncode(&systemInfo, length)[[end]]
-	res := C.t[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
+	res := C.t[[ .FuncName ]](t.api[[ range $i,$v := .FuncFields ]][[ if ne .FieldName "api"]][[ if ne .FieldName "length"]][[ if ne .FieldName "systemInfo"]], [[ fldType .FieldType .FieldName ]][[end]][[end]][[end]][[ end ]][[ if eq $.Pf "macos"]], C.int(length), (*C.char)(unsafe.Pointer(&systemInfo[0]))[[end]])
 	return [[ .FuncRtn ]]32(res)
 }[[else]]
-func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) [[ .FuncRtn ]]32 {
-	[[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
-	res := C.t[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
+func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]]) [[ .FuncRtn ]]32 {
+	[[ range .FuncFields ]][[ supType .FieldType .FieldName ]][[ end ]]res := C.t[[ .FuncName ]](t.api[[ range $i,$v := .FuncFields ]][[ if ne .FieldName "api"]], [[ fldType .FieldType .FieldName ]][[end]][[ end ]])
 	return [[ .FuncRtn ]]32(res)
 }[[ end ]][[ end ]]
 [[end]]

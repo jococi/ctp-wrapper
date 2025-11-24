@@ -7,39 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4EE049292DA51656001EDF78 /* ThostFtdcUserApiDataType.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE049262DA51656001EDF78 /* ThostFtdcUserApiDataType.h */; };
-		4EE0492A2DA51656001EDF78 /* ThostFtdcTraderApi.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE049252DA51656001EDF78 /* ThostFtdcTraderApi.h */; };
-		4EE0492B2DA51656001EDF78 /* ThostFtdcMdApi.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE049242DA51656001EDF78 /* ThostFtdcMdApi.h */; };
-		4EE0492C2DA51656001EDF78 /* DataCollect.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0491E2DA51656001EDF78 /* DataCollect.h */; };
-		4EE0492D2DA51656001EDF78 /* ThostFtdcUserApiStruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE049272DA51656001EDF78 /* ThostFtdcUserApiStruct.h */; };
-		4EE049302DA51656001EDF78 /* libMacDataCollect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0491F2DA51656001EDF78 /* libMacDataCollect.a */; };
-		4EE049322DA51656001EDF78 /* libthosttraderapi_se.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE049212DA51656001EDF78 /* libthosttraderapi_se.a */; };
-		4EE049332DA51656001EDF78 /* libthostmduserapi_se.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE049202DA51656001EDF78 /* libthostmduserapi_se.a */; };
+		4E13277E2ED32F020012AE45 /* ThostFtdcUserApiStruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E13277A2ED32F020012AE45 /* ThostFtdcUserApiStruct.h */; };
+		4E13277F2ED32F020012AE45 /* ThostFtdcMdApi.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E1327772ED32F020012AE45 /* ThostFtdcMdApi.h */; };
+		4E1327802ED32F020012AE45 /* ThostFtdcTraderApi.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E1327782ED32F020012AE45 /* ThostFtdcTraderApi.h */; };
+		4E1327812ED32F020012AE45 /* DataCollect.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E1327742ED32F020012AE45 /* DataCollect.h */; };
+		4E1327822ED32F020012AE45 /* ThostFtdcUserApiDataType.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E1327792ED32F020012AE45 /* ThostFtdcUserApiDataType.h */; };
+		4E1327892ED32F330012AE45 /* thostmduserapi_se.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E13277B2ED32F020012AE45 /* thostmduserapi_se.framework */; };
+		4E13278A2ED32F330012AE45 /* thostmduserapi_se.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4E13277B2ED32F020012AE45 /* thostmduserapi_se.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4EE0495E2DA5169A001EDF78 /* ctpquote_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4EE049592DA5169A001EDF78 /* ctpquote_api.cpp */; };
 		4EE049602DA5169A001EDF78 /* ctpquote_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE049582DA5169A001EDF78 /* ctpquote_api.h */; };
-		4EE049872DA51DF0001EDF78 /* comunicationkeylib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE049192DA51656001EDF78 /* comunicationkeylib.a */; };
-		4EE049882DA51DF2001EDF78 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0491A2DA51656001EDF78 /* libcrypto.a */; };
-		4EE049892DA51DF5001EDF78 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0491B2DA51656001EDF78 /* libssl.a */; };
 		4EE0498B2DA51F4F001EDF78 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0498A2DA51F4F001EDF78 /* Cocoa.framework */; };
 		4EE0498D2DA51F59001EDF78 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0498C2DA51F59001EDF78 /* IOKit.framework */; };
 		4EE0498F2DA51F63001EDF78 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0498E2DA51F63001EDF78 /* CoreServices.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		4E1327882ED32F320012AE45 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4E13278A2ED32F330012AE45 /* thostmduserapi_se.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		4EE049192DA51656001EDF78 /* comunicationkeylib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = comunicationkeylib.a; sourceTree = "<group>"; };
-		4EE0491A2DA51656001EDF78 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
-		4EE0491B2DA51656001EDF78 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
-		4EE0491D2DA51656001EDF78 /* changelog.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = changelog.txt; sourceTree = "<group>"; };
-		4EE0491E2DA51656001EDF78 /* DataCollect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataCollect.h; sourceTree = "<group>"; };
-		4EE0491F2DA51656001EDF78 /* libMacDataCollect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMacDataCollect.a; sourceTree = "<group>"; };
-		4EE049202DA51656001EDF78 /* libthostmduserapi_se.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libthostmduserapi_se.a; sourceTree = "<group>"; };
-		4EE049212DA51656001EDF78 /* libthosttraderapi_se.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libthosttraderapi_se.a; sourceTree = "<group>"; };
-		4EE049222DA51656001EDF78 /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
-		4EE049232DA51656001EDF78 /* README_MD.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README_MD.txt; sourceTree = "<group>"; };
-		4EE049242DA51656001EDF78 /* ThostFtdcMdApi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcMdApi.h; sourceTree = "<group>"; };
-		4EE049252DA51656001EDF78 /* ThostFtdcTraderApi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcTraderApi.h; sourceTree = "<group>"; };
-		4EE049262DA51656001EDF78 /* ThostFtdcUserApiDataType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcUserApiDataType.h; sourceTree = "<group>"; };
-		4EE049272DA51656001EDF78 /* ThostFtdcUserApiStruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcUserApiStruct.h; sourceTree = "<group>"; };
+		4E1327742ED32F020012AE45 /* DataCollect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataCollect.h; sourceTree = "<group>"; };
+		4E1327752ED32F020012AE45 /* MacDataCollect.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MacDataCollect.framework; sourceTree = "<group>"; };
+		4E1327762ED32F020012AE45 /* setup_frameworks.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup_frameworks.sh; sourceTree = "<group>"; };
+		4E1327772ED32F020012AE45 /* ThostFtdcMdApi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcMdApi.h; sourceTree = "<group>"; };
+		4E1327782ED32F020012AE45 /* ThostFtdcTraderApi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcTraderApi.h; sourceTree = "<group>"; };
+		4E1327792ED32F020012AE45 /* ThostFtdcUserApiDataType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcUserApiDataType.h; sourceTree = "<group>"; };
+		4E13277A2ED32F020012AE45 /* ThostFtdcUserApiStruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThostFtdcUserApiStruct.h; sourceTree = "<group>"; };
+		4E13277B2ED32F020012AE45 /* thostmduserapi_se.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = thostmduserapi_se.framework; sourceTree = "<group>"; };
+		4E13277C2ED32F020012AE45 /* thosttraderapi_se.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = thosttraderapi_se.framework; sourceTree = "<group>"; };
 		4EE049582DA5169A001EDF78 /* ctpquote_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ctpquote_api.h; sourceTree = "<group>"; };
 		4EE049592DA5169A001EDF78 /* ctpquote_api.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ctpquote_api.cpp; sourceTree = "<group>"; };
 		4EE0495A2DA5169A001EDF78 /* ctptrade_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ctptrade_api.h; sourceTree = "<group>"; };
@@ -56,14 +61,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4EE0498B2DA51F4F001EDF78 /* Cocoa.framework in Frameworks */,
-				4EE049872DA51DF0001EDF78 /* comunicationkeylib.a in Frameworks */,
-				4EE049302DA51656001EDF78 /* libMacDataCollect.a in Frameworks */,
+				4E1327892ED32F330012AE45 /* thostmduserapi_se.framework in Frameworks */,
 				4EE0498D2DA51F59001EDF78 /* IOKit.framework in Frameworks */,
 				4EE0498F2DA51F63001EDF78 /* CoreServices.framework in Frameworks */,
-				4EE049322DA51656001EDF78 /* libthosttraderapi_se.a in Frameworks */,
-				4EE049332DA51656001EDF78 /* libthostmduserapi_se.a in Frameworks */,
-				4EE049882DA51DF2001EDF78 /* libcrypto.a in Frameworks */,
-				4EE049892DA51DF5001EDF78 /* libssl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,45 +80,32 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4E74B1762944B0650009DD4D = {
+		4E13277D2ED32F020012AE45 /* macos */ = {
 			isa = PBXGroup;
 			children = (
-				4EE0495C2DA5169A001EDF78 /* macos */,
-				4EE049282DA51656001EDF78 /* macos */,
-				4E040AC02945DF3200E4BF66 /* Frameworks */,
-				4EE049862DA51BB1001EDF78 /* libctpquote_api.dylib */,
-			);
-			sourceTree = "<group>";
-		};
-		4EE0491C2DA51656001EDF78 /* libs */ = {
-			isa = PBXGroup;
-			children = (
-				4EE049192DA51656001EDF78 /* comunicationkeylib.a */,
-				4EE0491A2DA51656001EDF78 /* libcrypto.a */,
-				4EE0491B2DA51656001EDF78 /* libssl.a */,
-			);
-			path = libs;
-			sourceTree = "<group>";
-		};
-		4EE049282DA51656001EDF78 /* macos */ = {
-			isa = PBXGroup;
-			children = (
-				4EE0491C2DA51656001EDF78 /* libs */,
-				4EE0491D2DA51656001EDF78 /* changelog.txt */,
-				4EE0491E2DA51656001EDF78 /* DataCollect.h */,
-				4EE0491F2DA51656001EDF78 /* libMacDataCollect.a */,
-				4EE049202DA51656001EDF78 /* libthostmduserapi_se.a */,
-				4EE049212DA51656001EDF78 /* libthosttraderapi_se.a */,
-				4EE049222DA51656001EDF78 /* README.txt */,
-				4EE049232DA51656001EDF78 /* README_MD.txt */,
-				4EE049242DA51656001EDF78 /* ThostFtdcMdApi.h */,
-				4EE049252DA51656001EDF78 /* ThostFtdcTraderApi.h */,
-				4EE049262DA51656001EDF78 /* ThostFtdcUserApiDataType.h */,
-				4EE049272DA51656001EDF78 /* ThostFtdcUserApiStruct.h */,
+				4E1327742ED32F020012AE45 /* DataCollect.h */,
+				4E1327752ED32F020012AE45 /* MacDataCollect.framework */,
+				4E1327762ED32F020012AE45 /* setup_frameworks.sh */,
+				4E1327772ED32F020012AE45 /* ThostFtdcMdApi.h */,
+				4E1327782ED32F020012AE45 /* ThostFtdcTraderApi.h */,
+				4E1327792ED32F020012AE45 /* ThostFtdcUserApiDataType.h */,
+				4E13277A2ED32F020012AE45 /* ThostFtdcUserApiStruct.h */,
+				4E13277B2ED32F020012AE45 /* thostmduserapi_se.framework */,
+				4E13277C2ED32F020012AE45 /* thosttraderapi_se.framework */,
 			);
 			name = macos;
 			path = ../../ctpapi/macos;
 			sourceTree = SOURCE_ROOT;
+		};
+		4E74B1762944B0650009DD4D = {
+			isa = PBXGroup;
+			children = (
+				4E13277D2ED32F020012AE45 /* macos */,
+				4EE0495C2DA5169A001EDF78 /* macos */,
+				4E040AC02945DF3200E4BF66 /* Frameworks */,
+				4EE049862DA51BB1001EDF78 /* libctpquote_api.dylib */,
+			);
+			sourceTree = "<group>";
 		};
 		4EE0495C2DA5169A001EDF78 /* macos */ = {
 			isa = PBXGroup;
@@ -139,12 +126,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4EE049292DA51656001EDF78 /* ThostFtdcUserApiDataType.h in Headers */,
-				4EE0492A2DA51656001EDF78 /* ThostFtdcTraderApi.h in Headers */,
 				4EE049602DA5169A001EDF78 /* ctpquote_api.h in Headers */,
-				4EE0492B2DA51656001EDF78 /* ThostFtdcMdApi.h in Headers */,
-				4EE0492C2DA51656001EDF78 /* DataCollect.h in Headers */,
-				4EE0492D2DA51656001EDF78 /* ThostFtdcUserApiStruct.h in Headers */,
+				4E13277E2ED32F020012AE45 /* ThostFtdcUserApiStruct.h in Headers */,
+				4E13277F2ED32F020012AE45 /* ThostFtdcMdApi.h in Headers */,
+				4E1327802ED32F020012AE45 /* ThostFtdcTraderApi.h in Headers */,
+				4E1327812ED32F020012AE45 /* DataCollect.h in Headers */,
+				4E1327822ED32F020012AE45 /* ThostFtdcUserApiDataType.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,6 +145,7 @@
 				4E74B17B2944B0650009DD4D /* Headers */,
 				4E74B17C2944B0650009DD4D /* Sources */,
 				4E74B17D2944B0650009DD4D /* Frameworks */,
+				4E1327882ED32F320012AE45 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -247,6 +235,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_INSTALL_NAME_BASE = "@rpath/lib${TARGET_NAME}.dylib";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -264,7 +253,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/lib${TARGET_NAME}.dylib";
 				LD_NO_PIE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../ctpapi/macos";
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -313,6 +304,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_INSTALL_NAME_BASE = "@rpath/lib${TARGET_NAME}.dylib";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -325,7 +317,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/lib${TARGET_NAME}.dylib";
 				LD_NO_PIE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../ctpapi/macos";
 				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -348,7 +342,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "";
+				DYLIB_INSTALL_NAME_BASE = "@rpath/lib${TARGET_NAME}.dylib";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				EXCLUDED_ARCHS = "";
 				EXECUTABLE_PREFIX = lib;
@@ -358,16 +352,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = "../../**";
-				LD_DYLIB_INSTALL_NAME = "";
+				LD_DYLIB_INSTALL_NAME = "@rpath/lib${TARGET_NAME}.dylib";
 				LD_GENERATE_MAP_FILE = NO;
 				LD_NO_PIE = YES;
 				LIBRARY_SEARCH_PATHS = "../../ctpapi/macos/**";
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-lthostmduserapi_se",
-					"-lthosttraderapi_se",
-					"-lMacDataCollect",
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -382,7 +372,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "";
+				DYLIB_INSTALL_NAME_BASE = "@rpath/lib${TARGET_NAME}.dylib";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				EXCLUDED_ARCHS = "";
 				EXECUTABLE_PREFIX = lib;
@@ -391,16 +381,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = "../../**";
-				LD_DYLIB_INSTALL_NAME = "";
+				LD_DYLIB_INSTALL_NAME = "@rpath/lib${TARGET_NAME}.dylib";
 				LD_GENERATE_MAP_FILE = NO;
 				LD_NO_PIE = YES;
 				LIBRARY_SEARCH_PATHS = "../../ctpapi/macos/**";
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-lthostmduserapi_se",
-					"-lthosttraderapi_se",
-					"-lMacDataCollect",
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};

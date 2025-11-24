@@ -202,9 +202,9 @@ class Quote(object):
         """ @remark RegisterNameServer优先于RegisterFront """
         self.h.qRegisterNameServer(self.api, bytes(pszNsAddress, encoding='ascii'))  
     
-    def RegisterFensUserInfo(self,  pFensUserInfo:CThostFtdcFensUserInfoField): 
+    def RegisterFensUserInfo(self, pFensUserInfo:CThostFtdcFensUserInfoField): 
         """ 注册名字服务器用户信息 """
-        self.h.qRegisterFensUserInfo(self.api, byref( pFensUserInfo))  
+        self.h.qRegisterFensUserInfo(self.api, byref(pFensUserInfo))  
     
     def RegisterSpi(self): 
         """ 注册回调接口 """

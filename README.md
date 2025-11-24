@@ -52,7 +52,7 @@ ctpapi/
 │   ├── libthostmduserapi_se.so
 │   └── libthosttraderapi_se.so
 ├── macos/
-│   ├── ThostFtdcMdApi.h
+│   ├── 
 │   ├── ThostFtdcTraderApi.h
 │   ├── ThostFtdcUserApiDataType.h
 │   ├── ThostFtdcUserApiStruct.h
@@ -66,6 +66,8 @@ ctpapi/
     ├── thostmduserapi_se.dll
     └── thosttraderapi_se.dll
 ```
+
+**如果是MacOS平台，则需要先进入`ctpapi/macos/`，运行`sh setup_frameworks.sh`**
 
 ### 2. 生成封装代码
 
@@ -93,21 +95,19 @@ go run wrapper_gen.go -csys linux -lang golang -srcpath ../ctpapi/ -outpath ../c
 #### macOS平台 (使用Clang)
 
 ```shell
-clang++ -shared -fPIC -std=c++11 \
-  -o libs/libctpquote_api.dylib \
-  -I. -O3 \
-  -L./ctpapi/macos \
-  -lthostmduserapi_se -lthosttraderapi_se -lMacDataCollect \
+clang++ -shared -fPIC -std=c++11 -o libs/libctpquote_api.dylib \
+  -I. -I./ctpapi/macos -O3 -F./ctpapi/macos \
+  -framework thostmduserapi_se \
   -install_name @rpath/libctpquote_api.dylib \
+  -Wl,-rpath,@loader_path/../ctpapi/macos \
   csrc/macos/ctpquote_api.cpp
 
-clang++ -shared -fPIC -std=c++11 \
-  -o libs/libctptrade_api.dylib \
-  -I. -O3 \
-  -L./ctpapi/macos \
-  -lthostmduserapi_se -lthosttraderapi_se -lMacDataCollect \
+clang++ -shared -fPIC -std=c++11 -o libs/libctptrade_api.dylib \
+  -I. -I./ctpapi/macos -O3 -F./ctpapi/macos \
+  -framework thosttraderapi_se -framework MacDataCollect \
   -framework IOKit -framework Foundation -framework CoreFoundation \
   -install_name @rpath/libctptrade_api.dylib \
+  -Wl,-rpath,@loader_path/../ctpapi/macos \
   csrc/macos/ctptrade_api.cpp
 ```
 
@@ -115,10 +115,49 @@ clang++ -shared -fPIC -std=c++11 \
 
 打开项目根目录下的macos文件夹下的AlgoTrade工作空间，对其中项目进行编译。
 
-__如果使用Xcode进行编译，需要在Xcode的 Build Settings -> Apple Clang - Code Generation -> Symbols Hidden by Default设置为`No`，或者在需要导出的函数前添加 `__attribute__((visibility("default")))`__
+**Xcode 设置说明：**
 
-1. 将生成动态链接库文件，默认在项目根目录`macos/DerivedData/Build/Products/Release`下面的`.dylib`文件拷贝到项目根目录`libs`下。
-2. 同时，也可以将该路径添加到系统环境变量。
+1. **Framework Search Paths（对应 clang 的 `-F` 参数）**
+   - 选择 Target > Build Settings
+   - 搜索 "Framework Search Paths" 或 "FRAMEWORK_SEARCH_PATHS"
+   - 添加路径：`$(PROJECT_DIR)/../ctpapi/macos` 或 `../../ctpapi/macos`
+
+2. **Runpath Search Paths（对应 clang 的 `-Wl,-rpath,@loader_path/...` 参数）**
+   - 选择 Target > Build Settings
+   - 搜索 "Runpath Search Paths" 或 "LD_RUNPATH_SEARCH_PATHS"
+   - 添加路径：`@loader_path/../ctpapi/macos`
+   - 或者使用项目相对路径：`$(PROJECT_DIR)/../ctpapi/macos`
+
+3. **添加框架到项目**
+   - 选择 Target > General > Frameworks, Libraries, and Embedded Content
+   - 点击 "+" 添加框架：
+     - `thostmduserapi_se.framework`
+     - `thosttraderapi_se.framework`
+     - `MacDataCollect.framework`
+   - 设置每个框架的 Embed 为 **"Embed & Sign"**
+
+4. **系统框架**
+   - 同样在 Frameworks, Libraries, and Embedded Content 中添加：
+     - `IOKit.framework`
+     - `Foundation.framework`
+     - `CoreFoundation.framework`
+   - 系统框架通常设置为 "Do Not Embed"
+
+5. **设置 Install Name（重要：如果要将 dylib 拷贝到 libs 目录使用）**
+   - 选择 Target > Build Settings
+   - 搜索 "Installation Directory" 或 "INSTALL_PATH"
+   - 设置为：`@rpath`
+   - 搜索 "DYLIB_INSTALL_NAME_BASE" 或 "LD_DYLIB_INSTALL_NAME"
+   - 设置为：`@rpath/lib$(TARGET_NAME).dylib` 或 `@rpath/$(TARGET_NAME)`
+   - 这样编译出来的 dylib 的 install_name 就是 `@rpath/libctpquote_api.dylib`，而不是绝对路径
+   - 使用时，确保设置了正确的 rpath（见下面的 Runpath Search Paths）
+
+6. **其他编译设置**
+   - Build Settings > Apple Clang - Code Generation > Symbols Hidden by Default 设置为 `No`
+   - 或者在需要导出的函数前添加 `__attribute__((visibility("default")))`
+
+7. 将生成动态链接库文件，默认在项目根目录`macos/DerivedData/Build/Products/Release`下面的`.dylib`文件拷贝到项目根目录`libs`下。
+8. 如果设置了 `@rpath`，使用时需要确保设置了正确的 rpath（见 Runpath Search Paths 设置）。
 
 #### Linux平台 (使用G++)
 

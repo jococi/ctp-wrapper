@@ -351,6 +351,8 @@ class  CThostFtdcTraderField(Structure):
         ("InstallCount", TThostFtdcInstallCountType),
         ("BrokerID", TThostFtdcBrokerIDType),
         ("OrderCancelAlg", TThostFtdcOrderCancelAlgType),
+        ("TradeInstallCount", TThostFtdcInstallCountType),
+        ("MDInstallCount", TThostFtdcInstallCountType),
         
     ]
     
@@ -904,6 +906,8 @@ class  CThostFtdcInputOrderField(Structure):
         ("MacAddress", TThostFtdcMacAddressType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -976,6 +980,8 @@ class  CThostFtdcOrderField(Structure):
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("ExchangeInstID", TThostFtdcExchangeInstIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -1067,6 +1073,8 @@ class  CThostFtdcInputOrderActionField(Structure):
         ("MacAddress", TThostFtdcMacAddressType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -1104,6 +1112,8 @@ class  CThostFtdcOrderActionField(Structure):
         ("MacAddress", TThostFtdcMacAddressType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -1274,6 +1284,7 @@ class  CThostFtdcSyncDepositField(Structure):
         ("CurrencyID", TThostFtdcCurrencyIDType),
         ("IsFromSopt", TThostFtdcBoolType),
         ("TradingPassword", TThostFtdcPasswordType),
+        ("IsSecAgentTranfer", TThostFtdcBoolType),
         
     ]
     
@@ -1732,6 +1743,7 @@ class  CThostFtdcQryDepthMarketDataField(Structure):
         ("reserve1", TThostFtdcOldInstrumentIDType),
         ("ExchangeID", TThostFtdcExchangeIDType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("ProductClass", TThostFtdcProductClassType),
         
     ]
     
@@ -2415,6 +2427,9 @@ class  CThostFtdcInputQuoteField(Structure):
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
         ("ReplaceSysID", TThostFtdcOrderSysIDType),
+        ("TimeCondition", TThostFtdcTimeConditionType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -2439,6 +2454,8 @@ class  CThostFtdcInputQuoteActionField(Structure):
         ("MacAddress", TThostFtdcMacAddressType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -2499,6 +2516,9 @@ class  CThostFtdcQuoteField(Structure):
         ("ExchangeInstID", TThostFtdcExchangeInstIDType),
         ("IPAddress", TThostFtdcIPAddressType),
         ("ReplaceSysID", TThostFtdcOrderSysIDType),
+        ("TimeCondition", TThostFtdcTimeConditionType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -2534,6 +2554,8 @@ class  CThostFtdcQuoteActionField(Structure):
         ("MacAddress", TThostFtdcMacAddressType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -2591,6 +2613,7 @@ class  CThostFtdcExchangeQuoteField(Structure):
         ("MacAddress", TThostFtdcMacAddressType),
         ("ExchangeInstID", TThostFtdcExchangeInstIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("TimeCondition", TThostFtdcTimeConditionType),
         
     ]
     
@@ -3861,6 +3884,8 @@ class  CThostFtdcBrokerUserEventField(Structure):
         ("InvestorID", TThostFtdcInvestorIDType),
         ("reserve1", TThostFtdcOldInstrumentIDType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("DRIdentityID", TThostFtdcDRIdentityIDType),
+        ("TradingDay", TThostFtdcDateType),
         
     ]
     
@@ -4164,6 +4189,8 @@ class  CThostFtdcErrOrderField(Structure):
         ("MacAddress", TThostFtdcMacAddressType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -4285,6 +4312,8 @@ class  CThostFtdcErrOrderActionField(Structure):
         ("ErrorMsg", TThostFtdcErrorMsgType),
         ("InstrumentID", TThostFtdcInstrumentIDType),
         ("IPAddress", TThostFtdcIPAddressType),
+        ("OrderMemo", TThostFtdcOrderMemoType),
+        ("SessionReqSeq", TThostFtdcSequenceNo12Type),
         
     ]
     
@@ -6221,6 +6250,7 @@ class  CThostFtdcQueryFreqField(Structure):
     """查询频率，每秒查询比数"""
     _fields_ = [
         ("QueryFreq", TThostFtdcQueryFreqType),
+        ("FTDPkgFreq", TThostFtdcQueryFreqType),
         
     ]
     
@@ -6315,7 +6345,7 @@ class  CThostFtdcCombPromotionParamField(Structure):
         
     ]
     
-class  CThostFtdcReqUserLoginSCField(Structure):
+class  CThostFtdcReqUserLoginSMField(Structure):
     """国密用户登录请求"""
     _fields_ = [
         ("TradingDay", TThostFtdcDateType),
@@ -6327,11 +6357,14 @@ class  CThostFtdcReqUserLoginSCField(Structure):
         ("ProtocolInfo", TThostFtdcProtocolInfoType),
         ("MacAddress", TThostFtdcMacAddressType),
         ("OneTimePassword", TThostFtdcPasswordType),
-        ("ClientIPAddress", TThostFtdcIPAddressType),
+        ("reserve1", TThostFtdcOldIPAddressType),
         ("LoginRemark", TThostFtdcLoginRemarkType),
         ("ClientIPPort", TThostFtdcIPPortType),
+        ("ClientIPAddress", TThostFtdcIPAddressType),
+        ("BrokerName", TThostFtdcBrokerNameType),
         ("AuthCode", TThostFtdcAuthCodeType),
         ("AppID", TThostFtdcAppIDType),
+        ("PIN", TThostFtdcPasswordType),
         
     ]
     
@@ -6823,6 +6856,7 @@ class  CThostFtdcSPBMFutureParameterField(Structure):
         ("LockRateX", TThostFtdcRatioType),
         ("AddOnRate", TThostFtdcRatioType),
         ("PreSettlementPrice", TThostFtdcPriceType),
+        ("AddOnLockRateX2", TThostFtdcRatioType),
         
     ]
     
@@ -6848,6 +6882,7 @@ class  CThostFtdcSPBMIntraParameterField(Structure):
         ("ExchangeID", TThostFtdcExchangeIDType),
         ("ProdFamilyCode", TThostFtdcInstrumentIDType),
         ("IntraRateY", TThostFtdcRatioType),
+        ("AddOnIntraRateY2", TThostFtdcRatioType),
         
     ]
     
@@ -6933,6 +6968,7 @@ class  CThostFtdcInvestorPortfMarginRatioField(Structure):
         ("InvestorID", TThostFtdcInvestorIDType),
         ("ExchangeID", TThostFtdcExchangeIDType),
         ("MarginRatio", TThostFtdcRatioType),
+        ("ProductGroupID", TThostFtdcProductIDType),
         
     ]
     
@@ -6960,6 +6996,7 @@ class  CThostFtdcQryInvestorPortfMarginRatioField(Structure):
         ("BrokerID", TThostFtdcBrokerIDType),
         ("InvestorID", TThostFtdcInvestorIDType),
         ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductGroupID", TThostFtdcProductIDType),
         
     ]
     
@@ -7009,6 +7046,851 @@ class  CThostFtdcPortfTradeParamSettingField(Structure):
         ("Portfolio", TThostFtdcPortfolioType),
         ("IsActionVerify", TThostFtdcBoolType),
         ("IsCloseVerify", TThostFtdcBoolType),
+        
+    ]
+    
+class  CThostFtdcInvestorTradingRightField(Structure):
+    """投资者交易权限设置"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("InvstTradingRight", TThostFtdcInvstTradingRightType),
+        
+    ]
+    
+class  CThostFtdcMortgageParamField(Structure):
+    """质押配比参数"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("AccountID", TThostFtdcAccountIDType),
+        ("MortgageBalance", TThostFtdcRatioType),
+        ("CheckMortgageRatio", TThostFtdcBoolType),
+        
+    ]
+    
+class  CThostFtdcWithDrawParamField(Structure):
+    """可提控制参数"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("AccountID", TThostFtdcAccountIDType),
+        ("WithDrawParamID", TThostFtdcWithDrawParamIDType),
+        ("WithDrawParamValue", TThostFtdcWithDrawParamValueType),
+        
+    ]
+    
+class  CThostFtdcThostUserFunctionField(Structure):
+    """Thost终端用户功能权限"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("UserID", TThostFtdcUserIDType),
+        ("ThostFunctionCode", TThostFtdcThostFunctionCodeType),
+        
+    ]
+    
+class  CThostFtdcQryThostUserFunctionField(Structure):
+    """Thost终端用户功能权限查询"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("UserID", TThostFtdcUserIDType),
+        
+    ]
+    
+class  CThostFtdcSPBMAddOnInterParameterField(Structure):
+    """SPBM附加跨品种抵扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("SpreadId", TThostFtdcSpreadIdType),
+        ("AddOnInterRateZ2", TThostFtdcRatioType),
+        ("Leg1ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg2ProdFamilyCode", TThostFtdcInstrumentIDType),
+        
+    ]
+    
+class  CThostFtdcQrySPBMAddOnInterParameterField(Structure):
+    """SPBM附加跨品种抵扣参数查询"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("Leg1ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg2ProdFamilyCode", TThostFtdcInstrumentIDType),
+        
+    ]
+    
+class  CThostFtdcQryInvestorCommoditySPMMMarginField(Structure):
+    """投资者商品组SPMM记录查询"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("CommodityID", TThostFtdcSPMMProductIDType),
+        
+    ]
+    
+class  CThostFtdcQryInvestorCommodityGroupSPMMMarginField(Structure):
+    """投资者商品群SPMM记录查询"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("CommodityGroupID", TThostFtdcSPMMProductIDType),
+        
+    ]
+    
+class  CThostFtdcQrySPMMInstParamField(Structure):
+    """SPMM合约参数查询"""
+    _fields_ = [
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        
+    ]
+    
+class  CThostFtdcQrySPMMProductParamField(Structure):
+    """SPMM产品参数查询"""
+    _fields_ = [
+        ("ProductID", TThostFtdcSPMMProductIDType),
+        
+    ]
+    
+class  CThostFtdcInvestorCommoditySPMMMarginField(Structure):
+    """投资者商品组SPMM记录"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("CommodityID", TThostFtdcSPMMProductIDType),
+        ("MarginBeforeDiscount", TThostFtdcMoneyType),
+        ("MarginNoDiscount", TThostFtdcMoneyType),
+        ("LongPosRisk", TThostFtdcMoneyType),
+        ("LongOpenFrozenRisk", TThostFtdcMoneyType),
+        ("LongCloseFrozenRisk", TThostFtdcMoneyType),
+        ("ShortPosRisk", TThostFtdcMoneyType),
+        ("ShortOpenFrozenRisk", TThostFtdcMoneyType),
+        ("ShortCloseFrozenRisk", TThostFtdcMoneyType),
+        ("IntraCommodityRate", TThostFtdcSPMMDiscountRatioType),
+        ("OptionDiscountRate", TThostFtdcSPMMDiscountRatioType),
+        ("PosDiscount", TThostFtdcMoneyType),
+        ("OpenFrozenDiscount", TThostFtdcMoneyType),
+        ("NetRisk", TThostFtdcMoneyType),
+        ("CloseFrozenMargin", TThostFtdcMoneyType),
+        ("FrozenCommission", TThostFtdcMoneyType),
+        ("Commission", TThostFtdcMoneyType),
+        ("FrozenCash", TThostFtdcMoneyType),
+        ("CashIn", TThostFtdcMoneyType),
+        ("StrikeFrozenMargin", TThostFtdcMoneyType),
+        
+    ]
+    
+class  CThostFtdcInvestorCommodityGroupSPMMMarginField(Structure):
+    """投资者商品群SPMM记录"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("CommodityGroupID", TThostFtdcSPMMProductIDType),
+        ("MarginBeforeDiscount", TThostFtdcMoneyType),
+        ("MarginNoDiscount", TThostFtdcMoneyType),
+        ("LongRisk", TThostFtdcMoneyType),
+        ("ShortRisk", TThostFtdcMoneyType),
+        ("CloseFrozenMargin", TThostFtdcMoneyType),
+        ("InterCommodityRate", TThostFtdcSPMMDiscountRatioType),
+        ("MiniMarginRatio", TThostFtdcSPMMDiscountRatioType),
+        ("AdjustRatio", TThostFtdcRatioType),
+        ("IntraCommodityDiscount", TThostFtdcMoneyType),
+        ("InterCommodityDiscount", TThostFtdcMoneyType),
+        ("ExchMargin", TThostFtdcMoneyType),
+        ("InvestorMargin", TThostFtdcMoneyType),
+        ("FrozenCommission", TThostFtdcMoneyType),
+        ("Commission", TThostFtdcMoneyType),
+        ("FrozenCash", TThostFtdcMoneyType),
+        ("CashIn", TThostFtdcMoneyType),
+        ("StrikeFrozenMargin", TThostFtdcMoneyType),
+        
+    ]
+    
+class  CThostFtdcSPMMInstParamField(Structure):
+    """SPMM合约参数"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("InstMarginCalID", TThostFtdcInstMarginCalIDType),
+        ("CommodityID", TThostFtdcSPMMProductIDType),
+        ("CommodityGroupID", TThostFtdcSPMMProductIDType),
+        
+    ]
+    
+class  CThostFtdcSPMMProductParamField(Structure):
+    """SPMM产品参数"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductID", TThostFtdcSPMMProductIDType),
+        ("CommodityID", TThostFtdcSPMMProductIDType),
+        ("CommodityGroupID", TThostFtdcSPMMProductIDType),
+        
+    ]
+    
+class  CThostFtdcQryTraderAssignField(Structure):
+    """席位与交易中心对应关系维护查询"""
+    _fields_ = [
+        ("TraderID", TThostFtdcTraderIDType),
+        
+    ]
+    
+class  CThostFtdcTraderAssignField(Structure):
+    """席位与交易中心对应关系"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("TraderID", TThostFtdcTraderIDType),
+        ("ParticipantID", TThostFtdcParticipantIDType),
+        ("DRIdentityID", TThostFtdcDRIdentityIDType),
+        
+    ]
+    
+class  CThostFtdcInvestorInfoCntSettingField(Structure):
+    """投资者申报费阶梯收取设置"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("ProductID", TThostFtdcProductIDType),
+        ("IsCalInfoComm", TThostFtdcBoolType),
+        ("IsLimitInfoMax", TThostFtdcBoolType),
+        ("InfoMaxLimit", TThostFtdcVolumeType),
+        
+    ]
+    
+class  CThostFtdcRCAMSCombProductInfoField(Structure):
+    """RCAMS产品组合信息"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductID", TThostFtdcProductIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("ProductGroupID", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcRCAMSInstrParameterField(Structure):
+    """RCAMS同合约风险对冲参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductID", TThostFtdcProductIDType),
+        ("HedgeRate", TThostFtdcHedgeRateType),
+        
+    ]
+    
+class  CThostFtdcRCAMSIntraParameterField(Structure):
+    """RCAMS品种内风险对冲参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("HedgeRate", TThostFtdcHedgeRateType),
+        
+    ]
+    
+class  CThostFtdcRCAMSInterParameterField(Structure):
+    """RCAMS跨品种风险折抵参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductGroupID", TThostFtdcProductIDType),
+        ("Priority", TThostFtdcRCAMSPriorityType),
+        ("CreditRate", TThostFtdcHedgeRateType),
+        ("CombProduct1", TThostFtdcProductIDType),
+        ("CombProduct2", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcRCAMSShortOptAdjustParamField(Structure):
+    """RCAMS空头期权风险调整参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("HedgeFlag", TThostFtdcHedgeFlagType),
+        ("AdjustValue", TThostFtdcAdjustValueType),
+        
+    ]
+    
+class  CThostFtdcRCAMSInvestorCombPositionField(Structure):
+    """RCAMS策略组合持仓"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("HedgeFlag", TThostFtdcHedgeFlagType),
+        ("PosiDirection", TThostFtdcPosiDirectionType),
+        ("CombInstrumentID", TThostFtdcInstrumentIDType),
+        ("LegID", TThostFtdcLegIDType),
+        ("ExchangeInstID", TThostFtdcExchangeInstIDType),
+        ("TotalAmt", TThostFtdcVolumeType),
+        ("ExchMargin", TThostFtdcMoneyType),
+        ("Margin", TThostFtdcMoneyType),
+        
+    ]
+    
+class  CThostFtdcInvestorProdRCAMSMarginField(Structure):
+    """投资者品种RCAMS保证金"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("HedgeFlag", TThostFtdcHedgeFlagType),
+        ("ProductGroupID", TThostFtdcProductIDType),
+        ("RiskBeforeDiscount", TThostFtdcMoneyType),
+        ("IntraInstrRisk", TThostFtdcMoneyType),
+        ("BPosRisk", TThostFtdcMoneyType),
+        ("SPosRisk", TThostFtdcMoneyType),
+        ("IntraProdRisk", TThostFtdcMoneyType),
+        ("NetRisk", TThostFtdcMoneyType),
+        ("InterProdRisk", TThostFtdcMoneyType),
+        ("ShortOptRiskAdj", TThostFtdcMoneyType),
+        ("OptionRoyalty", TThostFtdcMoneyType),
+        ("MMSACloseFrozenMargin", TThostFtdcMoneyType),
+        ("CloseCombFrozenMargin", TThostFtdcMoneyType),
+        ("CloseFrozenMargin", TThostFtdcMoneyType),
+        ("MMSAOpenFrozenMargin", TThostFtdcMoneyType),
+        ("DeliveryOpenFrozenMargin", TThostFtdcMoneyType),
+        ("OpenFrozenMargin", TThostFtdcMoneyType),
+        ("UseFrozenMargin", TThostFtdcMoneyType),
+        ("MMSAExchMargin", TThostFtdcMoneyType),
+        ("DeliveryExchMargin", TThostFtdcMoneyType),
+        ("CombExchMargin", TThostFtdcMoneyType),
+        ("ExchMargin", TThostFtdcMoneyType),
+        ("UseMargin", TThostFtdcMoneyType),
+        
+    ]
+    
+class  CThostFtdcQryRCAMSCombProductInfoField(Structure):
+    """RCAMS产品组合信息查询"""
+    _fields_ = [
+        ("ProductID", TThostFtdcProductIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("ProductGroupID", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcQryRCAMSInstrParameterField(Structure):
+    """RCAMS同合约风险对冲参数查询"""
+    _fields_ = [
+        ("ProductID", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcQryRCAMSIntraParameterField(Structure):
+    """RCAMS品种内风险对冲参数查询"""
+    _fields_ = [
+        ("CombProductID", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcQryRCAMSInterParameterField(Structure):
+    """RCAMS跨品种风险折抵参数查询"""
+    _fields_ = [
+        ("ProductGroupID", TThostFtdcProductIDType),
+        ("CombProduct1", TThostFtdcProductIDType),
+        ("CombProduct2", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcQryRCAMSShortOptAdjustParamField(Structure):
+    """RCAMS空头期权风险调整参数查询"""
+    _fields_ = [
+        ("CombProductID", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcQryRCAMSInvestorCombPositionField(Structure):
+    """RCAMS策略组合持仓查询"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("CombInstrumentID", TThostFtdcInstrumentIDType),
+        
+    ]
+    
+class  CThostFtdcQryInvestorProdRCAMSMarginField(Structure):
+    """投资者品种RCAMS保证金查询"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("ProductGroupID", TThostFtdcProductIDType),
+        
+    ]
+    
+class  CThostFtdcRULEInstrParameterField(Structure):
+    """RULE合约保证金参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("InstrumentClass", TThostFtdcInstrumentClassType),
+        ("StdInstrumentID", TThostFtdcInstrumentIDType),
+        ("BSpecRatio", TThostFtdcRatioType),
+        ("SSpecRatio", TThostFtdcRatioType),
+        ("BHedgeRatio", TThostFtdcRatioType),
+        ("SHedgeRatio", TThostFtdcRatioType),
+        ("BAddOnMargin", TThostFtdcMoneyType),
+        ("SAddOnMargin", TThostFtdcMoneyType),
+        ("CommodityGroupID", TThostFtdcCommodityGroupIDType),
+        
+    ]
+    
+class  CThostFtdcRULEIntraParameterField(Structure):
+    """RULE品种内对锁仓折扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("StdInstrumentID", TThostFtdcInstrumentIDType),
+        ("StdInstrMargin", TThostFtdcMoneyType),
+        ("UsualIntraRate", TThostFtdcRatioType),
+        ("DeliveryIntraRate", TThostFtdcRatioType),
+        
+    ]
+    
+class  CThostFtdcRULEInterParameterField(Structure):
+    """RULE跨品种抵扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("SpreadId", TThostFtdcSpreadIdType),
+        ("InterRate", TThostFtdcRatioType),
+        ("Leg1ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg2ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg1PropFactor", TThostFtdcCommonIntType),
+        ("Leg2PropFactor", TThostFtdcCommonIntType),
+        ("CommodityGroupID", TThostFtdcCommodityGroupIDType),
+        ("CommodityGroupName", TThostFtdcInstrumentNameType),
+        
+    ]
+    
+class  CThostFtdcQryRULEInstrParameterField(Structure):
+    """RULE合约保证金参数查询"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        
+    ]
+    
+class  CThostFtdcQryRULEIntraParameterField(Structure):
+    """RULE品种内对锁仓折扣参数查询"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        
+    ]
+    
+class  CThostFtdcQryRULEInterParameterField(Structure):
+    """RULE跨品种抵扣参数查询"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("Leg1ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg2ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("CommodityGroupID", TThostFtdcCommodityGroupIDType),
+        
+    ]
+    
+class  CThostFtdcInvestorProdRULEMarginField(Structure):
+    """投资者产品RULE保证金"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("InstrumentClass", TThostFtdcInstrumentClassType),
+        ("CommodityGroupID", TThostFtdcCommodityGroupIDType),
+        ("BStdPosition", TThostFtdcStdPositionType),
+        ("SStdPosition", TThostFtdcStdPositionType),
+        ("BStdOpenFrozen", TThostFtdcStdPositionType),
+        ("SStdOpenFrozen", TThostFtdcStdPositionType),
+        ("BStdCloseFrozen", TThostFtdcStdPositionType),
+        ("SStdCloseFrozen", TThostFtdcStdPositionType),
+        ("IntraProdStdPosition", TThostFtdcStdPositionType),
+        ("NetStdPosition", TThostFtdcStdPositionType),
+        ("InterProdStdPosition", TThostFtdcStdPositionType),
+        ("SingleStdPosition", TThostFtdcStdPositionType),
+        ("IntraProdMargin", TThostFtdcMoneyType),
+        ("InterProdMargin", TThostFtdcMoneyType),
+        ("SingleMargin", TThostFtdcMoneyType),
+        ("NonCombMargin", TThostFtdcMoneyType),
+        ("AddOnMargin", TThostFtdcMoneyType),
+        ("ExchMargin", TThostFtdcMoneyType),
+        ("AddOnFrozenMargin", TThostFtdcMoneyType),
+        ("OpenFrozenMargin", TThostFtdcMoneyType),
+        ("CloseFrozenMargin", TThostFtdcMoneyType),
+        ("Margin", TThostFtdcMoneyType),
+        ("FrozenMargin", TThostFtdcMoneyType),
+        
+    ]
+    
+class  CThostFtdcQryInvestorProdRULEMarginField(Structure):
+    """投资者产品RULE保证金查询"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("CommodityGroupID", TThostFtdcCommodityGroupIDType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPBMPortfDefinitionField(Structure):
+    """风险结算追平SPBM组合保证金套餐"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("PortfolioDefID", TThostFtdcPortfolioDefIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("IsSPBM", TThostFtdcBoolType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPBMInvstPortfDefField(Structure):
+    """风险结算追平投资者SPBM套餐选择"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("PortfolioDefID", TThostFtdcPortfolioDefIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPBMFutureParameterField(Structure):
+    """风险结算追平SPBM期货合约保证金参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Cvf", TThostFtdcVolumeMultipleType),
+        ("TimeRange", TThostFtdcTimeRangeType),
+        ("MarginRate", TThostFtdcRatioType),
+        ("LockRateX", TThostFtdcRatioType),
+        ("AddOnRate", TThostFtdcRatioType),
+        ("PreSettlementPrice", TThostFtdcPriceType),
+        ("AddOnLockRateX2", TThostFtdcRatioType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPBMOptionParameterField(Structure):
+    """风险结算追平SPBM期权合约保证金参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Cvf", TThostFtdcVolumeMultipleType),
+        ("DownPrice", TThostFtdcPriceType),
+        ("Delta", TThostFtdcDeltaType),
+        ("SlimiDelta", TThostFtdcDeltaType),
+        ("PreSettlementPrice", TThostFtdcPriceType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPBMIntraParameterField(Structure):
+    """风险结算追平SPBM品种内对锁仓折扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("IntraRateY", TThostFtdcRatioType),
+        ("AddOnIntraRateY2", TThostFtdcRatioType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPBMInterParameterField(Structure):
+    """风险结算追平SPBM跨品种抵扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("SpreadId", TThostFtdcSpreadIdType),
+        ("InterRateZ", TThostFtdcRatioType),
+        ("Leg1ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg2ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPBMAddOnInterParamField(Structure):
+    """风险结算追平SPBM附加跨品种抵扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("SpreadId", TThostFtdcSpreadIdType),
+        ("AddOnInterRateZ2", TThostFtdcRatioType),
+        ("Leg1ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg2ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPMMInstParamField(Structure):
+    """风险结算追平SPMM合约参数"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("InstMarginCalID", TThostFtdcInstMarginCalIDType),
+        ("CommodityID", TThostFtdcSPMMProductIDType),
+        ("CommodityGroupID", TThostFtdcSPMMProductIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPMMProductParamField(Structure):
+    """风险结算追平SPMM产品相关参数"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductID", TThostFtdcSPMMProductIDType),
+        ("CommodityID", TThostFtdcSPMMProductIDType),
+        ("CommodityGroupID", TThostFtdcSPMMProductIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaInvestorSPMMModelField(Structure):
+    """风险结算追平投资者SPMM模板选择"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("SPMMModelID", TThostFtdcSPMMModelIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaSPMMModelParamField(Structure):
+    """风险结算追平SPMM模板参数设置"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("SPMMModelID", TThostFtdcSPMMModelIDType),
+        ("CommodityGroupID", TThostFtdcSPMMProductIDType),
+        ("IntraCommodityRate", TThostFtdcSPMMDiscountRatioType),
+        ("InterCommodityRate", TThostFtdcSPMMDiscountRatioType),
+        ("OptionDiscountRate", TThostFtdcSPMMDiscountRatioType),
+        ("MiniMarginRatio", TThostFtdcSPMMDiscountRatioType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRCAMSCombProdInfoField(Structure):
+    """风险结算追平RCAMS产品组合信息"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductID", TThostFtdcProductIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("ProductGroupID", TThostFtdcProductIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRCAMSInstrParameterField(Structure):
+    """风险结算追平RCAMS同合约风险对冲参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductID", TThostFtdcProductIDType),
+        ("HedgeRate", TThostFtdcHedgeRateType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRCAMSIntraParameterField(Structure):
+    """风险结算追平RCAMS品种内风险对冲参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("HedgeRate", TThostFtdcHedgeRateType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRCAMSInterParameterField(Structure):
+    """风险结算追平RCAMS跨品种风险折抵参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProductGroupID", TThostFtdcProductIDType),
+        ("Priority", TThostFtdcRCAMSPriorityType),
+        ("CreditRate", TThostFtdcHedgeRateType),
+        ("CombProduct1", TThostFtdcProductIDType),
+        ("CombProduct2", TThostFtdcProductIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRCAMSSOptAdjParamField(Structure):
+    """风险结算追平RCAMS空头期权风险调整参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("CombProductID", TThostFtdcProductIDType),
+        ("HedgeFlag", TThostFtdcHedgeFlagType),
+        ("AdjustValue", TThostFtdcAdjustValueType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRCAMSCombRuleDtlField(Structure):
+    """风险结算追平RCAMS策略组合规则明细"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProdGroup", TThostFtdcProductIDType),
+        ("RuleId", TThostFtdcRuleIdType),
+        ("Priority", TThostFtdcRCAMSPriorityType),
+        ("HedgeFlag", TThostFtdcHedgeFlagType),
+        ("CombMargin", TThostFtdcMoneyType),
+        ("ExchangeInstID", TThostFtdcExchangeInstIDType),
+        ("LegID", TThostFtdcLegIDType),
+        ("LegInstrumentID", TThostFtdcInstrumentIDType),
+        ("Direction", TThostFtdcDirectionType),
+        ("LegMultiple", TThostFtdcLegMultipleType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRCAMSInvstCombPosField(Structure):
+    """风险结算追平RCAMS策略组合持仓"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("HedgeFlag", TThostFtdcHedgeFlagType),
+        ("PosiDirection", TThostFtdcPosiDirectionType),
+        ("CombInstrumentID", TThostFtdcInstrumentIDType),
+        ("LegID", TThostFtdcLegIDType),
+        ("ExchangeInstID", TThostFtdcExchangeInstIDType),
+        ("TotalAmt", TThostFtdcVolumeType),
+        ("ExchMargin", TThostFtdcMoneyType),
+        ("Margin", TThostFtdcMoneyType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRULEInstrParameterField(Structure):
+    """风险结算追平RULE合约保证金参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("InstrumentID", TThostFtdcInstrumentIDType),
+        ("InstrumentClass", TThostFtdcInstrumentClassType),
+        ("StdInstrumentID", TThostFtdcInstrumentIDType),
+        ("BSpecRatio", TThostFtdcRatioType),
+        ("SSpecRatio", TThostFtdcRatioType),
+        ("BHedgeRatio", TThostFtdcRatioType),
+        ("SHedgeRatio", TThostFtdcRatioType),
+        ("BAddOnMargin", TThostFtdcMoneyType),
+        ("SAddOnMargin", TThostFtdcMoneyType),
+        ("CommodityGroupID", TThostFtdcCommodityGroupIDType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRULEIntraParameterField(Structure):
+    """风险结算追平RULE品种内对锁仓折扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("StdInstrumentID", TThostFtdcInstrumentIDType),
+        ("StdInstrMargin", TThostFtdcMoneyType),
+        ("UsualIntraRate", TThostFtdcRatioType),
+        ("DeliveryIntraRate", TThostFtdcRatioType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcSyncDeltaRULEInterParameterField(Structure):
+    """风险结算追平RULE跨品种抵扣参数"""
+    _fields_ = [
+        ("TradingDay", TThostFtdcDateType),
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("SpreadId", TThostFtdcSpreadIdType),
+        ("InterRate", TThostFtdcRatioType),
+        ("Leg1ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg2ProdFamilyCode", TThostFtdcInstrumentIDType),
+        ("Leg1PropFactor", TThostFtdcCommonIntType),
+        ("Leg2PropFactor", TThostFtdcCommonIntType),
+        ("CommodityGroupID", TThostFtdcCommodityGroupIDType),
+        ("CommodityGroupName", TThostFtdcInstrumentNameType),
+        ("ActionDirection", TThostFtdcActionDirectionType),
+        ("SyncDeltaSequenceNo", TThostFtdcSequenceNoType),
+        
+    ]
+    
+class  CThostFtdcExitEmergencyField(Structure):
+    """退出紧急状态参数"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        
+    ]
+    
+class  CThostFtdcInvestorPortfMarginModelField(Structure):
+    """新组保保证金系数投资者模板对应关系"""
+    _fields_ = [
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("MarginModelID", TThostFtdcInvestorIDType),
+        
+    ]
+    
+class  CThostFtdcInvestorPortfSettingField(Structure):
+    """投资者新组保设置"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        ("HedgeFlag", TThostFtdcHedgeFlagType),
+        ("UsePortf", TThostFtdcBoolType),
+        
+    ]
+    
+class  CThostFtdcQryInvestorPortfSettingField(Structure):
+    """投资者新组保设置查询"""
+    _fields_ = [
+        ("ExchangeID", TThostFtdcExchangeIDType),
+        ("BrokerID", TThostFtdcBrokerIDType),
+        ("InvestorID", TThostFtdcInvestorIDType),
+        
+    ]
+    
+class  CThostFtdcFrontInfoField(Structure):
+    """前置信息"""
+    _fields_ = [
+        ("FrontAddr", TThostFtdcAddressType),
+        ("QryFreq", TThostFtdcQueryFreqType),
+        ("FTDPkgFreq", TThostFtdcQueryFreqType),
         
     ]
     

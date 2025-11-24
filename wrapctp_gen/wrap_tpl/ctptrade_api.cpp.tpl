@@ -1,9 +1,9 @@
 #include "ctptrade_api.h"
 #include <string.h>
 
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char* pSystemInfo, int nLen) { return CTP_GetSystemInfo(pSystemInfo, nLen); };
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char *pSystemInfo, int nLen) { return CTP_GetSystemInfo(pSystemInfo, nLen); };
 [[if eq .Pf "macos"]]#ifdef __APPLE__
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char* pSystemInfo, int nLen) { return CTP_GetSystemInfoUnAesEncode(pSystemInfo, nLen); };
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char *pSystemInfo, int nLen) { return CTP_GetSystemInfoUnAesEncode(pSystemInfo, nLen); };
 #endif[[end]]
 DLL_EXPORT_C_DECL void* WPCTP dCTP_GetDataCollectApiVersion() { return (void*)CTP_GetDataCollectApiVersion();};
 
@@ -25,5 +25,5 @@ DLL_EXPORT_C_DECL void WPCTP t[[ .FuncName ]](Trade* spi, void* func){ spi->[[ .
 [[ end ]]
 [[ range .Fn ]]
 // [[ .Comment ]]
-DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP t[[ .FuncName ]](CThostFtdcTraderApi *api[[ range .FuncFields ]], [[.FieldType]] [[.FieldName]][[if eq .FieldName "*ppInstrumentID"]][][[end]][[end]]){ [[ if eq .FuncRtn "void"]]api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]); return;[[ else ]]return api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]);[[ end ]] }
+DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP t[[ .FuncName ]](CThostFtdcTraderApi *api[[ range .FuncFields ]], [[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[end]]){ [[ if eq .FuncRtn "void"]]api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]); return;[[ else ]]return api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]);[[ end ]] }
 [[ end ]]

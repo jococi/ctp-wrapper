@@ -111,6 +111,7 @@ const THOST_FTDC_FC_ParkedOrderInsert = 'C'      // 预埋报单插入
 const THOST_FTDC_FC_ParkedOrderAction = 'D'      // 预埋报单操作
 const THOST_FTDC_FC_SyncOTP = 'E'                // 同步动态令牌
 const THOST_FTDC_FC_DeleteOrder = 'F'            // 删除未知单
+const THOST_FTDC_FC_ExitEmergency = 'G'          // 退出紧急状态
 
 // 经纪公司功能代码类型
 type TThostFtdcBrokerFunctionCodeType = byte
@@ -354,7 +355,10 @@ const THOST_FTDC_FCC_NotMultiple = '4'             // 持仓非整数倍
 const THOST_FTDC_FCC_Violation = '5'               // 违规
 const THOST_FTDC_FCC_Other = '6'                   // 其它
 const THOST_FTDC_FCC_PersonDeliv = '7'             // 自然人临近交割
-const THOST_FTDC_FCC_Notverifycapital = '8'        // 风控强平不验证资金
+const THOST_FTDC_FCC_Notverifycapital = '8'        // 本地强平资金不足忽略敞口
+const THOST_FTDC_FCC_LocalLackDeposit = '9'        // 本地强平资金不足
+const THOST_FTDC_FCC_LocalViolationNocheck = 'a'   // 本地强平违规持仓忽略敞口
+const THOST_FTDC_FCC_LocalViolation = 'b'          // 本地强平违规持仓
 
 // 报单类型类型
 type TThostFtdcOrderTypeType = byte
@@ -452,13 +456,14 @@ const THOST_FTDC_PSRC_OTC = '3'       // 场外成交价
 // 合约交易状态类型
 type TThostFtdcInstrumentStatusType = byte
 
-const THOST_FTDC_IS_BeforeTrading = '0'   // 开盘前
-const THOST_FTDC_IS_NoTrading = '1'       // 非交易
-const THOST_FTDC_IS_Continous = '2'       // 连续交易
-const THOST_FTDC_IS_AuctionOrdering = '3' // 集合竞价报单
-const THOST_FTDC_IS_AuctionBalance = '4'  // 集合竞价价格平衡
-const THOST_FTDC_IS_AuctionMatch = '5'    // 集合竞价撮合
-const THOST_FTDC_IS_Closed = '6'          // 收盘
+const THOST_FTDC_IS_BeforeTrading = '0'         // 开盘前
+const THOST_FTDC_IS_NoTrading = '1'             // 非交易
+const THOST_FTDC_IS_Continous = '2'             // 连续交易
+const THOST_FTDC_IS_AuctionOrdering = '3'       // 集合竞价报单
+const THOST_FTDC_IS_AuctionBalance = '4'        // 集合竞价价格平衡
+const THOST_FTDC_IS_AuctionMatch = '5'          // 集合竞价撮合
+const THOST_FTDC_IS_Closed = '6'                // 收盘
+const THOST_FTDC_IS_TransactionProcessing = '7' // 交易业务处理
 
 // 品种进入交易状态原因类型
 type TThostFtdcInstStatusEnterReasonType = byte
@@ -584,6 +589,7 @@ const THOST_FTDC_TPID_BalanceMorgage = 'a'          // 自有资金质押比
 const THOST_FTDC_TPID_MinPwdLen = 'O'               // 最小密码长度
 const THOST_FTDC_TPID_LoginFailMaxNumForIP = 'U'    // IP当日最大登陆失败次数
 const THOST_FTDC_TPID_PasswordPeriod = 'V'          // 密码有效期
+const THOST_FTDC_TPID_PwdHistoryCmp = 'X'           // 历史密码重复限制次数
 
 // 文件标识类型
 type TThostFtdcFileIDType = byte
@@ -921,15 +927,16 @@ const THOST_FTDC_IRS_Exception = '5' // 异常
 // 用户事件类型类型
 type TThostFtdcUserEventTypeType = byte
 
-const THOST_FTDC_UET_Login = '1'          // 登录
-const THOST_FTDC_UET_Logout = '2'         // 登出
-const THOST_FTDC_UET_Trading = '3'        // 交易成功
-const THOST_FTDC_UET_TradingError = '4'   // 交易失败
-const THOST_FTDC_UET_UpdatePassword = '5' // 修改密码
-const THOST_FTDC_UET_Authenticate = '6'   // 客户端认证
-const THOST_FTDC_UET_SubmitSysInfo = '7'  // 终端信息上报
-const THOST_FTDC_UET_Transfer = '8'       // 转账
-const THOST_FTDC_UET_Other = '9'          // 其他
+const THOST_FTDC_UET_Login = '1'                        // 登录
+const THOST_FTDC_UET_Logout = '2'                       // 登出
+const THOST_FTDC_UET_Trading = '3'                      // CTP校验通过
+const THOST_FTDC_UET_TradingError = '4'                 // CTP校验失败
+const THOST_FTDC_UET_UpdatePassword = '5'               // 修改密码
+const THOST_FTDC_UET_Authenticate = '6'                 // 客户端认证
+const THOST_FTDC_UET_SubmitSysInfo = '7'                // 终端信息上报
+const THOST_FTDC_UET_Transfer = '8'                     // 转账
+const THOST_FTDC_UET_Other = '9'                        // 其他
+const THOST_FTDC_UET_UpdateTradingAccountPassword = 'a' // 修改资金密码
 
 // 平仓方式类型
 type TThostFtdcCloseStyleType = byte
@@ -2537,8 +2544,66 @@ const THOST_FTDC_ETR_SPOT = '4'  // 交割月份
 // 新型组保算法类型
 type TThostFtdcPortfolioType = byte
 
-const THOST_FTDC_EPF_None = '0' // 不使用新型组保算法
-const THOST_FTDC_EPF_SPBM = '1' // SPBM算法
+const THOST_FTDC_EPF_None = '0'  // 不使用新型组保算法
+const THOST_FTDC_EPF_SPBM = '1'  // SPBM算法
+const THOST_FTDC_EPF_RULE = '2'  // RULE算法
+const THOST_FTDC_EPF_SPMM = '3'  // SPMM算法
+const THOST_FTDC_EPF_RCAMS = '4' // RCAMS算法
+
+// 可提参数代码类型
+type TThostFtdcWithDrawParamIDType = byte
+
+const THOST_FTDC_WDPID_CashIn = 'C' // 权利金收支是否可提 1 代表可提 0 不可提
+
+// 投资者交易权限类型
+type TThostFtdcInvstTradingRightType = byte
+
+const THOST_FTDC_ITR_CloseOnly = '1' // 只能平仓
+const THOST_FTDC_ITR_Forbidden = '2' // 不能交易
+
+// SPMM合约保证金算法类型
+type TThostFtdcInstMarginCalIDType = byte
+
+const THOST_FTDC_IMID_BothSide = '1' // 标准算法收取双边
+const THOST_FTDC_IMID_MMSA = '2'     // 单向大边
+const THOST_FTDC_IMID_SPMM = '3'     // 新组保SPMM
+
+// RCAMS组合类型类型
+type TThostFtdcRCAMSCombinationTypeType = byte
+
+const THOST_FTDC_ERComb_BUC = '0' // 牛市看涨价差组合
+const THOST_FTDC_ERComb_BEC = '1' // 熊市看涨价差组合
+const THOST_FTDC_ERComb_BEP = '2' // 熊市看跌价差组合
+const THOST_FTDC_ERComb_BUP = '3' // 牛市看跌价差组合
+const THOST_FTDC_ERComb_CAS = '4' // 日历价差组合
+
+// 新组保算法启用类型类型
+type TThostFtdcPortfTypeType = byte
+
+const THOST_FTDC_EET_None = '0'            // 使用初版交易所算法
+const THOST_FTDC_EET_SPBM_AddOnHedge = '1' // SPBM算法V1.1.0_附加保证金调整
+
+// 合约类型类型
+type TThostFtdcInstrumentClassType = byte
+
+const THOST_FTDC_EIC_Usual = '1'    // 一般月份合约
+const THOST_FTDC_EIC_Delivery = '2' // 临近交割合约
+const THOST_FTDC_EIC_NonComb = '3'  // 非组合合约
+
+// 品种记录改变状态类型
+type TThostFtdcProdChangeFlagType = byte
+
+const THOST_FTDC_PCF_None = '0'           // 持仓量和冻结量均无变化
+const THOST_FTDC_PCF_OnlyFrozen = '1'     // 持仓量无变化，冻结量有变化
+const THOST_FTDC_PCF_PositionChange = '2' // 持仓量有变化
+
+// 历史密码来源类型
+type TThostFtdcPwdRcdSrcType = byte
+
+const THOST_FTDC_PRS_Init = '0'         // 来源于Sync初始化数据
+const THOST_FTDC_PRS_Sync = '1'         // 来源于实时上场数据
+const THOST_FTDC_PRS_UserUpd = '2'      // 来源于用户修改
+const THOST_FTDC_PRS_SuperUserUpd = '3' // 来源于超户修改，很可能来自主席同步数据
 
 // 交易所交易员代码类型
 type TThostFtdcTraderIDType = [21]byte
@@ -3938,6 +4003,9 @@ type TThostFtdcDateTimeType = [17]byte
 // 随机串类型
 type TThostFtdcRandomStringType = [17]byte
 
+// 报单回显字段类型
+type TThostFtdcOrderMemoType = [13]byte
+
 // App代码类型
 type TThostFtdcAppIDType = [33]byte
 
@@ -4021,3 +4089,42 @@ type TThostFtdcSpreadIdType = int32
 
 // SPBM组合套餐ID类型
 type TThostFtdcPortfolioDefIDType = int32
+
+// 可提控制参数内容类型
+type TThostFtdcWithDrawParamValueType = [41]byte
+
+// Thost终端功能代码类型
+type TThostFtdcThostFunctionCodeType = int32
+
+// SPMM折扣率类型
+type TThostFtdcSPMMDiscountRatioType = float64
+
+// SPMM模板描述类型
+type TThostFtdcSPMMModelDescType = [129]byte
+
+// SPMM模板ID类型
+type TThostFtdcSPMMModelIDType = [33]byte
+
+// SPMM商品群商品组ID类型
+type TThostFtdcSPMMProductIDType = [41]byte
+
+// 产品ID类型
+type TThostFtdcProductIDType = [41]byte
+
+// HedgeRate类型类型
+type TThostFtdcHedgeRateType = float64
+
+// 优先级类型
+type TThostFtdcRCAMSPriorityType = int32
+
+// 空头期权风险调整标准类型类型
+type TThostFtdcAdjustValueType = float64
+
+// 策略id类型
+type TThostFtdcRuleIdType = [51]byte
+
+// 商品群号类型
+type TThostFtdcCommodityGroupIDType = int32
+
+// 标准持仓类型类型
+type TThostFtdcStdPositionType = float64

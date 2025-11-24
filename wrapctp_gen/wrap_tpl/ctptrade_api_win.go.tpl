@@ -16,7 +16,7 @@ type Trade struct {
 	pszFlowPath string
 
     [[ range .On]]// [[ .Comment ]]
-    [[ .FuncName ]]_ func([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]])
+    [[ .FuncName ]]_ func([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[end]][[ end ]])
     [[ end]]
 }
 
@@ -109,10 +109,10 @@ func (t *Trade) CTP_GetDataCollectApiVersion() string {
 [[ range .Fn]][[if eq .FuncRtn "void"]]
 [[if eq .FuncName "RegisterSpi"]]
 func (t *Trade) [[ .FuncName ]]() { [[else]]
-func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) { [[end]]
+func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFieldsWithoutApi ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[end]][[ end ]]) { [[end]]
 	t.h.MustFindProc("t[[ .FuncName ]]").Call([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
 }[[ else ]]
-func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) [[ .FuncRtn ]]32 {
+func (t *Trade) [[ .FuncName ]]([[ range $i,$v := .FuncFieldsWithoutApi ]][[ if gt $i 0 ]], [[ end ]][[if eq .FieldName "ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[end]][[ end ]]) [[ .FuncRtn ]]32 {
 	res, _, _ := t.h.MustFindProc("t[[ .FuncName ]]").Call([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
 	return [[ .FuncRtn ]]32(res)
 }

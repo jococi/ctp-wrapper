@@ -505,6 +505,10 @@ type CThostFtdcTraderField struct {
 	BrokerID TThostFtdcBrokerIDType
 	// 撤单时选择席位算法
 	OrderCancelAlg TThostFtdcOrderCancelAlgType
+	// 交易报盘安装数量
+	TradeInstallCount TThostFtdcInstallCountType
+	// 行情报盘安装数量
+	MDInstallCount TThostFtdcInstallCountType
 }
 
 // 信息分发
@@ -1357,7 +1361,7 @@ type CThostFtdcInputOrderField struct {
 	BusinessUnit TThostFtdcBusinessUnitType
 	// 请求编号
 	RequestID TThostFtdcRequestIDType
-	// 用户强评标志
+	// 用户强平标志
 	UserForceClose TThostFtdcBoolType
 	// 互换单标志
 	IsSwapOrder TThostFtdcBoolType
@@ -1379,6 +1383,10 @@ type CThostFtdcInputOrderField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -1485,7 +1493,7 @@ type CThostFtdcOrderField struct {
 	UserProductInfo TThostFtdcProductInfoType
 	// 状态信息
 	StatusMsg TThostFtdcErrorMsgType
-	// 用户强评标志
+	// 用户强平标志
 	UserForceClose TThostFtdcBoolType
 	// 操作用户代码
 	ActiveUserID TThostFtdcUserIDType
@@ -1515,6 +1523,10 @@ type CThostFtdcOrderField struct {
 	ExchangeInstID TThostFtdcExchangeInstIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -1673,6 +1685,10 @@ type CThostFtdcInputOrderActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -1739,6 +1755,10 @@ type CThostFtdcOrderActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -2015,6 +2035,8 @@ type CThostFtdcSyncDepositField struct {
 	IsFromSopt TThostFtdcBoolType
 	// 资金密码
 	TradingPassword TThostFtdcPasswordType
+	// 是否二级代理商的内转
+	IsSecAgentTranfer TThostFtdcBoolType
 }
 
 // 信息分发
@@ -2659,6 +2681,8 @@ type CThostFtdcQryDepthMarketDataField struct {
 	ExchangeID TThostFtdcExchangeIDType
 	// 合约代码
 	InstrumentID TThostFtdcInstrumentIDType
+	// 产品类型
+	ProductClass TThostFtdcProductClassType
 }
 
 // 信息分发
@@ -3713,6 +3737,12 @@ type CThostFtdcInputQuoteField struct {
 	IPAddress TThostFtdcIPAddressType
 	// 被顶单编号
 	ReplaceSysID TThostFtdcOrderSysIDType
+	// 有效期类型
+	TimeCondition TThostFtdcTimeConditionType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -3753,6 +3783,10 @@ type CThostFtdcInputQuoteActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -3865,6 +3899,12 @@ type CThostFtdcQuoteField struct {
 	IPAddress TThostFtdcIPAddressType
 	// 被顶单编号
 	ReplaceSysID TThostFtdcOrderSysIDType
+	// 有效期类型
+	TimeCondition TThostFtdcTimeConditionType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -3927,6 +3967,10 @@ type CThostFtdcQuoteActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -4025,6 +4069,8 @@ type CThostFtdcExchangeQuoteField struct {
 	ExchangeInstID TThostFtdcExchangeInstIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 有效期类型
+	TimeCondition TThostFtdcTimeConditionType
 }
 
 // 信息分发
@@ -5853,6 +5899,10 @@ type CThostFtdcBrokerUserEventField struct {
 	reserve1 TThostFtdcOldInstrumentIDType
 	// 合约代码
 	InstrumentID TThostFtdcInstrumentIDType
+	// 交易中心代码
+	DRIdentityID TThostFtdcDRIdentityIDType
+	// 交易日
+	TradingDay TThostFtdcDateType
 }
 
 // 信息分发
@@ -5971,7 +6021,7 @@ type CThostFtdcParkedOrderField struct {
 	BusinessUnit TThostFtdcBusinessUnitType
 	// 请求编号
 	RequestID TThostFtdcRequestIDType
-	// 用户强评标志
+	// 用户强平标志
 	UserForceClose TThostFtdcBoolType
 	// 交易所代码
 	ExchangeID TThostFtdcExchangeIDType
@@ -6281,7 +6331,7 @@ type CThostFtdcErrOrderField struct {
 	BusinessUnit TThostFtdcBusinessUnitType
 	// 请求编号
 	RequestID TThostFtdcRequestIDType
-	// 用户强评标志
+	// 用户强平标志
 	UserForceClose TThostFtdcBoolType
 	// 错误代码
 	ErrorID TThostFtdcErrorIDType
@@ -6307,6 +6357,10 @@ type CThostFtdcErrOrderField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -6413,7 +6467,7 @@ type CThostFtdcErrorConditionalOrderField struct {
 	UserProductInfo TThostFtdcProductInfoType
 	// 状态信息
 	StatusMsg TThostFtdcErrorMsgType
-	// 用户强评标志
+	// 用户强平标志
 	UserForceClose TThostFtdcBoolType
 	// 操作用户代码
 	ActiveUserID TThostFtdcUserIDType
@@ -6525,6 +6579,10 @@ type CThostFtdcErrOrderActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	// IP地址
 	IPAddress TThostFtdcIPAddressType
+	// 报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	// session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 信息分发
@@ -9597,6 +9655,8 @@ type CThostFtdcDepartmentUserField struct {
 type CThostFtdcQueryFreqField struct {
 	// 查询频率
 	QueryFreq TThostFtdcQueryFreqType
+	// FTD频率
+	FTDPkgFreq TThostFtdcQueryFreqType
 }
 
 // 信息分发
@@ -9710,7 +9770,7 @@ type CThostFtdcCombPromotionParamField struct {
 }
 
 // 信息分发
-type CThostFtdcReqUserLoginSCField struct {
+type CThostFtdcReqUserLoginSMField struct {
 	// 交易日
 	TradingDay TThostFtdcDateType
 	// 经纪公司代码
@@ -9729,16 +9789,22 @@ type CThostFtdcReqUserLoginSCField struct {
 	MacAddress TThostFtdcMacAddressType
 	// 动态密码
 	OneTimePassword TThostFtdcPasswordType
-	// 终端IP地址
-	ClientIPAddress TThostFtdcIPAddressType
+	// 保留的无效字段
+	reserve1 TThostFtdcOldIPAddressType
 	// 登录备注
 	LoginRemark TThostFtdcLoginRemarkType
 	// 终端IP端口
 	ClientIPPort TThostFtdcIPPortType
+	// 终端IP地址
+	ClientIPAddress TThostFtdcIPAddressType
+	// 经纪公司名称
+	BrokerName TThostFtdcBrokerNameType
 	// 认证码
 	AuthCode TThostFtdcAuthCodeType
 	// App代码
 	AppID TThostFtdcAppIDType
+	// PIN码
+	PIN TThostFtdcPasswordType
 }
 
 // 信息分发
@@ -10537,6 +10603,8 @@ type CThostFtdcSPBMFutureParameterField struct {
 	AddOnRate TThostFtdcRatioType
 	// 昨结算价
 	PreSettlementPrice TThostFtdcPriceType
+	// 期货合约内部对锁仓附加费率折扣比例
+	AddOnLockRateX2 TThostFtdcRatioType
 }
 
 // 信息分发
@@ -10571,6 +10639,8 @@ type CThostFtdcSPBMIntraParameterField struct {
 	ProdFamilyCode TThostFtdcInstrumentIDType
 	// 品种内合约间对锁仓费率折扣比例
 	IntraRateY TThostFtdcRatioType
+	// 品种内合约间对锁仓附加费率折扣比例
+	AddOnIntraRateY2 TThostFtdcRatioType
 }
 
 // 信息分发
@@ -10669,6 +10739,8 @@ type CThostFtdcInvestorPortfMarginRatioField struct {
 	ExchangeID TThostFtdcExchangeIDType
 	// 会员对投资者收取的保证金和交易所对投资者收取的保证金的比例
 	MarginRatio TThostFtdcRatioType
+	// 产品群代码
+	ProductGroupID TThostFtdcProductIDType
 }
 
 // 信息分发
@@ -10699,6 +10771,8 @@ type CThostFtdcQryInvestorPortfMarginRatioField struct {
 	InvestorID TThostFtdcInvestorIDType
 	// 交易所代码
 	ExchangeID TThostFtdcExchangeIDType
+	// 产品群代码
+	ProductGroupID TThostFtdcProductIDType
 }
 
 // 信息分发
@@ -10773,4 +10847,1166 @@ type CThostFtdcPortfTradeParamSettingField struct {
 	IsActionVerify TThostFtdcBoolType
 	// 平仓是否验资
 	IsCloseVerify TThostFtdcBoolType
+}
+
+// 信息分发
+type CThostFtdcInvestorTradingRightField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 交易权限
+	InvstTradingRight TThostFtdcInvstTradingRightType
+}
+
+// 信息分发
+type CThostFtdcMortgageParamField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者帐号
+	AccountID TThostFtdcAccountIDType
+	// 质押配比系数
+	MortgageBalance TThostFtdcRatioType
+	// 开仓是否验证质押配比
+	CheckMortgageRatio TThostFtdcBoolType
+}
+
+// 信息分发
+type CThostFtdcWithDrawParamField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者帐号
+	AccountID TThostFtdcAccountIDType
+	// 参数代码
+	WithDrawParamID TThostFtdcWithDrawParamIDType
+	// 参数代码值
+	WithDrawParamValue TThostFtdcWithDrawParamValueType
+}
+
+// 信息分发
+type CThostFtdcThostUserFunctionField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 用户代码
+	UserID TThostFtdcUserIDType
+	// Thost终端功能代码
+	ThostFunctionCode TThostFtdcThostFunctionCodeType
+}
+
+// 信息分发
+type CThostFtdcQryThostUserFunctionField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 用户代码
+	UserID TThostFtdcUserIDType
+}
+
+// 信息分发
+type CThostFtdcSPBMAddOnInterParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 优先级
+	SpreadId TThostFtdcSpreadIdType
+	// 品种间对锁仓附加费率折扣比例
+	AddOnInterRateZ2 TThostFtdcRatioType
+	// 第一腿构成品种
+	Leg1ProdFamilyCode TThostFtdcInstrumentIDType
+	// 第二腿构成品种
+	Leg2ProdFamilyCode TThostFtdcInstrumentIDType
+}
+
+// 信息分发
+type CThostFtdcQrySPBMAddOnInterParameterField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 第一腿构成品种
+	Leg1ProdFamilyCode TThostFtdcInstrumentIDType
+	// 第二腿构成品种
+	Leg2ProdFamilyCode TThostFtdcInstrumentIDType
+}
+
+// 信息分发
+type CThostFtdcQryInvestorCommoditySPMMMarginField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 商品组代码
+	CommodityID TThostFtdcSPMMProductIDType
+}
+
+// 信息分发
+type CThostFtdcQryInvestorCommodityGroupSPMMMarginField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 商品群代码
+	CommodityGroupID TThostFtdcSPMMProductIDType
+}
+
+// 信息分发
+type CThostFtdcQrySPMMInstParamField struct {
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+}
+
+// 信息分发
+type CThostFtdcQrySPMMProductParamField struct {
+	// 产品代码
+	ProductID TThostFtdcSPMMProductIDType
+}
+
+// 信息分发
+type CThostFtdcInvestorCommoditySPMMMarginField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 商品组代码
+	CommodityID TThostFtdcSPMMProductIDType
+	// 优惠仓位应收保证金
+	MarginBeforeDiscount TThostFtdcMoneyType
+	// 不优惠仓位应收保证金
+	MarginNoDiscount TThostFtdcMoneyType
+	// 多头实仓风险
+	LongPosRisk TThostFtdcMoneyType
+	// 多头开仓冻结风险
+	LongOpenFrozenRisk TThostFtdcMoneyType
+	// 多头被平冻结风险
+	LongCloseFrozenRisk TThostFtdcMoneyType
+	// 空头实仓风险
+	ShortPosRisk TThostFtdcMoneyType
+	// 空头开仓冻结风险
+	ShortOpenFrozenRisk TThostFtdcMoneyType
+	// 空头被平冻结风险
+	ShortCloseFrozenRisk TThostFtdcMoneyType
+	// SPMM品种内跨期优惠系数
+	IntraCommodityRate TThostFtdcSPMMDiscountRatioType
+	// SPMM期权优惠系数
+	OptionDiscountRate TThostFtdcSPMMDiscountRatioType
+	// 实仓对冲优惠金额
+	PosDiscount TThostFtdcMoneyType
+	// 开仓报单对冲优惠金额
+	OpenFrozenDiscount TThostFtdcMoneyType
+	// 品种风险净头
+	NetRisk TThostFtdcMoneyType
+	// 平仓冻结保证金
+	CloseFrozenMargin TThostFtdcMoneyType
+	// 冻结的手续费
+	FrozenCommission TThostFtdcMoneyType
+	// 手续费
+	Commission TThostFtdcMoneyType
+	// 冻结的资金
+	FrozenCash TThostFtdcMoneyType
+	// 资金差额
+	CashIn TThostFtdcMoneyType
+	// 行权冻结资金
+	StrikeFrozenMargin TThostFtdcMoneyType
+}
+
+// 信息分发
+type CThostFtdcInvestorCommodityGroupSPMMMarginField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 商品群代码
+	CommodityGroupID TThostFtdcSPMMProductIDType
+	// 优惠仓位应收保证金
+	MarginBeforeDiscount TThostFtdcMoneyType
+	// 不优惠仓位应收保证金
+	MarginNoDiscount TThostFtdcMoneyType
+	// 多头风险
+	LongRisk TThostFtdcMoneyType
+	// 空头风险
+	ShortRisk TThostFtdcMoneyType
+	// 商品群平仓冻结保证金
+	CloseFrozenMargin TThostFtdcMoneyType
+	// SPMM跨品种优惠系数
+	InterCommodityRate TThostFtdcSPMMDiscountRatioType
+	// 商品群最小保证金比例
+	MiniMarginRatio TThostFtdcSPMMDiscountRatioType
+	// 投资者保证金和交易所保证金的比例
+	AdjustRatio TThostFtdcRatioType
+	// SPMM品种内优惠汇总
+	IntraCommodityDiscount TThostFtdcMoneyType
+	// SPMM跨品种优惠
+	InterCommodityDiscount TThostFtdcMoneyType
+	// 交易所保证金
+	ExchMargin TThostFtdcMoneyType
+	// 投资者保证金
+	InvestorMargin TThostFtdcMoneyType
+	// 冻结的手续费
+	FrozenCommission TThostFtdcMoneyType
+	// 手续费
+	Commission TThostFtdcMoneyType
+	// 冻结的资金
+	FrozenCash TThostFtdcMoneyType
+	// 资金差额
+	CashIn TThostFtdcMoneyType
+	// 行权冻结资金
+	StrikeFrozenMargin TThostFtdcMoneyType
+}
+
+// 信息分发
+type CThostFtdcSPMMInstParamField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// SPMM合约保证金算法
+	InstMarginCalID TThostFtdcInstMarginCalIDType
+	// 商品组代码
+	CommodityID TThostFtdcSPMMProductIDType
+	// 商品群代码
+	CommodityGroupID TThostFtdcSPMMProductIDType
+}
+
+// 信息分发
+type CThostFtdcSPMMProductParamField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品代码
+	ProductID TThostFtdcSPMMProductIDType
+	// 商品组代码
+	CommodityID TThostFtdcSPMMProductIDType
+	// 商品群代码
+	CommodityGroupID TThostFtdcSPMMProductIDType
+}
+
+// 信息分发
+type CThostFtdcQryTraderAssignField struct {
+	// 交易员代码
+	TraderID TThostFtdcTraderIDType
+}
+
+// 信息分发
+type CThostFtdcTraderAssignField struct {
+	// 应用单元代码
+	BrokerID TThostFtdcBrokerIDType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 交易所交易员代码
+	TraderID TThostFtdcTraderIDType
+	// 会员代码
+	ParticipantID TThostFtdcParticipantIDType
+	// 交易中心代码
+	DRIdentityID TThostFtdcDRIdentityIDType
+}
+
+// 信息分发
+type CThostFtdcInvestorInfoCntSettingField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 商品代码
+	ProductID TThostFtdcProductIDType
+	// 是否收取申报费
+	IsCalInfoComm TThostFtdcBoolType
+	// 是否限制信息量
+	IsLimitInfoMax TThostFtdcBoolType
+	// 信息量限制笔数
+	InfoMaxLimit TThostFtdcVolumeType
+}
+
+// 信息分发
+type CThostFtdcRCAMSCombProductInfoField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品代码
+	ProductID TThostFtdcProductIDType
+	// 商品组代码
+	CombProductID TThostFtdcProductIDType
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcRCAMSInstrParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品代码
+	ProductID TThostFtdcProductIDType
+	// 同合约风险对冲比率
+	HedgeRate TThostFtdcHedgeRateType
+}
+
+// 信息分发
+type CThostFtdcRCAMSIntraParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+	// 品种内对冲比率
+	HedgeRate TThostFtdcHedgeRateType
+}
+
+// 信息分发
+type CThostFtdcRCAMSInterParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+	// 优先级
+	Priority TThostFtdcRCAMSPriorityType
+	// 折抵率
+	CreditRate TThostFtdcHedgeRateType
+	// 产品组合代码1
+	CombProduct1 TThostFtdcProductIDType
+	// 产品组合代码2
+	CombProduct2 TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcRCAMSShortOptAdjustParamField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+	// 投套标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	// 空头期权风险调整标准
+	AdjustValue TThostFtdcAdjustValueType
+}
+
+// 信息分发
+type CThostFtdcRCAMSInvestorCombPositionField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// 投套标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	// 持仓多空方向
+	PosiDirection TThostFtdcPosiDirectionType
+	// 组合合约代码
+	CombInstrumentID TThostFtdcInstrumentIDType
+	// 单腿编号
+	LegID TThostFtdcLegIDType
+	// 交易所组合合约代码
+	ExchangeInstID TThostFtdcExchangeInstIDType
+	// 持仓量
+	TotalAmt TThostFtdcVolumeType
+	// 交易所保证金
+	ExchMargin TThostFtdcMoneyType
+	// 投资者保证金
+	Margin TThostFtdcMoneyType
+}
+
+// 信息分发
+type CThostFtdcInvestorProdRCAMSMarginField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+	// 投套标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+	// 品种组合前风险
+	RiskBeforeDiscount TThostFtdcMoneyType
+	// 同合约对冲风险
+	IntraInstrRisk TThostFtdcMoneyType
+	// 品种买持仓风险
+	BPosRisk TThostFtdcMoneyType
+	// 品种卖持仓风险
+	SPosRisk TThostFtdcMoneyType
+	// 品种内对冲风险
+	IntraProdRisk TThostFtdcMoneyType
+	// 品种净持仓风险
+	NetRisk TThostFtdcMoneyType
+	// 品种间对冲风险
+	InterProdRisk TThostFtdcMoneyType
+	// 空头期权风险调整
+	ShortOptRiskAdj TThostFtdcMoneyType
+	// 空头期权权利金
+	OptionRoyalty TThostFtdcMoneyType
+	// 大边组合平仓冻结保证金
+	MMSACloseFrozenMargin TThostFtdcMoneyType
+	// 策略组合平仓/行权冻结保证金
+	CloseCombFrozenMargin TThostFtdcMoneyType
+	// 平仓/行权冻结保证金
+	CloseFrozenMargin TThostFtdcMoneyType
+	// 大边组合开仓冻结保证金
+	MMSAOpenFrozenMargin TThostFtdcMoneyType
+	// 交割月期货开仓冻结保证金
+	DeliveryOpenFrozenMargin TThostFtdcMoneyType
+	// 开仓冻结保证金
+	OpenFrozenMargin TThostFtdcMoneyType
+	// 投资者冻结保证金
+	UseFrozenMargin TThostFtdcMoneyType
+	// 大边组合交易所持仓保证金
+	MMSAExchMargin TThostFtdcMoneyType
+	// 交割月期货交易所持仓保证金
+	DeliveryExchMargin TThostFtdcMoneyType
+	// 策略组合交易所保证金
+	CombExchMargin TThostFtdcMoneyType
+	// 交易所持仓保证金
+	ExchMargin TThostFtdcMoneyType
+	// 投资者持仓保证金
+	UseMargin TThostFtdcMoneyType
+}
+
+// 信息分发
+type CThostFtdcQryRCAMSCombProductInfoField struct {
+	// 产品代码
+	ProductID TThostFtdcProductIDType
+	// 商品组代码
+	CombProductID TThostFtdcProductIDType
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcQryRCAMSInstrParameterField struct {
+	// 产品代码
+	ProductID TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcQryRCAMSIntraParameterField struct {
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcQryRCAMSInterParameterField struct {
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+	// 产品组合代码1
+	CombProduct1 TThostFtdcProductIDType
+	// 产品组合代码2
+	CombProduct2 TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcQryRCAMSShortOptAdjustParamField struct {
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcQryRCAMSInvestorCombPositionField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// 组合合约代码
+	CombInstrumentID TThostFtdcInstrumentIDType
+}
+
+// 信息分发
+type CThostFtdcQryInvestorProdRCAMSMarginField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+}
+
+// 信息分发
+type CThostFtdcRULEInstrParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// 合约类型
+	InstrumentClass TThostFtdcInstrumentClassType
+	// 标准合约
+	StdInstrumentID TThostFtdcInstrumentIDType
+	// 投机买折算系数
+	BSpecRatio TThostFtdcRatioType
+	// 投机卖折算系数
+	SSpecRatio TThostFtdcRatioType
+	// 套保买折算系数
+	BHedgeRatio TThostFtdcRatioType
+	// 套保卖折算系数
+	SHedgeRatio TThostFtdcRatioType
+	// 买附加风险保证金
+	BAddOnMargin TThostFtdcMoneyType
+	// 卖附加风险保证金
+	SAddOnMargin TThostFtdcMoneyType
+	// 商品群号
+	CommodityGroupID TThostFtdcCommodityGroupIDType
+}
+
+// 信息分发
+type CThostFtdcRULEIntraParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 标准合约
+	StdInstrumentID TThostFtdcInstrumentIDType
+	// 标准合约保证金
+	StdInstrMargin TThostFtdcMoneyType
+	// 一般月份合约组合保证金系数
+	UsualIntraRate TThostFtdcRatioType
+	// 临近交割合约组合保证金系数
+	DeliveryIntraRate TThostFtdcRatioType
+}
+
+// 信息分发
+type CThostFtdcRULEInterParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 优先级
+	SpreadId TThostFtdcSpreadIdType
+	// 品种间对锁仓费率折扣比例
+	InterRate TThostFtdcRatioType
+	// 第一腿构成品种
+	Leg1ProdFamilyCode TThostFtdcInstrumentIDType
+	// 第二腿构成品种
+	Leg2ProdFamilyCode TThostFtdcInstrumentIDType
+	// 腿1比例系数
+	Leg1PropFactor TThostFtdcCommonIntType
+	// 腿2比例系数
+	Leg2PropFactor TThostFtdcCommonIntType
+	// 商品群号
+	CommodityGroupID TThostFtdcCommodityGroupIDType
+	// 商品群名称
+	CommodityGroupName TThostFtdcInstrumentNameType
+}
+
+// 信息分发
+type CThostFtdcQryRULEInstrParameterField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+}
+
+// 信息分发
+type CThostFtdcQryRULEIntraParameterField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+}
+
+// 信息分发
+type CThostFtdcQryRULEInterParameterField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 第一腿构成品种
+	Leg1ProdFamilyCode TThostFtdcInstrumentIDType
+	// 第二腿构成品种
+	Leg2ProdFamilyCode TThostFtdcInstrumentIDType
+	// 商品群号
+	CommodityGroupID TThostFtdcCommodityGroupIDType
+}
+
+// 信息分发
+type CThostFtdcInvestorProdRULEMarginField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 合约类型
+	InstrumentClass TThostFtdcInstrumentClassType
+	// 商品群号
+	CommodityGroupID TThostFtdcCommodityGroupIDType
+	// 买标准持仓
+	BStdPosition TThostFtdcStdPositionType
+	// 卖标准持仓
+	SStdPosition TThostFtdcStdPositionType
+	// 买标准开仓冻结
+	BStdOpenFrozen TThostFtdcStdPositionType
+	// 卖标准开仓冻结
+	SStdOpenFrozen TThostFtdcStdPositionType
+	// 买标准平仓冻结
+	BStdCloseFrozen TThostFtdcStdPositionType
+	// 卖标准平仓冻结
+	SStdCloseFrozen TThostFtdcStdPositionType
+	// 品种内对冲标准持仓
+	IntraProdStdPosition TThostFtdcStdPositionType
+	// 品种内单腿标准持仓
+	NetStdPosition TThostFtdcStdPositionType
+	// 品种间对冲标准持仓
+	InterProdStdPosition TThostFtdcStdPositionType
+	// 单腿标准持仓
+	SingleStdPosition TThostFtdcStdPositionType
+	// 品种内对锁保证金
+	IntraProdMargin TThostFtdcMoneyType
+	// 品种间对锁保证金
+	InterProdMargin TThostFtdcMoneyType
+	// 跨品种单腿保证金
+	SingleMargin TThostFtdcMoneyType
+	// 非组合合约保证金
+	NonCombMargin TThostFtdcMoneyType
+	// 附加保证金
+	AddOnMargin TThostFtdcMoneyType
+	// 交易所保证金
+	ExchMargin TThostFtdcMoneyType
+	// 附加冻结保证金
+	AddOnFrozenMargin TThostFtdcMoneyType
+	// 开仓冻结保证金
+	OpenFrozenMargin TThostFtdcMoneyType
+	// 平仓冻结保证金
+	CloseFrozenMargin TThostFtdcMoneyType
+	// 品种保证金
+	Margin TThostFtdcMoneyType
+	// 冻结保证金
+	FrozenMargin TThostFtdcMoneyType
+}
+
+// 信息分发
+type CThostFtdcQryInvestorProdRULEMarginField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 商品群号
+	CommodityGroupID TThostFtdcCommodityGroupIDType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPBMPortfDefinitionField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 组合保证金套餐代码
+	PortfolioDefID TThostFtdcPortfolioDefIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 是否启用SPBM
+	IsSPBM TThostFtdcBoolType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPBMInvstPortfDefField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 组合保证金套餐代码
+	PortfolioDefID TThostFtdcPortfolioDefIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPBMFutureParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 期货合约因子
+	Cvf TThostFtdcVolumeMultipleType
+	// 阶段标识
+	TimeRange TThostFtdcTimeRangeType
+	// 品种保证金标准
+	MarginRate TThostFtdcRatioType
+	// 期货合约内部对锁仓费率折扣比例
+	LockRateX TThostFtdcRatioType
+	// 提高保证金标准
+	AddOnRate TThostFtdcRatioType
+	// 昨结算价
+	PreSettlementPrice TThostFtdcPriceType
+	// 期货合约内部对锁仓附加费率折扣比例
+	AddOnLockRateX2 TThostFtdcRatioType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPBMOptionParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 期权合约因子
+	Cvf TThostFtdcVolumeMultipleType
+	// 期权冲抵价格
+	DownPrice TThostFtdcPriceType
+	// Delta值
+	Delta TThostFtdcDeltaType
+	// 卖方期权风险转换最低值
+	SlimiDelta TThostFtdcDeltaType
+	// 昨结算价
+	PreSettlementPrice TThostFtdcPriceType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPBMIntraParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 品种内合约间对锁仓费率折扣比例
+	IntraRateY TThostFtdcRatioType
+	// 品种内合约间对锁仓附加费率折扣比例
+	AddOnIntraRateY2 TThostFtdcRatioType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPBMInterParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 优先级
+	SpreadId TThostFtdcSpreadIdType
+	// 品种间对锁仓费率折扣比例
+	InterRateZ TThostFtdcRatioType
+	// 第一腿构成品种
+	Leg1ProdFamilyCode TThostFtdcInstrumentIDType
+	// 第二腿构成品种
+	Leg2ProdFamilyCode TThostFtdcInstrumentIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPBMAddOnInterParamField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 优先级
+	SpreadId TThostFtdcSpreadIdType
+	// 品种间对锁仓附加费率折扣比例
+	AddOnInterRateZ2 TThostFtdcRatioType
+	// 第一腿构成品种
+	Leg1ProdFamilyCode TThostFtdcInstrumentIDType
+	// 第二腿构成品种
+	Leg2ProdFamilyCode TThostFtdcInstrumentIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPMMInstParamField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// SPMM合约保证金算法
+	InstMarginCalID TThostFtdcInstMarginCalIDType
+	// 商品组代码
+	CommodityID TThostFtdcSPMMProductIDType
+	// 商品群代码
+	CommodityGroupID TThostFtdcSPMMProductIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPMMProductParamField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品代码
+	ProductID TThostFtdcSPMMProductIDType
+	// 商品组代码
+	CommodityID TThostFtdcSPMMProductIDType
+	// 商品群代码
+	CommodityGroupID TThostFtdcSPMMProductIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaInvestorSPMMModelField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// SPMM模板ID
+	SPMMModelID TThostFtdcSPMMModelIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaSPMMModelParamField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// SPMM模板ID
+	SPMMModelID TThostFtdcSPMMModelIDType
+	// 商品群代码
+	CommodityGroupID TThostFtdcSPMMProductIDType
+	// SPMM品种内跨期优惠系数
+	IntraCommodityRate TThostFtdcSPMMDiscountRatioType
+	// SPMM品种间优惠系数
+	InterCommodityRate TThostFtdcSPMMDiscountRatioType
+	// SPMM期权优惠系数
+	OptionDiscountRate TThostFtdcSPMMDiscountRatioType
+	// 商品群最小保证金比例
+	MiniMarginRatio TThostFtdcSPMMDiscountRatioType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRCAMSCombProdInfoField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品代码
+	ProductID TThostFtdcProductIDType
+	// 商品组代码
+	CombProductID TThostFtdcProductIDType
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRCAMSInstrParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品代码
+	ProductID TThostFtdcProductIDType
+	// 同合约风险对冲比率
+	HedgeRate TThostFtdcHedgeRateType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRCAMSIntraParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+	// 品种内对冲比率
+	HedgeRate TThostFtdcHedgeRateType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRCAMSInterParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 商品群代码
+	ProductGroupID TThostFtdcProductIDType
+	// 优先级
+	Priority TThostFtdcRCAMSPriorityType
+	// 折抵率
+	CreditRate TThostFtdcHedgeRateType
+	// 产品组合代码1
+	CombProduct1 TThostFtdcProductIDType
+	// 产品组合代码2
+	CombProduct2 TThostFtdcProductIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRCAMSSOptAdjParamField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 产品组合代码
+	CombProductID TThostFtdcProductIDType
+	// 投套标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	// 空头期权风险调整标准
+	AdjustValue TThostFtdcAdjustValueType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRCAMSCombRuleDtlField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 策略产品
+	ProdGroup TThostFtdcProductIDType
+	// 策略id
+	RuleId TThostFtdcRuleIdType
+	// 优先级
+	Priority TThostFtdcRCAMSPriorityType
+	// 投套标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	// 组合保证金标准
+	CombMargin TThostFtdcMoneyType
+	// 交易所组合合约代码
+	ExchangeInstID TThostFtdcExchangeInstIDType
+	// 单腿编号
+	LegID TThostFtdcLegIDType
+	// 单腿合约代码
+	LegInstrumentID TThostFtdcInstrumentIDType
+	// 买卖方向
+	Direction TThostFtdcDirectionType
+	// 单腿乘数
+	LegMultiple TThostFtdcLegMultipleType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRCAMSInvstCombPosField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// 投套标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	// 持仓多空方向
+	PosiDirection TThostFtdcPosiDirectionType
+	// 组合合约代码
+	CombInstrumentID TThostFtdcInstrumentIDType
+	// 单腿编号
+	LegID TThostFtdcLegIDType
+	// 交易所组合合约代码
+	ExchangeInstID TThostFtdcExchangeInstIDType
+	// 持仓量
+	TotalAmt TThostFtdcVolumeType
+	// 交易所保证金
+	ExchMargin TThostFtdcMoneyType
+	// 投资者保证金
+	Margin TThostFtdcMoneyType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRULEInstrParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 合约代码
+	InstrumentID TThostFtdcInstrumentIDType
+	// 合约类型
+	InstrumentClass TThostFtdcInstrumentClassType
+	// 标准合约
+	StdInstrumentID TThostFtdcInstrumentIDType
+	// 投机买折算系数
+	BSpecRatio TThostFtdcRatioType
+	// 投机卖折算系数
+	SSpecRatio TThostFtdcRatioType
+	// 套保买折算系数
+	BHedgeRatio TThostFtdcRatioType
+	// 套保卖折算系数
+	SHedgeRatio TThostFtdcRatioType
+	// 买附加风险保证金
+	BAddOnMargin TThostFtdcMoneyType
+	// 卖附加风险保证金
+	SAddOnMargin TThostFtdcMoneyType
+	// 商品群号
+	CommodityGroupID TThostFtdcCommodityGroupIDType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRULEIntraParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 品种代码
+	ProdFamilyCode TThostFtdcInstrumentIDType
+	// 标准合约
+	StdInstrumentID TThostFtdcInstrumentIDType
+	// 标准合约保证金
+	StdInstrMargin TThostFtdcMoneyType
+	// 一般月份合约组合保证金系数
+	UsualIntraRate TThostFtdcRatioType
+	// 临近交割合约组合保证金系数
+	DeliveryIntraRate TThostFtdcRatioType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcSyncDeltaRULEInterParameterField struct {
+	// 交易日
+	TradingDay TThostFtdcDateType
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 优先级
+	SpreadId TThostFtdcSpreadIdType
+	// 品种间对锁仓费率折扣比例
+	InterRate TThostFtdcRatioType
+	// 第一腿构成品种
+	Leg1ProdFamilyCode TThostFtdcInstrumentIDType
+	// 第二腿构成品种
+	Leg2ProdFamilyCode TThostFtdcInstrumentIDType
+	// 腿1比例系数
+	Leg1PropFactor TThostFtdcCommonIntType
+	// 腿2比例系数
+	Leg2PropFactor TThostFtdcCommonIntType
+	// 商品群号
+	CommodityGroupID TThostFtdcCommodityGroupIDType
+	// 商品群名称
+	CommodityGroupName TThostFtdcInstrumentNameType
+	// 操作标志
+	ActionDirection TThostFtdcActionDirectionType
+	// 追平序号
+	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 信息分发
+type CThostFtdcExitEmergencyField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+}
+
+// 信息分发
+type CThostFtdcInvestorPortfMarginModelField struct {
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	// 保证金系数模板
+	MarginModelID TThostFtdcInvestorIDType
+}
+
+// 信息分发
+type CThostFtdcInvestorPortfSettingField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者编号
+	InvestorID TThostFtdcInvestorIDType
+	// 投机套保标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	// 是否开启新组保
+	UsePortf TThostFtdcBoolType
+}
+
+// 信息分发
+type CThostFtdcQryInvestorPortfSettingField struct {
+	// 交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	// 经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	// 投资者编号
+	InvestorID TThostFtdcInvestorIDType
+}
+
+// 信息分发
+type CThostFtdcFrontInfoField struct {
+	// 前置地址
+	FrontAddr TThostFtdcAddressType
+	// 查询频率
+	QryFreq TThostFtdcQueryFreqType
+	// FTD频率
+	FTDPkgFreq TThostFtdcQueryFreqType
 }

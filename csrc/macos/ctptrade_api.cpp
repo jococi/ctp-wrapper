@@ -1,9 +1,9 @@
 #include "ctptrade_api.h"
 #include <string.h>
 
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char* pSystemInfo, int nLen) { return CTP_GetSystemInfo(pSystemInfo, nLen); };
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char *pSystemInfo, int nLen) { return CTP_GetSystemInfo(pSystemInfo, nLen); };
 #ifdef __APPLE__
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char* pSystemInfo, int nLen) { return CTP_GetSystemInfoUnAesEncode(pSystemInfo, nLen); };
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char *pSystemInfo, int nLen) { return CTP_GetSystemInfoUnAesEncode(pSystemInfo, nLen); };
 #endif
 DLL_EXPORT_C_DECL void* WPCTP dCTP_GetDataCollectApiVersion() { return (void*)CTP_GetDataCollectApiVersion();};
 
@@ -147,6 +147,23 @@ Trade::Trade()
 	OnRspQrySPBMInvestorPortfDef_ = NULL;
 	OnRspQryInvestorPortfMarginRatio_ = NULL;
 	OnRspQryInvestorProdSPBMDetail_ = NULL;
+	OnRspQryInvestorCommoditySPMMMargin_ = NULL;
+	OnRspQryInvestorCommodityGroupSPMMMargin_ = NULL;
+	OnRspQrySPMMInstParam_ = NULL;
+	OnRspQrySPMMProductParam_ = NULL;
+	OnRspQrySPBMAddOnInterParameter_ = NULL;
+	OnRspQryRCAMSCombProductInfo_ = NULL;
+	OnRspQryRCAMSInstrParameter_ = NULL;
+	OnRspQryRCAMSIntraParameter_ = NULL;
+	OnRspQryRCAMSInterParameter_ = NULL;
+	OnRspQryRCAMSShortOptAdjustParam_ = NULL;
+	OnRspQryRCAMSInvestorCombPosition_ = NULL;
+	OnRspQryInvestorProdRCAMSMargin_ = NULL;
+	OnRspQryRULEInstrParameter_ = NULL;
+	OnRspQryRULEIntraParameter_ = NULL;
+	OnRspQryRULEInterParameter_ = NULL;
+	OnRspQryInvestorProdRULEMargin_ = NULL;
+	OnRspQryInvestorPortfSetting_ = NULL;
 	
 }
 
@@ -571,6 +588,57 @@ DLL_EXPORT_C_DECL void WPCTP tOnRspQryInvestorPortfMarginRatio(Trade* spi, void*
 // 投资者产品SPBM明细查询响应
 DLL_EXPORT_C_DECL void WPCTP tOnRspQryInvestorProdSPBMDetail(Trade* spi, void* func){ spi->OnRspQryInvestorProdSPBMDetail_ = func; }
 
+// 投资者商品组SPMM记录查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryInvestorCommoditySPMMMargin(Trade* spi, void* func){ spi->OnRspQryInvestorCommoditySPMMMargin_ = func; }
+
+// 投资者商品群SPMM记录查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryInvestorCommodityGroupSPMMMargin(Trade* spi, void* func){ spi->OnRspQryInvestorCommodityGroupSPMMMargin_ = func; }
+
+// SPMM合约参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQrySPMMInstParam(Trade* spi, void* func){ spi->OnRspQrySPMMInstParam_ = func; }
+
+// SPMM产品参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQrySPMMProductParam(Trade* spi, void* func){ spi->OnRspQrySPMMProductParam_ = func; }
+
+// SPBM附加跨品种抵扣参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQrySPBMAddOnInterParameter(Trade* spi, void* func){ spi->OnRspQrySPBMAddOnInterParameter_ = func; }
+
+// RCAMS产品组合信息查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRCAMSCombProductInfo(Trade* spi, void* func){ spi->OnRspQryRCAMSCombProductInfo_ = func; }
+
+// RCAMS同合约风险对冲参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRCAMSInstrParameter(Trade* spi, void* func){ spi->OnRspQryRCAMSInstrParameter_ = func; }
+
+// RCAMS品种内风险对冲参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRCAMSIntraParameter(Trade* spi, void* func){ spi->OnRspQryRCAMSIntraParameter_ = func; }
+
+// RCAMS跨品种风险折抵参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRCAMSInterParameter(Trade* spi, void* func){ spi->OnRspQryRCAMSInterParameter_ = func; }
+
+// RCAMS空头期权风险调整参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRCAMSShortOptAdjustParam(Trade* spi, void* func){ spi->OnRspQryRCAMSShortOptAdjustParam_ = func; }
+
+// RCAMS策略组合持仓查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRCAMSInvestorCombPosition(Trade* spi, void* func){ spi->OnRspQryRCAMSInvestorCombPosition_ = func; }
+
+// 投资者品种RCAMS保证金查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryInvestorProdRCAMSMargin(Trade* spi, void* func){ spi->OnRspQryInvestorProdRCAMSMargin_ = func; }
+
+// RULE合约保证金参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRULEInstrParameter(Trade* spi, void* func){ spi->OnRspQryRULEInstrParameter_ = func; }
+
+// RULE品种内对锁仓折扣参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRULEIntraParameter(Trade* spi, void* func){ spi->OnRspQryRULEIntraParameter_ = func; }
+
+// RULE跨品种抵扣参数查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryRULEInterParameter(Trade* spi, void* func){ spi->OnRspQryRULEInterParameter_ = func; }
+
+// 投资者产品RULE保证金查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryInvestorProdRULEMargin(Trade* spi, void* func){ spi->OnRspQryInvestorProdRULEMargin_ = func; }
+
+// 投资者投资者新组保设置查询响应
+DLL_EXPORT_C_DECL void WPCTP tOnRspQryInvestorPortfSetting(Trade* spi, void* func){ spi->OnRspQryInvestorPortfSetting_ = func; }
+
 
 // 创建TraderApi
 DLL_EXPORT_C_DECL void WPCTP tRelease(CThostFtdcTraderApi *api){ api->Release(); return; }
@@ -581,6 +649,9 @@ DLL_EXPORT_C_DECL void WPCTP tInit(CThostFtdcTraderApi *api){ api->Init(); retur
 // 等待接口线程结束运行
 DLL_EXPORT_C_DECL int WPCTP tJoin(CThostFtdcTraderApi *api){ return api->Join(); }
 
+// 获取已连接的前置的信息
+DLL_EXPORT_C_DECL void WPCTP tGetFrontInfo(CThostFtdcTraderApi *api, CThostFtdcFrontInfoField *pFrontInfo){ api->GetFrontInfo(pFrontInfo); return; }
+
 // 注册前置机网络地址
 DLL_EXPORT_C_DECL void WPCTP tRegisterFront(CThostFtdcTraderApi *api, char *pszFrontAddress){ api->RegisterFront(pszFrontAddress); return; }
 
@@ -588,7 +659,7 @@ DLL_EXPORT_C_DECL void WPCTP tRegisterFront(CThostFtdcTraderApi *api, char *pszF
 DLL_EXPORT_C_DECL void WPCTP tRegisterNameServer(CThostFtdcTraderApi *api, char *pszNsAddress){ api->RegisterNameServer(pszNsAddress); return; }
 
 // 注册名字服务器用户信息
-DLL_EXPORT_C_DECL void WPCTP tRegisterFensUserInfo(CThostFtdcTraderApi *api, CThostFtdcFensUserInfoField * pFensUserInfo){ api->RegisterFensUserInfo( pFensUserInfo); return; }
+DLL_EXPORT_C_DECL void WPCTP tRegisterFensUserInfo(CThostFtdcTraderApi *api, CThostFtdcFensUserInfoField *pFensUserInfo){ api->RegisterFensUserInfo(pFensUserInfo); return; }
 
 // 注册回调接口
 DLL_EXPORT_C_DECL void WPCTP tRegisterSpi(CThostFtdcTraderApi *api, CThostFtdcTraderSpi *pSpi){ api->RegisterSpi(pSpi); return; }
@@ -889,3 +960,54 @@ DLL_EXPORT_C_DECL int WPCTP tReqQryInvestorPortfMarginRatio(CThostFtdcTraderApi 
 
 // 投资者产品SPBM明细查询
 DLL_EXPORT_C_DECL int WPCTP tReqQryInvestorProdSPBMDetail(CThostFtdcTraderApi *api, CThostFtdcQryInvestorProdSPBMDetailField *pQryInvestorProdSPBMDetail, int nRequestID){ return api->ReqQryInvestorProdSPBMDetail(pQryInvestorProdSPBMDetail, nRequestID); }
+
+// 投资者商品组SPMM记录查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryInvestorCommoditySPMMMargin(CThostFtdcTraderApi *api, CThostFtdcQryInvestorCommoditySPMMMarginField *pQryInvestorCommoditySPMMMargin, int nRequestID){ return api->ReqQryInvestorCommoditySPMMMargin(pQryInvestorCommoditySPMMMargin, nRequestID); }
+
+// 投资者商品群SPMM记录查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryInvestorCommodityGroupSPMMMargin(CThostFtdcTraderApi *api, CThostFtdcQryInvestorCommodityGroupSPMMMarginField *pQryInvestorCommodityGroupSPMMMargin, int nRequestID){ return api->ReqQryInvestorCommodityGroupSPMMMargin(pQryInvestorCommodityGroupSPMMMargin, nRequestID); }
+
+// SPMM合约参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQrySPMMInstParam(CThostFtdcTraderApi *api, CThostFtdcQrySPMMInstParamField *pQrySPMMInstParam, int nRequestID){ return api->ReqQrySPMMInstParam(pQrySPMMInstParam, nRequestID); }
+
+// SPMM产品参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQrySPMMProductParam(CThostFtdcTraderApi *api, CThostFtdcQrySPMMProductParamField *pQrySPMMProductParam, int nRequestID){ return api->ReqQrySPMMProductParam(pQrySPMMProductParam, nRequestID); }
+
+// SPBM附加跨品种抵扣参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQrySPBMAddOnInterParameter(CThostFtdcTraderApi *api, CThostFtdcQrySPBMAddOnInterParameterField *pQrySPBMAddOnInterParameter, int nRequestID){ return api->ReqQrySPBMAddOnInterParameter(pQrySPBMAddOnInterParameter, nRequestID); }
+
+// RCAMS产品组合信息查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRCAMSCombProductInfo(CThostFtdcTraderApi *api, CThostFtdcQryRCAMSCombProductInfoField *pQryRCAMSCombProductInfo, int nRequestID){ return api->ReqQryRCAMSCombProductInfo(pQryRCAMSCombProductInfo, nRequestID); }
+
+// RCAMS同合约风险对冲参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRCAMSInstrParameter(CThostFtdcTraderApi *api, CThostFtdcQryRCAMSInstrParameterField *pQryRCAMSInstrParameter, int nRequestID){ return api->ReqQryRCAMSInstrParameter(pQryRCAMSInstrParameter, nRequestID); }
+
+// RCAMS品种内风险对冲参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRCAMSIntraParameter(CThostFtdcTraderApi *api, CThostFtdcQryRCAMSIntraParameterField *pQryRCAMSIntraParameter, int nRequestID){ return api->ReqQryRCAMSIntraParameter(pQryRCAMSIntraParameter, nRequestID); }
+
+// RCAMS跨品种风险折抵参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRCAMSInterParameter(CThostFtdcTraderApi *api, CThostFtdcQryRCAMSInterParameterField *pQryRCAMSInterParameter, int nRequestID){ return api->ReqQryRCAMSInterParameter(pQryRCAMSInterParameter, nRequestID); }
+
+// RCAMS空头期权风险调整参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRCAMSShortOptAdjustParam(CThostFtdcTraderApi *api, CThostFtdcQryRCAMSShortOptAdjustParamField *pQryRCAMSShortOptAdjustParam, int nRequestID){ return api->ReqQryRCAMSShortOptAdjustParam(pQryRCAMSShortOptAdjustParam, nRequestID); }
+
+// RCAMS策略组合持仓查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRCAMSInvestorCombPosition(CThostFtdcTraderApi *api, CThostFtdcQryRCAMSInvestorCombPositionField *pQryRCAMSInvestorCombPosition, int nRequestID){ return api->ReqQryRCAMSInvestorCombPosition(pQryRCAMSInvestorCombPosition, nRequestID); }
+
+// 投资者品种RCAMS保证金查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryInvestorProdRCAMSMargin(CThostFtdcTraderApi *api, CThostFtdcQryInvestorProdRCAMSMarginField *pQryInvestorProdRCAMSMargin, int nRequestID){ return api->ReqQryInvestorProdRCAMSMargin(pQryInvestorProdRCAMSMargin, nRequestID); }
+
+// RULE合约保证金参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRULEInstrParameter(CThostFtdcTraderApi *api, CThostFtdcQryRULEInstrParameterField *pQryRULEInstrParameter, int nRequestID){ return api->ReqQryRULEInstrParameter(pQryRULEInstrParameter, nRequestID); }
+
+// RULE品种内对锁仓折扣参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRULEIntraParameter(CThostFtdcTraderApi *api, CThostFtdcQryRULEIntraParameterField *pQryRULEIntraParameter, int nRequestID){ return api->ReqQryRULEIntraParameter(pQryRULEIntraParameter, nRequestID); }
+
+// RULE跨品种抵扣参数查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryRULEInterParameter(CThostFtdcTraderApi *api, CThostFtdcQryRULEInterParameterField *pQryRULEInterParameter, int nRequestID){ return api->ReqQryRULEInterParameter(pQryRULEInterParameter, nRequestID); }
+
+// 投资者产品RULE保证金查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryInvestorProdRULEMargin(CThostFtdcTraderApi *api, CThostFtdcQryInvestorProdRULEMarginField *pQryInvestorProdRULEMargin, int nRequestID){ return api->ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin, nRequestID); }
+
+// 投资者投资者新组保设置查询
+DLL_EXPORT_C_DECL int WPCTP tReqQryInvestorPortfSetting(CThostFtdcTraderApi *api, CThostFtdcQryInvestorPortfSettingField *pQryInvestorPortfSetting, int nRequestID){ return api->ReqQryInvestorPortfSetting(pQryInvestorPortfSetting, nRequestID); }

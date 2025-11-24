@@ -82,7 +82,7 @@ DLL_EXPORT_C_DECL void WPCTP qRegisterFront(CThostFtdcMdApi *api, char *pszFront
 DLL_EXPORT_C_DECL void WPCTP qRegisterNameServer(CThostFtdcMdApi *api, char *pszNsAddress){ api->RegisterNameServer(pszNsAddress); return; }
 
 // 注册名字服务器用户信息
-DLL_EXPORT_C_DECL void WPCTP qRegisterFensUserInfo(CThostFtdcMdApi *api, CThostFtdcFensUserInfoField * pFensUserInfo){ api->RegisterFensUserInfo( pFensUserInfo); return; }
+DLL_EXPORT_C_DECL void WPCTP qRegisterFensUserInfo(CThostFtdcMdApi *api, CThostFtdcFensUserInfoField *pFensUserInfo){ api->RegisterFensUserInfo(pFensUserInfo); return; }
 
 // 注册回调接口
 DLL_EXPORT_C_DECL void WPCTP qRegisterSpi(CThostFtdcMdApi *api, CThostFtdcMdSpi *pSpi){ api->RegisterSpi(pSpi); return; }

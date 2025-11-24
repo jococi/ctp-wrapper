@@ -168,7 +168,7 @@ DLL_EXPORT_C_DECL void WPCTP qRegisterFront(CThostFtdcMdApi *api, char *pszFront
 DLL_EXPORT_C_DECL void WPCTP qRegisterNameServer(CThostFtdcMdApi *api, char *pszNsAddress);
 
 // 注册名字服务器用户信息
-DLL_EXPORT_C_DECL void WPCTP qRegisterFensUserInfo(CThostFtdcMdApi *api, CThostFtdcFensUserInfoField * pFensUserInfo);
+DLL_EXPORT_C_DECL void WPCTP qRegisterFensUserInfo(CThostFtdcMdApi *api, CThostFtdcFensUserInfoField *pFensUserInfo);
 
 // 注册回调接口
 DLL_EXPORT_C_DECL void WPCTP qRegisterSpi(CThostFtdcMdApi *api, CThostFtdcMdSpi *pSpi);

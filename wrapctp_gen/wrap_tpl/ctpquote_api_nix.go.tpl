@@ -60,15 +60,17 @@ func (q *Quote) GetApiVersion() string {
 func (q *Quote) GetTradingDay() string {
     return C.GoString((*C.char)(C.qGetTradingDay(q.api)))
 }
-[[ range .Fn]][[ if eq .FuncRtn "void"]] [[if eq .FuncName "RegisterSpi"]]
-func (q *Quote) [[ .FuncName ]]() { [[else]]
-func (q *Quote) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) { [[end]]
-    [[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
-    C.q[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]]) [[ postSup .FuncFields ]]
-}[[ else ]]
-func (q *Quote) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]][[ if gt $i 1 ]], [[ end ]][[if eq .FieldName "*ppInstrumentID"]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]][[end]]) [[ .FuncRtn ]]32 {
-    [[ range .FuncFields ]] [[ supType .FieldType .FieldName ]] [[ end ]]
-    res := C.q[[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[ fldType .FieldType .FieldName ]][[ end ]])
+[[ range .Fn]][[ if eq .FuncRtn "void"]][[if eq .FuncName "RegisterSpi"]]
+func (q *Quote) [[ .FuncName ]]() {
+	C.q[[ .FuncName ]](q.api, q.pSpi)
+}
+[[else]]
+func (q *Quote) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if or (eq .FieldName "ppInstrumentID") (eq .FieldName "*ppInstrumentID")]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]]) {
+    [[ range .FuncFields ]][[ supType .FieldType .FieldName ]][[ end ]]C.q[[ .FuncName ]](q.api[[ range $i,$v := .FuncFields ]][[ if ne .FieldName "api"]], [[ fldType .FieldType .FieldName ]][[end]][[ end ]]) [[ postSup .FuncFields ]]
+}
+[[end]][[ else ]]
+func (q *Quote) [[ .FuncName ]]([[ range $i,$v := .FuncFields ]][[ if gt $i 0 ]], [[ end ]][[if or (eq .FieldName "ppInstrumentID") (eq .FieldName "*ppInstrumentID")]][[ .FieldName|trimStar ]] [][]byte [[else]][[ .FieldName|trimStar ]] [[ .FieldType|ctp_type ]][[end]][[ end ]]) [[ .FuncRtn ]]32 {
+    [[ range .FuncFields ]][[ supType .FieldType .FieldName ]][[ end ]]res := C.q[[ .FuncName ]](q.api[[ range $i,$v := .FuncFields ]][[ if ne .FieldName "api"]], [[ fldType .FieldType .FieldName ]][[end]][[ end ]])
     [[ postSup .FuncFields ]] return [[ .FuncRtn ]]32(res)
 }[[ end ]]
 [[ end ]]

@@ -19,5 +19,5 @@ DLL_EXPORT_C_DECL void WPCTP q[[ .FuncName ]](Quote* spi, void* func){ spi->[[ .
 [[ end ]]
 [[ range .Fn ]]
 // [[ .Comment ]]
-DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP q[[ .FuncName ]](CThostFtdcMdApi *api[[ range .FuncFields ]], [[.FieldType]] [[.FieldName]][[if eq .FieldName "*ppInstrumentID"]][][[end]][[end]]){ [[ if eq .FuncRtn "void"]]api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]); return;[[ else ]]return api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]);[[ end ]] }
+DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP q[[ .FuncName ]](CThostFtdcMdApi *api[[ range .FuncFields ]], [[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[end]]){ [[ if eq .FuncRtn "void"]]api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]); return;[[ else ]]return api->[[.FuncName]]([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[trimStar .FieldName]][[end]]);[[ end ]] }
 [[ end ]]

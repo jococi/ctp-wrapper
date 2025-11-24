@@ -291,6 +291,40 @@ type Trade struct {
 	OnRspQryInvestorPortfMarginRatio_ func(pInvestorPortfMarginRatio *CThostFtdcInvestorPortfMarginRatioField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 	// 投资者产品SPBM明细查询响应
 	OnRspQryInvestorProdSPBMDetail_ func(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者商品组SPMM记录查询响应
+	OnRspQryInvestorCommoditySPMMMargin_ func(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者商品群SPMM记录查询响应
+	OnRspQryInvestorCommodityGroupSPMMMargin_ func(pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// SPMM合约参数查询响应
+	OnRspQrySPMMInstParam_ func(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// SPMM产品参数查询响应
+	OnRspQrySPMMProductParam_ func(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// SPBM附加跨品种抵扣参数查询响应
+	OnRspQrySPBMAddOnInterParameter_ func(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS产品组合信息查询响应
+	OnRspQryRCAMSCombProductInfo_ func(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS同合约风险对冲参数查询响应
+	OnRspQryRCAMSInstrParameter_ func(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS品种内风险对冲参数查询响应
+	OnRspQryRCAMSIntraParameter_ func(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS跨品种风险折抵参数查询响应
+	OnRspQryRCAMSInterParameter_ func(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS空头期权风险调整参数查询响应
+	OnRspQryRCAMSShortOptAdjustParam_ func(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS策略组合持仓查询响应
+	OnRspQryRCAMSInvestorCombPosition_ func(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者品种RCAMS保证金查询响应
+	OnRspQryInvestorProdRCAMSMargin_ func(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RULE合约保证金参数查询响应
+	OnRspQryRULEInstrParameter_ func(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RULE品种内对锁仓折扣参数查询响应
+	OnRspQryRULEIntraParameter_ func(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RULE跨品种抵扣参数查询响应
+	OnRspQryRULEInterParameter_ func(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者产品RULE保证金查询响应
+	OnRspQryInvestorProdRULEMargin_ func(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者投资者新组保设置查询响应
+	OnRspQryInvestorPortfSetting_ func(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 }
 
 func InitTrade(pszFlowPath string) *Trade {
@@ -385,6 +419,10 @@ func (t *Trade) Init() {
 func (t *Trade) Join() int32 {
 	res, _, _ := t.h.MustFindProc("tJoin").Call(uintptr(t.api))
 	return int32(res)
+}
+
+func (t *Trade) GetFrontInfo(pFrontInfo *CThostFtdcFrontInfoField) {
+	t.h.MustFindProc("tGetFrontInfo").Call(uintptr(t.api), uintptr(unsafe.Pointer(pFrontInfo)))
 }
 
 func (t *Trade) RegisterFront(pszFrontAddress []byte) {
@@ -892,6 +930,91 @@ func (t *Trade) ReqQryInvestorPortfMarginRatio(pQryInvestorPortfMarginRatio *CTh
 
 func (t *Trade) ReqQryInvestorProdSPBMDetail(pQryInvestorProdSPBMDetail *CThostFtdcQryInvestorProdSPBMDetailField, nRequestID int) int32 {
 	res, _, _ := t.h.MustFindProc("tReqQryInvestorProdSPBMDetail").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryInvestorProdSPBMDetail)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorCommoditySPMMMargin(pQryInvestorCommoditySPMMMargin *CThostFtdcQryInvestorCommoditySPMMMarginField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryInvestorCommoditySPMMMargin").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryInvestorCommoditySPMMMargin)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorCommodityGroupSPMMMargin(pQryInvestorCommodityGroupSPMMMargin *CThostFtdcQryInvestorCommodityGroupSPMMMarginField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryInvestorCommodityGroupSPMMMargin").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryInvestorCommodityGroupSPMMMargin)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQrySPMMInstParam(pQrySPMMInstParam *CThostFtdcQrySPMMInstParamField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQrySPMMInstParam").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQrySPMMInstParam)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQrySPMMProductParam(pQrySPMMProductParam *CThostFtdcQrySPMMProductParamField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQrySPMMProductParam").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQrySPMMProductParam)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQrySPBMAddOnInterParameter(pQrySPBMAddOnInterParameter *CThostFtdcQrySPBMAddOnInterParameterField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQrySPBMAddOnInterParameter").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQrySPBMAddOnInterParameter)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSCombProductInfo(pQryRCAMSCombProductInfo *CThostFtdcQryRCAMSCombProductInfoField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRCAMSCombProductInfo").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRCAMSCombProductInfo)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSInstrParameter(pQryRCAMSInstrParameter *CThostFtdcQryRCAMSInstrParameterField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRCAMSInstrParameter").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRCAMSInstrParameter)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSIntraParameter(pQryRCAMSIntraParameter *CThostFtdcQryRCAMSIntraParameterField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRCAMSIntraParameter").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRCAMSIntraParameter)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSInterParameter(pQryRCAMSInterParameter *CThostFtdcQryRCAMSInterParameterField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRCAMSInterParameter").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRCAMSInterParameter)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSShortOptAdjustParam(pQryRCAMSShortOptAdjustParam *CThostFtdcQryRCAMSShortOptAdjustParamField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRCAMSShortOptAdjustParam").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRCAMSShortOptAdjustParam)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSInvestorCombPosition(pQryRCAMSInvestorCombPosition *CThostFtdcQryRCAMSInvestorCombPositionField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRCAMSInvestorCombPosition").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRCAMSInvestorCombPosition)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorProdRCAMSMargin(pQryInvestorProdRCAMSMargin *CThostFtdcQryInvestorProdRCAMSMarginField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryInvestorProdRCAMSMargin").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryInvestorProdRCAMSMargin)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRULEInstrParameter(pQryRULEInstrParameter *CThostFtdcQryRULEInstrParameterField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRULEInstrParameter").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRULEInstrParameter)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRULEIntraParameter(pQryRULEIntraParameter *CThostFtdcQryRULEIntraParameterField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRULEIntraParameter").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRULEIntraParameter)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRULEInterParameter(pQryRULEInterParameter *CThostFtdcQryRULEInterParameterField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryRULEInterParameter").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryRULEInterParameter)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin *CThostFtdcQryInvestorProdRULEMarginField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryInvestorProdRULEMargin").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryInvestorProdRULEMargin)), uintptr(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorPortfSetting(pQryInvestorPortfSetting *CThostFtdcQryInvestorPortfSettingField, nRequestID int) int32 {
+	res, _, _ := t.h.MustFindProc("tReqQryInvestorPortfSetting").Call(uintptr(t.api), uintptr(unsafe.Pointer(pQryInvestorPortfSetting)), uintptr(nRequestID))
 	return int32(res)
 }
 
@@ -1721,6 +1844,108 @@ func (t *Trade) OnRspQryInvestorPortfMarginRatio(fn func(pInvestorPortfMarginRat
 func (t *Trade) OnRspQryInvestorProdSPBMDetail(fn func(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
 	t.OnRspQryInvestorProdSPBMDetail_ = fn
 	t.h.MustFindProc("tOnRspQryInvestorProdSPBMDetail").Call(t.pSpi, syscall.NewCallback(t.OnRspQryInvestorProdSPBMDetail__))
+}
+
+// 投资者商品组SPMM记录查询响应
+func (t *Trade) OnRspQryInvestorCommoditySPMMMargin(fn func(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorCommoditySPMMMargin_ = fn
+	t.h.MustFindProc("tOnRspQryInvestorCommoditySPMMMargin").Call(t.pSpi, syscall.NewCallback(t.OnRspQryInvestorCommoditySPMMMargin__))
+}
+
+// 投资者商品群SPMM记录查询响应
+func (t *Trade) OnRspQryInvestorCommodityGroupSPMMMargin(fn func(pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorCommodityGroupSPMMMargin_ = fn
+	t.h.MustFindProc("tOnRspQryInvestorCommodityGroupSPMMMargin").Call(t.pSpi, syscall.NewCallback(t.OnRspQryInvestorCommodityGroupSPMMMargin__))
+}
+
+// SPMM合约参数查询响应
+func (t *Trade) OnRspQrySPMMInstParam(fn func(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQrySPMMInstParam_ = fn
+	t.h.MustFindProc("tOnRspQrySPMMInstParam").Call(t.pSpi, syscall.NewCallback(t.OnRspQrySPMMInstParam__))
+}
+
+// SPMM产品参数查询响应
+func (t *Trade) OnRspQrySPMMProductParam(fn func(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQrySPMMProductParam_ = fn
+	t.h.MustFindProc("tOnRspQrySPMMProductParam").Call(t.pSpi, syscall.NewCallback(t.OnRspQrySPMMProductParam__))
+}
+
+// SPBM附加跨品种抵扣参数查询响应
+func (t *Trade) OnRspQrySPBMAddOnInterParameter(fn func(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQrySPBMAddOnInterParameter_ = fn
+	t.h.MustFindProc("tOnRspQrySPBMAddOnInterParameter").Call(t.pSpi, syscall.NewCallback(t.OnRspQrySPBMAddOnInterParameter__))
+}
+
+// RCAMS产品组合信息查询响应
+func (t *Trade) OnRspQryRCAMSCombProductInfo(fn func(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSCombProductInfo_ = fn
+	t.h.MustFindProc("tOnRspQryRCAMSCombProductInfo").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRCAMSCombProductInfo__))
+}
+
+// RCAMS同合约风险对冲参数查询响应
+func (t *Trade) OnRspQryRCAMSInstrParameter(fn func(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSInstrParameter_ = fn
+	t.h.MustFindProc("tOnRspQryRCAMSInstrParameter").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRCAMSInstrParameter__))
+}
+
+// RCAMS品种内风险对冲参数查询响应
+func (t *Trade) OnRspQryRCAMSIntraParameter(fn func(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSIntraParameter_ = fn
+	t.h.MustFindProc("tOnRspQryRCAMSIntraParameter").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRCAMSIntraParameter__))
+}
+
+// RCAMS跨品种风险折抵参数查询响应
+func (t *Trade) OnRspQryRCAMSInterParameter(fn func(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSInterParameter_ = fn
+	t.h.MustFindProc("tOnRspQryRCAMSInterParameter").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRCAMSInterParameter__))
+}
+
+// RCAMS空头期权风险调整参数查询响应
+func (t *Trade) OnRspQryRCAMSShortOptAdjustParam(fn func(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSShortOptAdjustParam_ = fn
+	t.h.MustFindProc("tOnRspQryRCAMSShortOptAdjustParam").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRCAMSShortOptAdjustParam__))
+}
+
+// RCAMS策略组合持仓查询响应
+func (t *Trade) OnRspQryRCAMSInvestorCombPosition(fn func(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSInvestorCombPosition_ = fn
+	t.h.MustFindProc("tOnRspQryRCAMSInvestorCombPosition").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRCAMSInvestorCombPosition__))
+}
+
+// 投资者品种RCAMS保证金查询响应
+func (t *Trade) OnRspQryInvestorProdRCAMSMargin(fn func(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorProdRCAMSMargin_ = fn
+	t.h.MustFindProc("tOnRspQryInvestorProdRCAMSMargin").Call(t.pSpi, syscall.NewCallback(t.OnRspQryInvestorProdRCAMSMargin__))
+}
+
+// RULE合约保证金参数查询响应
+func (t *Trade) OnRspQryRULEInstrParameter(fn func(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRULEInstrParameter_ = fn
+	t.h.MustFindProc("tOnRspQryRULEInstrParameter").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRULEInstrParameter__))
+}
+
+// RULE品种内对锁仓折扣参数查询响应
+func (t *Trade) OnRspQryRULEIntraParameter(fn func(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRULEIntraParameter_ = fn
+	t.h.MustFindProc("tOnRspQryRULEIntraParameter").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRULEIntraParameter__))
+}
+
+// RULE跨品种抵扣参数查询响应
+func (t *Trade) OnRspQryRULEInterParameter(fn func(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRULEInterParameter_ = fn
+	t.h.MustFindProc("tOnRspQryRULEInterParameter").Call(t.pSpi, syscall.NewCallback(t.OnRspQryRULEInterParameter__))
+}
+
+// 投资者产品RULE保证金查询响应
+func (t *Trade) OnRspQryInvestorProdRULEMargin(fn func(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorProdRULEMargin_ = fn
+	t.h.MustFindProc("tOnRspQryInvestorProdRULEMargin").Call(t.pSpi, syscall.NewCallback(t.OnRspQryInvestorProdRULEMargin__))
+}
+
+// 投资者投资者新组保设置查询响应
+func (t *Trade) OnRspQryInvestorPortfSetting(fn func(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorPortfSetting_ = fn
+	t.h.MustFindProc("tOnRspQryInvestorPortfSetting").Call(t.pSpi, syscall.NewCallback(t.OnRspQryInvestorPortfSetting__))
 }
 
 // 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
@@ -2823,6 +3048,142 @@ func (t *Trade) OnRspQryInvestorPortfMarginRatio__(pInvestorPortfMarginRatio *CT
 func (t *Trade) OnRspQryInvestorProdSPBMDetail__(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
 	if t.OnRspQryInvestorProdSPBMDetail_ != nil {
 		t.OnRspQryInvestorProdSPBMDetail_(pInvestorProdSPBMDetail, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// 投资者商品组SPMM记录查询响应
+func (t *Trade) OnRspQryInvestorCommoditySPMMMargin__(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryInvestorCommoditySPMMMargin_ != nil {
+		t.OnRspQryInvestorCommoditySPMMMargin_(pInvestorCommoditySPMMMargin, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// 投资者商品群SPMM记录查询响应
+func (t *Trade) OnRspQryInvestorCommodityGroupSPMMMargin__(pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryInvestorCommodityGroupSPMMMargin_ != nil {
+		t.OnRspQryInvestorCommodityGroupSPMMMargin_(pInvestorCommodityGroupSPMMMargin, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// SPMM合约参数查询响应
+func (t *Trade) OnRspQrySPMMInstParam__(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQrySPMMInstParam_ != nil {
+		t.OnRspQrySPMMInstParam_(pSPMMInstParam, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// SPMM产品参数查询响应
+func (t *Trade) OnRspQrySPMMProductParam__(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQrySPMMProductParam_ != nil {
+		t.OnRspQrySPMMProductParam_(pSPMMProductParam, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// SPBM附加跨品种抵扣参数查询响应
+func (t *Trade) OnRspQrySPBMAddOnInterParameter__(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQrySPBMAddOnInterParameter_ != nil {
+		t.OnRspQrySPBMAddOnInterParameter_(pSPBMAddOnInterParameter, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RCAMS产品组合信息查询响应
+func (t *Trade) OnRspQryRCAMSCombProductInfo__(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRCAMSCombProductInfo_ != nil {
+		t.OnRspQryRCAMSCombProductInfo_(pRCAMSCombProductInfo, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RCAMS同合约风险对冲参数查询响应
+func (t *Trade) OnRspQryRCAMSInstrParameter__(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRCAMSInstrParameter_ != nil {
+		t.OnRspQryRCAMSInstrParameter_(pRCAMSInstrParameter, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RCAMS品种内风险对冲参数查询响应
+func (t *Trade) OnRspQryRCAMSIntraParameter__(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRCAMSIntraParameter_ != nil {
+		t.OnRspQryRCAMSIntraParameter_(pRCAMSIntraParameter, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RCAMS跨品种风险折抵参数查询响应
+func (t *Trade) OnRspQryRCAMSInterParameter__(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRCAMSInterParameter_ != nil {
+		t.OnRspQryRCAMSInterParameter_(pRCAMSInterParameter, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RCAMS空头期权风险调整参数查询响应
+func (t *Trade) OnRspQryRCAMSShortOptAdjustParam__(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRCAMSShortOptAdjustParam_ != nil {
+		t.OnRspQryRCAMSShortOptAdjustParam_(pRCAMSShortOptAdjustParam, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RCAMS策略组合持仓查询响应
+func (t *Trade) OnRspQryRCAMSInvestorCombPosition__(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRCAMSInvestorCombPosition_ != nil {
+		t.OnRspQryRCAMSInvestorCombPosition_(pRCAMSInvestorCombPosition, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// 投资者品种RCAMS保证金查询响应
+func (t *Trade) OnRspQryInvestorProdRCAMSMargin__(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryInvestorProdRCAMSMargin_ != nil {
+		t.OnRspQryInvestorProdRCAMSMargin_(pInvestorProdRCAMSMargin, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RULE合约保证金参数查询响应
+func (t *Trade) OnRspQryRULEInstrParameter__(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRULEInstrParameter_ != nil {
+		t.OnRspQryRULEInstrParameter_(pRULEInstrParameter, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RULE品种内对锁仓折扣参数查询响应
+func (t *Trade) OnRspQryRULEIntraParameter__(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRULEIntraParameter_ != nil {
+		t.OnRspQryRULEIntraParameter_(pRULEIntraParameter, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// RULE跨品种抵扣参数查询响应
+func (t *Trade) OnRspQryRULEInterParameter__(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryRULEInterParameter_ != nil {
+		t.OnRspQryRULEInterParameter_(pRULEInterParameter, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// 投资者产品RULE保证金查询响应
+func (t *Trade) OnRspQryInvestorProdRULEMargin__(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryInvestorProdRULEMargin_ != nil {
+		t.OnRspQryInvestorProdRULEMargin_(pInvestorProdRULEMargin, pRspInfo, nRequestID, bIsLast)
+	}
+	return 0
+}
+
+// 投资者投资者新组保设置查询响应
+func (t *Trade) OnRspQryInvestorPortfSetting__(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool) uintptr {
+	if t.OnRspQryInvestorPortfSetting_ != nil {
+		t.OnRspQryInvestorPortfSetting_(pInvestorPortfSetting, pRspInfo, nRequestID, bIsLast)
 	}
 	return 0
 }

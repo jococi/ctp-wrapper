@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"strings"
 	"text/template"
+	"unicode/utf8"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
@@ -33,15 +34,17 @@ type fieldStruct struct {
 	FieldType string
 	FieldName string
 	Comment   string
+	IsArray   bool // 标记是否为数组参数
 }
 
 // Template Structure
 type tplStruct struct {
-	FuncTypeName string
-	FuncRtn      string
-	FuncName     string
-	Comment      string
-	FuncFields   []fieldStruct
+	FuncTypeName         string
+	FuncRtn              string
+	FuncName             string
+	Comment              string
+	FuncFields           []fieldStruct
+	FuncFieldsWithoutApi []fieldStruct // Windows: 函数签名中不包含 api 字段
 }
 
 // Template
@@ -52,6 +55,20 @@ func tmpl(tplFileName string, content interface{}, funcMap template.FuncMap, out
 	fm := make(template.FuncMap, 0)
 	fm["trimStar"] = func(str string) string {
 		return strings.TrimPrefix(str, "*")
+	}
+	// formatParamType: 将类型中的 * 移到变量名前，例如 "CThostFtdcUserLogoutField*" -> "CThostFtdcUserLogoutField"
+	fm["formatParamType"] = func(fieldType string) string {
+		if strings.HasSuffix(fieldType, "*") {
+			return strings.TrimSuffix(fieldType, "*")
+		}
+		return fieldType
+	}
+	// formatParamName: 如果类型是指针，在变量名前加 *，例如 "pUserLogout" -> "*pUserLogout"
+	fm["formatParamName"] = func(fieldType, fieldName string) string {
+		if strings.HasSuffix(fieldType, "*") {
+			return "*" + fieldName
+		}
+		return fieldName
 	}
 
 	for k, v := range funcMap {
@@ -90,6 +107,7 @@ func tmpl(tplFileName string, content interface{}, funcMap template.FuncMap, out
 	if strings.HasSuffix(fname, ".go") {
 		formatted, err := format.Source(buf.Bytes())
 		if err != nil {
+			fmt.Fprintf(os.Stderr, "格式化错误: %v\n", err)
 			panic(err)
 		}
 		err = os.WriteFile(path.Join(outPath, fname),
@@ -123,9 +141,16 @@ func gen_cwrap(tplExeFunc func(title string, on []*tplStruct, fn []*tplStruct)) 
 		if err != nil {
 			panic(err)
 		}
-		// 汉字处理
-		bsFile, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(bsFile)
-		strFile := string(bsFile)
+		// 汉字处理：检测编码，如果是 UTF-8 则直接使用，否则按 GB18030 解码
+		var strFile string
+		if utf8.Valid(bsFile) {
+			// 文件已经是 UTF-8 编码，直接使用
+			strFile = string(bsFile)
+		} else {
+			// 文件是 GB18030 编码，需要解码
+			decoded, _ := simplifiedchinese.GB18030.NewDecoder().Bytes(bsFile)
+			strFile = string(decoded)
+		}
 		strFile = strings.ReplaceAll(strFile, "\r\n", "\n") // 换行符用 \n 避免 win和 lnx执行时不一致
 		/*
 			///登录请求响应
@@ -137,11 +162,44 @@ func gen_cwrap(tplExeFunc func(title string, on []*tplStruct, fn []*tplStruct)) 
 		tplsFn := make([]*tplStruct, 0)
 		for _, fun := range funs {
 			funComment, funRtn, funName, funParams := fun[1], fun[2], fun[3], fun[4]
-			re := regexp.MustCompile(`(\w+)\s+([*]?[ ]?\w+)[,]?\s*`) //参数分解:类型,名称
-			fields := re.FindAllStringSubmatch(funParams, -1)
+			// 参数分解:类型,名称
+			// 支持格式: int nRequestID, char* pszFlowPath, CThostFtdcFrontInfoField* pFrontInfo, CThostFtdcRspUserLoginField *pRspUserLogin
+			// 类型名可能包含星号（紧跟在类型名后或中间有空格），参数名前面可能有星号但提取时不包含
+			// 先按逗号分割参数，然后逐个解析
+			paramList := strings.Split(funParams, ",")
 			funFields := make([]fieldStruct, 0)
-			for _, field := range fields {
-				funFields = append(funFields, fieldStruct{FieldType: field[1], FieldName: field[2]})
+			for _, param := range paramList {
+				param = strings.TrimSpace(param)
+				if param == "" {
+					continue
+				}
+				// 从后往前找参数名（最后一个标识符），前面的是类型
+				// 先找到参数名（最后一个单词，可能后面跟[]）
+				reName := regexp.MustCompile(`([A-Za-z_][A-Za-z0-9_]*)\s*(\[\])?\s*$`)
+				nameMatch := reName.FindStringSubmatch(param)
+				if len(nameMatch) < 2 {
+					continue
+				}
+				fieldName := nameMatch[1]
+				hasArray := nameMatch[2] == "[]"
+				// 去掉参数名和[]，剩下的就是类型（可能包含*）
+				typePart := strings.TrimSpace(param[:len(param)-len(fieldName)])
+				if hasArray {
+					typePart = strings.TrimSpace(typePart[:len(typePart)-2])
+				}
+				// 检查类型部分末尾是否有 *（可能有空格）
+				fieldType := strings.TrimSpace(typePart)
+				// 如果类型名和*之间有空格（如 "CThostFtdcRspUserLoginField *"），需要合并
+				if strings.HasSuffix(fieldType, " *") {
+					fieldType = strings.TrimSuffix(fieldType, " *") + "*"
+				} else if strings.HasSuffix(fieldType, "* ") {
+					fieldType = strings.TrimSuffix(fieldType, "* ") + "*"
+				} else if !strings.HasSuffix(fieldType, "*") && (strings.Contains(param, " * "+fieldName) || strings.Contains(param, "* "+fieldName)) {
+					// 类型名本身没有*，但参数前有*（有空格）
+					fieldType = fieldType + "*"
+				}
+				// 注意：数组标记不添加到类型中，而是单独标记，在模板中会放在参数名后面
+				funFields = append(funFields, fieldStruct{FieldType: fieldType, FieldName: fieldName, IsArray: hasArray})
 			}
 			if strings.HasPrefix(funName, "On") { // On 响应函数
 				tplsOn = append(tplsOn, &tplStruct{
@@ -172,8 +230,14 @@ func gen_datatype(srcpath string, fn func([]*tplStruct)) {
 	if err != nil {
 		panic(err)
 	}
-	bsFile, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(bsFile)
-	strFile := string(bsFile)
+	// 检测编码，如果是 UTF-8 则直接使用，否则按 GB18030 解码
+	var strFile string
+	if utf8.Valid(bsFile) {
+		strFile = string(bsFile)
+	} else {
+		decoded, _ := simplifiedchinese.GB18030.NewDecoder().Bytes(bsFile)
+		strFile = string(decoded)
+	}
 	strFile = strings.ReplaceAll(strings.ReplaceAll(strFile, "\r\n", "\n"), "\n\t", "\n")
 
 	/*
@@ -245,8 +309,14 @@ func gen_struct(srcpath string, fn func([]*tplStruct)) {
 	if err != nil {
 		panic(err)
 	}
-	bsFile, _ = simplifiedchinese.GB18030.NewDecoder().Bytes(bsFile)
-	strFile := string(bsFile)
+	// 检测编码，如果是 UTF-8 则直接使用，否则按 GB18030 解码
+	var strFile string
+	if utf8.Valid(bsFile) {
+		strFile = string(bsFile)
+	} else {
+		decoded, _ := simplifiedchinese.GB18030.NewDecoder().Bytes(bsFile)
+		strFile = string(decoded)
+	}
 
 	re := regexp.MustCompile(`///(\S*)\s*struct\s*(\w*)\s*{([^}]*)}`) // 分成struct的注释,名称,字段两部分
 	structs := re.FindAllStringSubmatch(strFile, -1)
@@ -286,23 +356,33 @@ func ccfm(title string, tplsOn, tplsFn []*tplStruct) {
 	mpCpp["Pf"] = csys
 	fm := make(template.FuncMap)
 	fm["struct_Type"] = func(structType string) string {
-		if structType == "CThostFtdcMdSpi" {
+		// 先去掉类型末尾的 *，因为 * 应该在变量名前
+		baseType := strings.TrimSuffix(structType, "*")
+		baseType = strings.TrimSpace(baseType)
+
+		if baseType == "CThostFtdcMdSpi" {
 			return "void"
 		}
-		if structType == "CThostFtdcTraderSpi" {
+		if baseType == "CThostFtdcTraderSpi" {
 			return "void"
 		}
-		if strings.HasSuffix(structType, "Field") { // struct
-			return "struct " + structType // struct CThostFtdcRspUserLoginField *pRspUserLogin
+		if strings.HasSuffix(baseType, "Field") || strings.HasPrefix(baseType, "CThostFtdc") { // struct
+			return "struct " + baseType // struct CThostFtdcRspUserLoginField
 		}
-		if structType == "bool" {
-			return "bool"
+		if baseType == "bool" {
+			return "bool" // 保持为 bool，不要改成 _Bool
 		}
-		if structType == "THOST_TE_RESUME_TYPE" {
+		if baseType == "THOST_TE_RESUME_TYPE" {
 			return "int"
 		}
-		return structType
+		return baseType
 	}
+	// 添加字符串处理函数
+	fm["hasPrefix"] = strings.HasPrefix
+	fm["hasSuffix"] = strings.HasSuffix
+	fm["trimPrefix"] = strings.TrimPrefix
+	// 添加逻辑函数
+	fm["or"] = func(a, b bool) bool { return a || b }
 	tmpl("c"+title+".h.go.tpl", mpCpp, fm, outpath)
 }
 
@@ -325,28 +405,35 @@ func pycfm(title string, on, fn []*tplStruct) {
 		return "c_void_p" // char*  CThost结构体
 	}
 	fm["fnBaseType"] = func(fieldTypeName string) string {
-		if fieldTypeName == "char" {
+		// 移除类型中的 * 后缀（Python 类型注解不需要 *）
+		baseType := strings.TrimSuffix(fieldTypeName, "*")
+		baseType = strings.TrimSpace(baseType)
+		if baseType == "char" {
+			// 对于地址参数（pszFrontAddress, pszNsAddress），类型注解使用 str
 			return "str"
 		}
-		if fieldTypeName == "CThostFtdcMdSpi" {
+		if baseType == "CThostFtdcMdSpi" {
 			return "c_void_p"
 		}
-		if fieldTypeName == "CThostFtdcTraderSpi" {
+		if baseType == "CThostFtdcTraderSpi" {
 			return "c_void_p"
 		}
-		return fieldTypeName
+		return baseType
 	}
 	fm["evBaseType"] = func(fieldTypeName string) string {
-		if strings.HasPrefix(fieldTypeName, "CThostFtdc") { // struct
-			return fmt.Sprintf("POINTER(%s)", fieldTypeName)
+		// 移除类型中的 * 后缀
+		baseType := strings.TrimSuffix(fieldTypeName, "*")
+		baseType = strings.TrimSpace(baseType)
+		if strings.HasPrefix(baseType, "CThostFtdc") { // struct
+			return fmt.Sprintf("POINTER(%s)", baseType)
 		}
-		if fieldTypeName == "int" {
+		if baseType == "int" {
 			return "c_int32"
 		}
-		if fieldTypeName == "bool" {
+		if baseType == "bool" {
 			return "c_bool"
 		}
-		return fieldTypeName
+		return baseType
 	}
 	fm["param"] = func(fieldType, fieldName string) string {
 		if fieldName == "ppInstrumentID" { // 类型为 Array[c_char_p]
@@ -355,24 +442,31 @@ func pycfm(title string, on, fn []*tplStruct) {
 		if fieldName == "pSpi" {
 			return fmt.Sprintf("self.%s", fieldName)
 		}
-		if fieldType == "char" {
+		// 移除类型中的 * 后缀
+		baseType := strings.TrimSuffix(fieldType, "*")
+		baseType = strings.TrimSpace(baseType)
+		if baseType == "char" {
+			// 使用 bytes(fieldName, encoding='ascii') 将 str 转换为 bytes
 			return fmt.Sprintf("bytes(%s, encoding='ascii')", fieldName)
 		}
-		if fieldType == "CThostFtdcMdSpi" {
+		if baseType == "CThostFtdcMdSpi" {
 			return fieldName
 		}
-		if fieldType == "CThostFtdcTraderSpi" {
+		if baseType == "CThostFtdcTraderSpi" {
 			return fieldName
 		}
-		if strings.HasPrefix(fieldType, "CThostFtdc") {
+		if strings.HasPrefix(baseType, "CThostFtdc") {
 			return fmt.Sprintf("byref(%s)", fieldName)
 		}
 		return fieldName
 	}
 	fm["onParam"] = func(fieldType, fieldName string) string {
-		if strings.HasPrefix(fieldType, "CThostFtdc") {
+		// 移除类型中的 * 后缀
+		baseType := strings.TrimSuffix(fieldType, "*")
+		baseType = strings.TrimSpace(baseType)
+		if strings.HasPrefix(baseType, "CThostFtdc") {
 			// self.OnRspQryInvestorPosition(copy.deepcopy(POINTER(CThostFtdcInvestorPositionField).from_param(pInvestorPosition).contents) if pInvestorPosition else CThostFtdcInvestorPositionField(), copy.deepcopy(POINTER(CThostFtdcRspInfoField).from_param(pRspInfo).contents), nRequestID, bIsLast)
-			return fmt.Sprintf("copy.deepcopy(POINTER(%s).from_param(%s).contents) if %s else %s()", fieldType, fieldName, fieldName, fieldType)
+			return fmt.Sprintf("copy.deepcopy(POINTER(%s).from_param(%s).contents) if %s else %s()", baseType, fieldName, fieldName, baseType)
 		}
 		return fieldName
 	}
@@ -386,6 +480,34 @@ func wgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 		tmp := []fieldStruct{{FieldType: "void*", FieldName: "api"}}
 		tmp = append(tmp, fn.FuncFields...)
 		fn.FuncFields = tmp
+		// Windows 版本：从函数签名中移除 api 参数（但 C 函数调用时仍然需要）
+		// macOS 上的 ReqUserLogin 需要特殊处理：从函数签名中移除 length 和 systemInfo 参数
+		// 但这些参数仍然会传递给 C 函数（在模板中处理）
+		if csys == "macos" && fn.FuncName == "ReqUserLogin" {
+			filtered := make([]fieldStruct, 0)
+			for _, f := range fn.FuncFields {
+				// 检查字段名，可能是 "length" 或 "*length" 等格式
+				fieldName := strings.TrimPrefix(f.FieldName, "*")
+				// 跳过 length 和 systemInfo 参数（这些会在函数内部自动生成）
+				if fieldName != "length" && fieldName != "systemInfo" {
+					filtered = append(filtered, f)
+				}
+			}
+			fn.FuncFields = filtered
+		}
+		// 设置 FuncFieldsWithoutApi：Windows 版本不包含 api 字段
+		if csys == "windows" {
+			// 对于 Windows，创建一个不包含 api 的字段列表用于函数签名
+			fn.FuncFieldsWithoutApi = make([]fieldStruct, 0)
+			for _, f := range fn.FuncFields {
+				fieldName := strings.TrimPrefix(f.FieldName, "*")
+				if fieldName != "api" {
+					fn.FuncFieldsWithoutApi = append(fn.FuncFieldsWithoutApi, f)
+				}
+			}
+		} else {
+			fn.FuncFieldsWithoutApi = fn.FuncFields
+		}
 	}
 	// }
 	mpCpp := make(map[string]interface{})
@@ -394,40 +516,55 @@ func wgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 	mpCpp["Pf"] = csys
 	fm := make(template.FuncMap)
 	fm["ctp_type"] = func(structType string) string {
-		if strings.HasSuffix(structType, "Field") { // struct
-			return fmt.Sprintf("*%s", structType) // *CThostFtdcUserLogoutField
+		// 先去掉类型后面的 *（如果有）
+		baseType := strings.TrimSuffix(structType, "*")
+		baseType = strings.TrimSpace(baseType)
+
+		if strings.HasSuffix(baseType, "Field") { // struct
+			return fmt.Sprintf("*%s", baseType) // *CThostFtdcUserLogoutField
 		}
-		if structType == "void*" {
+		if baseType == "void" {
 			return "uintptr"
 		}
-		if structType == "char" {
+		if baseType == "char" {
 			return "[]byte"
 		}
-		if structType == "CThostFtdcMdSpi" {
+		if baseType == "CThostFtdcMdSpi" {
 			return "uintptr"
 		}
-		if structType == "CThostFtdcTraderSpi" {
+		if baseType == "CThostFtdcTraderSpi" {
 			return "uintptr"
 		}
-		if structType == "THOST_TE_RESUME_TYPE" {
+		if baseType == "THOST_TE_RESUME_TYPE" {
 			return "THOST_TE_RESUME_TYPE"
 		}
-		return structType
+		return baseType
 	}
 	fm["fldType"] = func(structType string, str string) string {
 		if strings.Contains(str, "*") {
-			if str == "*pSpi" {
+			if str == "*pSpi" || str == "pSpi" {
 				if title == "ctpquote_api" {
-					return fmt.Sprintf("uintptr(q.%s)", strings.TrimPrefix(str, "*"))
+					fieldName := strings.TrimPrefix(str, "*")
+					// 对于 Windows，pSpi 已经是 uintptr 类型，直接使用 uintptr 转换
+					return fmt.Sprintf("uintptr(q.%s)", fieldName)
 				} else {
-					return fmt.Sprintf("uintptr(t.%s)", strings.TrimPrefix(str, "*"))
+					fieldName := strings.TrimPrefix(str, "*")
+					// 对于 Windows，pSpi 已经是 uintptr 类型，直接使用 uintptr 转换
+					return fmt.Sprintf("uintptr(t.%s)", fieldName)
 				}
 			} else {
 				// Windows: 对于 char *ppInstrumentID[]，改用预先准备的 _ppPtr
-				if structType == "char" {
-					if str == "*ppInstrumentID" {
-						return "_ppPtr"
-					}
+				// 检查字段名是否为 ppInstrumentID（可能带 * 前缀）
+				fieldName := strings.TrimPrefix(str, "*")
+				if fieldName == "ppInstrumentID" {
+					return "_ppPtr"
+				}
+				// 去掉类型中的 * 和 [] 后缀
+				baseType := strings.TrimSuffix(structType, "*")
+				baseType = strings.TrimSuffix(baseType, "[]")
+				baseType = strings.TrimSpace(baseType)
+				if baseType == "char" {
+					// 对于 char* 类型的参数（[]byte），使用第一个元素的地址
 					return fmt.Sprintf("uintptr(unsafe.Pointer(&%s[0]))", strings.TrimPrefix(str, "*"))
 				} else {
 					return fmt.Sprintf("uintptr(unsafe.Pointer(%s))", strings.TrimPrefix(str, "*"))
@@ -440,14 +577,42 @@ func wgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 				} else {
 					return fmt.Sprintf("uintptr(t.%s)", str)
 				}
+			} else if str == "pSpi" {
+				// 处理 pSpi 参数（不带 * 的情况）
+				// 对于 Windows，pSpi 已经是 uintptr 类型，直接使用 uintptr 转换
+				if title == "ctpquote_api" {
+					return fmt.Sprintf("uintptr(q.%s)", str)
+				} else {
+					return fmt.Sprintf("uintptr(t.%s)", str)
+				}
 			} else {
+				// Windows: 对于 ppInstrumentID（不带 *），使用预先准备的 _ppPtr
+				// 检查字段名，去除可能的 * 前缀后比较
+				fieldName := strings.TrimPrefix(str, "*")
+				if fieldName == "ppInstrumentID" {
+					return "_ppPtr"
+				}
+				// 检查是否是结构体指针类型（Field 结尾或 CThostFtdc 开头）
+				baseType := strings.TrimSuffix(structType, "*")
+				// 去掉 [] 后缀（数组类型）
+				baseType = strings.TrimSuffix(baseType, "[]")
+				baseType = strings.TrimSpace(baseType)
+				// 检查是否是 char 类型的数组参数（[]byte），但要排除 ppInstrumentID
+				if baseType == "char" && fieldName != "ppInstrumentID" {
+					// 对于 char 类型的数组参数（[]byte），使用第一个元素的地址
+					return fmt.Sprintf("uintptr(unsafe.Pointer(&%s[0]))", str)
+				}
+				if strings.HasSuffix(baseType, "Field") || strings.HasPrefix(baseType, "CThostFtdc") {
+					// 结构体指针类型，使用 unsafe.Pointer
+					return fmt.Sprintf("uintptr(unsafe.Pointer(%s))", str)
+				}
 				return fmt.Sprintf("uintptr(%s)", str)
 			}
 		}
 	}
 	// 为 Windows 版生成 ppInstrumentID 的指针数组与 KeepAlive 代码
 	fm["supType"] = func(structType string, field string) string {
-		if field == "*ppInstrumentID" {
+		if field == "*ppInstrumentID" || field == "ppInstrumentID" {
 			return fmt.Sprintf(`
 	var _ppPtr uintptr
 	if nCount > 0 {
@@ -471,105 +636,164 @@ func wgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 }
 
 func xgocfm(title string, tplsOn, tplsFn []*tplStruct) {
-	for _, fn := range tplsFn { // 主调函数
-		// 增加 void* api 首个参数
-		tmp := []fieldStruct{{FieldType: "void*", FieldName: "api"}}
-		tmp = append(tmp, fn.FuncFields...)
-		fn.FuncFields = tmp
+	// 注意：不需要在这里添加 void* api 参数
+	// 因为模板中已经硬编码了 void *api
+	// 如果添加会导致重复：void *api, void* api
+
+	// macOS 上的 ReqUserLogin 需要特殊处理：从函数签名中移除 length 和 systemInfo 参数
+	// 但这些参数仍然会传递给 C 函数（在模板中处理）
+	if csys == "macos" {
+		for _, fn := range tplsFn {
+			if fn.FuncName == "ReqUserLogin" {
+				filtered := make([]fieldStruct, 0)
+				for _, f := range fn.FuncFields {
+					// 检查字段名，可能是 "length" 或 "*length" 等格式
+					fieldName := strings.TrimPrefix(f.FieldName, "*")
+					// 跳过 length 和 systemInfo 参数（这些会在函数内部自动生成）
+					if fieldName != "length" && fieldName != "systemInfo" {
+						filtered = append(filtered, f)
+					}
+				}
+				fn.FuncFields = filtered
+			}
+		}
 	}
+
 	funcs := make(map[string]interface{})
 	funcs["On"] = tplsOn
 	funcs["Fn"] = tplsFn
 	funcs["Pf"] = csys
 	fm := make(template.FuncMap)
+	// 添加字符串处理函数到模板
+	fm["hasPrefix"] = strings.HasPrefix
+	fm["hasSuffix"] = strings.HasSuffix
+	fm["trimPrefix"] = strings.TrimPrefix
+	// 添加逻辑函数
+	fm["or"] = func(a, b bool) bool { return a || b }
+	fm["and"] = func(a, b bool) bool { return a && b }
+	fm["ne"] = func(a, b interface{}) bool { return a != b }
+	fm["eq"] = func(a, b interface{}) bool { return a == b }
 	fm["struct_Type"] = func(structType string) string {
-		if structType == "CThostFtdcMdSpi" {
+		// 先去掉类型末尾的 *，因为 * 应该在变量名前
+		baseType := strings.TrimSuffix(structType, "*")
+		baseType = strings.TrimSpace(baseType)
+
+		if baseType == "CThostFtdcMdSpi" {
 			return "void"
 		}
-		if structType == "CThostFtdcTraderSpi" {
+		if baseType == "CThostFtdcTraderSpi" {
 			return "void"
 		}
-		if strings.HasPrefix(structType, "CThostFtdc") { // struct
-			return "struct " + structType // struct CThostFtdcRspUserLoginField *pRspUserLogin
+		if strings.HasPrefix(baseType, "CThostFtdc") { // struct
+			return "struct " + baseType // struct CThostFtdcRspUserLoginField
 		}
-		if structType == "bool" {
-			return "_Bool"
+		if baseType == "bool" {
+			return "bool" // 在 C 头文件中使用 bool 而不是 _Bool
 		}
-		if structType == "THOST_TE_RESUME_TYPE" {
+		if baseType == "THOST_TE_RESUME_TYPE" {
 			return "int"
 		}
-		return structType
+		return baseType
 	}
 	fm["C_struct"] = func(structType string) string {
-		if strings.HasPrefix(structType, "CThostFtdc") { // struct
-			return "*C.struct_" + structType // field *C.struct_CThostFtdcRspUserLoginField
+		// 先去掉类型末尾的 *，因为 * 应该在变量名前
+		baseType := strings.TrimSuffix(structType, "*")
+		baseType = strings.TrimSpace(baseType)
+
+		if strings.HasPrefix(baseType, "CThostFtdc") { // struct
+			return "*C.struct_" + baseType // field *C.struct_CThostFtdcRspUserLoginField
 		}
-		if structType == "int" {
+		if baseType == "int" {
 			return "C.int"
 		}
-		if structType == "bool" {
+		if baseType == "bool" {
 			return "C._Bool"
 		}
-		return structType
+		return baseType
 	}
 	fm["ctp_type"] = func(structType string) string {
-		if strings.HasPrefix(structType, "CThostFtdc") { // struct
-			return fmt.Sprintf("*%s", structType) // *CThostFtdcUserLogoutField
+		// 先去掉类型末尾的 *，因为 * 应该在变量名前
+		baseType := strings.TrimSuffix(structType, "*")
+		baseType = strings.TrimSpace(baseType)
+
+		if strings.HasPrefix(baseType, "CThostFtdc") { // struct
+			return fmt.Sprintf("*%s", baseType) // *CThostFtdcUserLogoutField
 		}
-		if structType == "char" {
+		if baseType == "char" {
 			return "[]byte"
 		}
-		return structType
+		return baseType
 	}
 	fm["ctp_param"] = func(structType, field string) string {
-		if strings.HasPrefix(structType, "CThostFtdc") { // struct
-			return fmt.Sprintf("(*%s)(unsafe.Pointer(%s))", structType, strings.TrimPrefix(field, "*")) // (*CThostFtdcRspUserLoginField)(unsafe.Pointer(field))
+		// 先去掉类型末尾的 *，因为 * 应该在变量名前
+		baseType := strings.TrimSuffix(structType, "*")
+		baseType = strings.TrimSpace(baseType)
+
+		if strings.HasPrefix(baseType, "CThostFtdc") { // struct
+			return fmt.Sprintf("(*%s)(unsafe.Pointer(%s))", baseType, strings.TrimPrefix(field, "*")) // (*CThostFtdcRspUserLoginField)(unsafe.Pointer(field))
 		}
-		if structType == "int" {
+		if baseType == "int" {
 			return "int(" + field + ")"
 		}
-		if structType == "bool" {
+		if baseType == "bool" {
 			return "bool(" + field + ")"
 		}
 		return field
 	}
 	fm["fldType"] = func(structType string, field string) string {
-		if field == "*ppInstrumentID" {
+		if field == "*ppInstrumentID" || field == "ppInstrumentID" {
 			return "_ppPtr"
 		}
-		if strings.HasSuffix(structType, "Field") {
-			return fmt.Sprintf("(*C.struct_%s)(unsafe.Pointer(%s))", structType, strings.TrimPrefix(field, "*"))
-		}
-		if structType == "char" {
-			return fmt.Sprintf("(*C.char)(unsafe.Pointer(C.CBytes(%s)))", strings.TrimPrefix(field, "*"))
-		}
-		if structType == "int" {
-			return fmt.Sprintf("C.int(%s)", field)
-		}
-		if structType == "bool" {
-			return fmt.Sprintf("C._Bool(%s)", field)
-		}
-		if structType == "THOST_TE_RESUME_TYPE" {
-			return fmt.Sprintf("C.int(%s)", field)
-		}
-		if field == "*pSpi" || field == "api" {
+		// 先检查 pSpi 字段，因为它已经是 unsafe.Pointer 类型
+		if field == "*pSpi" || field == "pSpi" {
 			if title == "ctpquote_api" {
 				return fmt.Sprintf("q.%s", strings.TrimPrefix(field, "*"))
 			} else {
 				return fmt.Sprintf("t.%s", strings.TrimPrefix(field, "*"))
 			}
 		}
-		if structType == "TThostFtdcSystemInfoLenType" {
+		// 先去掉类型末尾的 *，因为 * 应该在变量名前
+		baseType := strings.TrimSuffix(structType, "*")
+		baseType = strings.TrimSpace(baseType)
+
+		if strings.HasSuffix(baseType, "Field") || strings.HasPrefix(baseType, "CThostFtdc") {
+			return fmt.Sprintf("(*C.struct_%s)(unsafe.Pointer(%s))", baseType, strings.TrimPrefix(field, "*"))
+		}
+		if baseType == "char" {
+			return fmt.Sprintf("(*C.char)(unsafe.Pointer(C.CBytes(%s)))", strings.TrimPrefix(field, "*"))
+		}
+		if baseType == "int" {
 			return fmt.Sprintf("C.int(%s)", field)
 		}
-		if structType == "TThostFtdcClientSystemInfoType" {
+		if baseType == "bool" {
+			return fmt.Sprintf("C._Bool(%s)", field)
+		}
+		if baseType == "THOST_TE_RESUME_TYPE" {
+			return fmt.Sprintf("C.int(%s)", field)
+		}
+		if field == "api" {
+			if title == "ctpquote_api" {
+				return "q.api"
+			} else {
+				return "t.api"
+			}
+		}
+		if baseType == "TThostFtdcSystemInfoLenType" {
+			return fmt.Sprintf("C.int(%s)", field)
+		}
+		if baseType == "TThostFtdcClientSystemInfoType" {
 			return fmt.Sprintf("(*C.char)(unsafe.Pointer(&%s[0]))", field)
 		}
-		return fmt.Sprintf("(%s %s)", structType, field)
+		// 处理 void* 类型
+		if baseType == "void" {
+			return fmt.Sprintf("unsafe.Pointer(%s)", strings.TrimPrefix(field, "*"))
+		}
+		// 对于其他未知类型，直接返回字段名（去掉可能的 * 前缀）
+		return strings.TrimPrefix(field, "*")
 	}
 
 	fm["supType"] = func(structType string, field string) string {
-		if field == "*ppInstrumentID" {
+		if field == "*ppInstrumentID" || field == "ppInstrumentID" {
 			return fmt.Sprintf(`
     tmp_arr := make([]*C.char, nCount)
     for i := 0; i < nCount; i++ {
@@ -585,13 +809,15 @@ func xgocfm(title string, tplsOn, tplsFn []*tplStruct) {
 	}
 	fm["postSup"] = func(fields []fieldStruct) string {
 		for _, f := range fields {
-			if f.FieldName == "*ppInstrumentID" {
+			if f.FieldName == "*ppInstrumentID" || f.FieldName == "ppInstrumentID" {
 				return "\tfor i := 0; i < nCount; i++ {\n\t\tif tmp_arr[i] != nil { C.free(unsafe.Pointer(tmp_arr[i])) }\n\t}\n"
 			}
 		}
 		return ""
 	}
 
+	// xgocfm 只生成 Go 文件（ctpquote_api_darwin.go 或 ctptrade_api_darwin.go）
+	// C 头文件由 ccfm 函数生成
 	tmpl(title+"_nix.go.tpl", funcs, fm, outpath)
 }
 

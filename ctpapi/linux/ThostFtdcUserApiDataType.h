@@ -429,6 +429,8 @@ typedef char TThostFtdcTraderConnectStatusType;
 #define THOST_FTDC_FC_SyncOTP 'E'
 ///删除未知单
 #define THOST_FTDC_FC_DeleteOrder 'F'
+///退出紧急状态
+#define THOST_FTDC_FC_ExitEmergency 'G'
 
 typedef char TThostFtdcFunctionCodeType;
 
@@ -873,8 +875,14 @@ typedef char TThostFtdcOffsetFlagType;
 #define THOST_FTDC_FCC_Other '6'
 ///自然人临近交割
 #define THOST_FTDC_FCC_PersonDeliv '7'
-///风控强平不验证资金
+///本地强平资金不足忽略敞口
 #define THOST_FTDC_FCC_Notverifycapital '8'
+///本地强平资金不足
+#define THOST_FTDC_FCC_LocalLackDeposit '9'
+///本地强平违规持仓忽略敞口
+#define THOST_FTDC_FCC_LocalViolationNocheck 'a'
+///本地强平违规持仓
+#define THOST_FTDC_FCC_LocalViolation 'b'
 
 typedef char TThostFtdcForceCloseReasonType;
 
@@ -1061,6 +1069,8 @@ typedef char TThostFtdcPriceSourceType;
 #define THOST_FTDC_IS_AuctionMatch '5'
 ///收盘
 #define THOST_FTDC_IS_Closed '6'
+///交易业务处理
+#define THOST_FTDC_IS_TransactionProcessing '7'
 
 typedef char TThostFtdcInstrumentStatusType;
 
@@ -1539,6 +1549,8 @@ typedef char TThostFtdcSystemParamIDType;
 #define THOST_FTDC_TPID_LoginFailMaxNumForIP 'U'
 ///密码有效期
 #define THOST_FTDC_TPID_PasswordPeriod 'V'
+///历史密码重复限制次数
+#define THOST_FTDC_TPID_PwdHistoryCmp 'X'
 
 typedef char TThostFtdcTradeParamIDType;
 
@@ -2572,9 +2584,9 @@ typedef char TThostFtdcClearbarchIDType[6];
 #define THOST_FTDC_UET_Login '1'
 ///登出
 #define THOST_FTDC_UET_Logout '2'
-///交易成功
+///CTP校验通过
 #define THOST_FTDC_UET_Trading '3'
-///交易失败
+///CTP校验失败
 #define THOST_FTDC_UET_TradingError '4'
 ///修改密码
 #define THOST_FTDC_UET_UpdatePassword '5'
@@ -2586,6 +2598,8 @@ typedef char TThostFtdcClearbarchIDType[6];
 #define THOST_FTDC_UET_Transfer '8'
 ///其他
 #define THOST_FTDC_UET_Other '9'
+///修改资金密码
+#define THOST_FTDC_UET_UpdateTradingAccountPassword 'a'
 
 typedef char TThostFtdcUserEventTypeType;
 
@@ -6567,6 +6581,11 @@ typedef char TThostFtdcWeakPasswordSourceType;
 typedef char TThostFtdcRandomStringType[17];
 
 /////////////////////////////////////////////////////////////////////////
+///TFtdcOrderMemoType是一个报单回显字段类型
+/////////////////////////////////////////////////////////////////////////
+typedef char TThostFtdcOrderMemoType[13];
+
+/////////////////////////////////////////////////////////////////////////
 ///TFtdcOptSelfCloseFlagType是一个期权行权的头寸是否自对冲类型
 /////////////////////////////////////////////////////////////////////////
 ///自对冲期权仓位
@@ -6906,6 +6925,12 @@ typedef int TThostFtdcSpreadIdType;
 #define THOST_FTDC_EPF_None '0'
 ///SPBM算法
 #define THOST_FTDC_EPF_SPBM '1'
+///RULE算法
+#define THOST_FTDC_EPF_RULE '2'
+///SPMM算法
+#define THOST_FTDC_EPF_SPMM '3'
+///RCAMS算法
+#define THOST_FTDC_EPF_RCAMS '4'
 
 typedef char TThostFtdcPortfolioType;
 
@@ -6913,5 +6938,164 @@ typedef char TThostFtdcPortfolioType;
 ///TFtdcPortfolioDefIDType是一个SPBM组合套餐ID类型
 /////////////////////////////////////////////////////////////////////////
 typedef int TThostFtdcPortfolioDefIDType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcWithDrawParamIDType是一个可提参数代码类型
+/////////////////////////////////////////////////////////////////////////
+///权利金收支是否可提 1 代表可提 0 不可提
+#define THOST_FTDC_WDPID_CashIn 'C'
+
+typedef char TThostFtdcWithDrawParamIDType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcWithDrawParamValueType是一个可提控制参数内容类型
+/////////////////////////////////////////////////////////////////////////
+typedef char TThostFtdcWithDrawParamValueType[41];
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcInvstTradingRightType是一个投资者交易权限类型
+/////////////////////////////////////////////////////////////////////////
+///只能平仓
+#define THOST_FTDC_ITR_CloseOnly '1'
+///不能交易
+#define THOST_FTDC_ITR_Forbidden '2'
+
+typedef char TThostFtdcInvstTradingRightType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcThostFunctionCodeType是一个Thost终端功能代码类型
+/////////////////////////////////////////////////////////////////////////
+typedef int TThostFtdcThostFunctionCodeType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcSPMMDiscountRatioType是一个SPMM折扣率类型
+/////////////////////////////////////////////////////////////////////////
+typedef double TThostFtdcSPMMDiscountRatioType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcSPMMModelDescType是一个SPMM模板描述类型
+/////////////////////////////////////////////////////////////////////////
+typedef char TThostFtdcSPMMModelDescType[129];
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcSPMMModelIDType是一个SPMM模板ID类型
+/////////////////////////////////////////////////////////////////////////
+typedef char TThostFtdcSPMMModelIDType[33];
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcSPMMProductIDType是一个SPMM商品群商品组ID类型
+/////////////////////////////////////////////////////////////////////////
+typedef char TThostFtdcSPMMProductIDType[41];
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcInstMarginCalIDType是一个SPMM合约保证金算法类型
+/////////////////////////////////////////////////////////////////////////
+///标准算法收取双边
+#define THOST_FTDC_IMID_BothSide '1'
+///单向大边
+#define THOST_FTDC_IMID_MMSA '2'
+///新组保SPMM
+#define THOST_FTDC_IMID_SPMM '3'
+
+typedef char TThostFtdcInstMarginCalIDType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcProductIDType是一个产品ID类型
+/////////////////////////////////////////////////////////////////////////
+typedef char TThostFtdcProductIDType[41];
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcHedgeRateType是一个HedgeRate类型类型
+/////////////////////////////////////////////////////////////////////////
+typedef double TThostFtdcHedgeRateType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcRCAMSPriorityType是一个优先级类型
+/////////////////////////////////////////////////////////////////////////
+typedef int TThostFtdcRCAMSPriorityType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcAdjustValueType是一个空头期权风险调整标准类型类型
+/////////////////////////////////////////////////////////////////////////
+typedef double TThostFtdcAdjustValueType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcRCAMSCombinationTypeType是一个RCAMS组合类型类型
+/////////////////////////////////////////////////////////////////////////
+///牛市看涨价差组合
+#define THOST_FTDC_ERComb_BUC '0'
+///熊市看涨价差组合
+#define THOST_FTDC_ERComb_BEC '1'
+///熊市看跌价差组合
+#define THOST_FTDC_ERComb_BEP '2'
+///牛市看跌价差组合
+#define THOST_FTDC_ERComb_BUP '3'
+///日历价差组合
+#define THOST_FTDC_ERComb_CAS '4'
+
+typedef char TThostFtdcRCAMSCombinationTypeType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcRuleIdType是一个策略id类型
+/////////////////////////////////////////////////////////////////////////
+typedef char TThostFtdcRuleIdType[51];
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcPortfTypeType是一个新组保算法启用类型类型
+/////////////////////////////////////////////////////////////////////////
+///使用初版交易所算法
+#define THOST_FTDC_EET_None '0'
+///SPBM算法V1.1.0_附加保证金调整
+#define THOST_FTDC_EET_SPBM_AddOnHedge '1'
+
+typedef char TThostFtdcPortfTypeType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcInstrumentClassType是一个合约类型类型
+/////////////////////////////////////////////////////////////////////////
+///一般月份合约
+#define THOST_FTDC_EIC_Usual '1'
+///临近交割合约
+#define THOST_FTDC_EIC_Delivery '2'
+///非组合合约
+#define THOST_FTDC_EIC_NonComb '3'
+
+typedef char TThostFtdcInstrumentClassType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcCommodityGroupIDType是一个商品群号类型
+/////////////////////////////////////////////////////////////////////////
+typedef int TThostFtdcCommodityGroupIDType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcStdPositionType是一个标准持仓类型类型
+/////////////////////////////////////////////////////////////////////////
+typedef double TThostFtdcStdPositionType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcProdChangeFlagType是一个品种记录改变状态类型
+/////////////////////////////////////////////////////////////////////////
+///持仓量和冻结量均无变化
+#define THOST_FTDC_PCF_None '0'
+///持仓量无变化，冻结量有变化
+#define THOST_FTDC_PCF_OnlyFrozen '1'
+///持仓量有变化
+#define THOST_FTDC_PCF_PositionChange '2'
+
+typedef char TThostFtdcProdChangeFlagType;
+
+/////////////////////////////////////////////////////////////////////////
+///TFtdcPwdRcdSrcType是一个历史密码来源类型
+/////////////////////////////////////////////////////////////////////////
+///来源于Sync初始化数据
+#define THOST_FTDC_PRS_Init '0'
+///来源于实时上场数据
+#define THOST_FTDC_PRS_Sync '1'
+///来源于用户修改
+#define THOST_FTDC_PRS_UserUpd '2'
+///来源于超户修改，很可能来自主席同步数据
+#define THOST_FTDC_PRS_SuperUserUpd '3'
+
+typedef char TThostFtdcPwdRcdSrcType;
 
 #endif

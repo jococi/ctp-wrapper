@@ -40,9 +40,9 @@ public:
 	
     [[ range .On ]]
 	// [[ .Comment ]]
-	typedef int (WPCTP *[[ .FuncTypeName ]])([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[ .FieldType ]] [[ .FieldName ]][[ end ]]);
+	typedef int (WPCTP *[[ .FuncTypeName ]])([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[ end ]]);
 	void *[[ .FuncName ]]_;
-	virtual void [[ .FuncName ]]([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[ .FieldType ]] [[ .FieldName ]][[ end ]]){ if([[ .FuncName ]]_) (([[ .FuncTypeName ]])[[ .FuncName ]]_)([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[ trimStar .FieldName ]][[ end ]]); }
+	virtual void [[ .FuncName ]]([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[ end ]]){ if([[ .FuncName ]]_) (([[ .FuncTypeName ]])[[ .FuncName ]]_)([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[ trimStar .FieldName ]][[ end ]]); }
     [[ end ]]
 };
 
@@ -57,5 +57,5 @@ DLL_EXPORT_C_DECL void WPCTP q[[ .FuncName ]](Quote* spi, void* func);
 [[ end ]]
 [[ range .Fn ]]
 // [[ .Comment ]]
-DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP q[[ .FuncName ]](CThostFtdcMdApi *api[[ range .FuncFields ]], [[.FieldType]] [[.FieldName]][[if eq .FieldName "*ppInstrumentID"]][][[end]][[end]]);
+DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP q[[ .FuncName ]](CThostFtdcMdApi *api[[ range .FuncFields ]], [[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[end]]);
 [[ end ]]

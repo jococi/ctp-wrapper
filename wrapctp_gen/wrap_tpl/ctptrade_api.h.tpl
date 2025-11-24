@@ -37,9 +37,9 @@
 
 #include <string.h>
 
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char* pSystemInfo, int nLen);
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfo(char *pSystemInfo, int nLen);
 [[if eq .Pf "macos"]]#ifdef __APPLE__
-DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char* pSystemInfo, int nLen);
+DLL_EXPORT_C_DECL int WPCTP dCTP_GetSystemInfoUnAesEncode(char *pSystemInfo, int nLen);
 #endif[[end]]
 DLL_EXPORT_C_DECL void* WPCTP dCTP_GetDataCollectApiVersion();
 
@@ -50,9 +50,9 @@ public:
 
     [[ range .On ]]
 	// [[ .Comment ]]
-	typedef int (WPCTP *[[ .FuncTypeName ]])([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[ .FieldType ]] [[ .FieldName ]][[ end ]]);
+	typedef int (WPCTP *[[ .FuncTypeName ]])([[ range $i, $v := .FuncFields ]][[if gt $i 0]], [[end]][[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[ end ]]);
 	void *[[ .FuncName ]]_;
-	virtual void [[ .FuncName ]]([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[ .FieldType ]] [[ .FieldName ]][[ end ]]){ if([[ .FuncName ]]_) (([[ .FuncTypeName ]])[[ .FuncName ]]_)([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[ trimStar .FieldName ]][[ end ]]); }
+	virtual void [[ .FuncName ]]([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[ end ]]){ if([[ .FuncName ]]_) (([[ .FuncTypeName ]])[[ .FuncName ]]_)([[ range $n, $var := .FuncFields ]][[if gt $n 0]], [[end]][[ trimStar .FieldName ]][[ end ]]); }
     [[ end ]]
 };
 
@@ -66,5 +66,5 @@ DLL_EXPORT_C_DECL void WPCTP t[[ .FuncName ]](Trade* spi, void* func);
 [[ end ]]
 [[ range .Fn ]]
 // [[ .Comment ]]
-DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP t[[ .FuncName ]](CThostFtdcTraderApi *api[[ range .FuncFields ]], [[.FieldType]] [[.FieldName]][[if eq .FieldName "*ppInstrumentID"]][][[end]][[end]]);
+DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP t[[ .FuncName ]](CThostFtdcTraderApi *api[[ range .FuncFields ]], [[formatParamType .FieldType]] [[formatParamName .FieldType .FieldName]][[if .IsArray]][][[end]][[end]]);
 [[ end ]]

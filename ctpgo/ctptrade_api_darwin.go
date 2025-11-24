@@ -293,6 +293,40 @@ type Trade struct {
 	OnRspQryInvestorPortfMarginRatio_ func(pInvestorPortfMarginRatio *CThostFtdcInvestorPortfMarginRatioField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 	// 投资者产品SPBM明细查询响应
 	OnRspQryInvestorProdSPBMDetail_ func(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者商品组SPMM记录查询响应
+	OnRspQryInvestorCommoditySPMMMargin_ func(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者商品群SPMM记录查询响应
+	OnRspQryInvestorCommodityGroupSPMMMargin_ func(pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// SPMM合约参数查询响应
+	OnRspQrySPMMInstParam_ func(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// SPMM产品参数查询响应
+	OnRspQrySPMMProductParam_ func(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// SPBM附加跨品种抵扣参数查询响应
+	OnRspQrySPBMAddOnInterParameter_ func(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS产品组合信息查询响应
+	OnRspQryRCAMSCombProductInfo_ func(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS同合约风险对冲参数查询响应
+	OnRspQryRCAMSInstrParameter_ func(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS品种内风险对冲参数查询响应
+	OnRspQryRCAMSIntraParameter_ func(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS跨品种风险折抵参数查询响应
+	OnRspQryRCAMSInterParameter_ func(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS空头期权风险调整参数查询响应
+	OnRspQryRCAMSShortOptAdjustParam_ func(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RCAMS策略组合持仓查询响应
+	OnRspQryRCAMSInvestorCombPosition_ func(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者品种RCAMS保证金查询响应
+	OnRspQryInvestorProdRCAMSMargin_ func(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RULE合约保证金参数查询响应
+	OnRspQryRULEInstrParameter_ func(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RULE品种内对锁仓折扣参数查询响应
+	OnRspQryRULEIntraParameter_ func(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// RULE跨品种抵扣参数查询响应
+	OnRspQryRULEInterParameter_ func(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者产品RULE保证金查询响应
+	OnRspQryInvestorProdRULEMargin_ func(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	// 投资者投资者新组保设置查询响应
+	OnRspQryInvestorPortfSetting_ func(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 }
 
 var t *Trade
@@ -351,65 +385,57 @@ func (t *Trade) CTP_GetDataCollectApiVersion() string {
 }
 
 func (t *Trade) Release() {
-
 	C.tRelease(t.api)
 }
 
 func (t *Trade) Init() {
-
 	C.tInit(t.api)
 }
 
 func (t *Trade) Join() int32 {
-
 	res := C.tJoin(t.api)
 	return int32(res)
 }
 
-func (t *Trade) RegisterFront(pszFrontAddress []byte) {
+func (t *Trade) GetFrontInfo(pFrontInfo *CThostFtdcFrontInfoField) {
+	C.tGetFrontInfo(t.api, (*C.struct_CThostFtdcFrontInfoField)(unsafe.Pointer(pFrontInfo)))
+}
 
+func (t *Trade) RegisterFront(pszFrontAddress []byte) {
 	C.tRegisterFront(t.api, (*C.char)(unsafe.Pointer(C.CBytes(pszFrontAddress))))
 }
 
 func (t *Trade) RegisterNameServer(pszNsAddress []byte) {
-
 	C.tRegisterNameServer(t.api, (*C.char)(unsafe.Pointer(C.CBytes(pszNsAddress))))
 }
 
 func (t *Trade) RegisterFensUserInfo(pFensUserInfo *CThostFtdcFensUserInfoField) {
-
 	C.tRegisterFensUserInfo(t.api, (*C.struct_CThostFtdcFensUserInfoField)(unsafe.Pointer(pFensUserInfo)))
 }
 
 func (t *Trade) RegisterSpi() {
-
 	C.tRegisterSpi(t.api, t.pSpi)
 }
 
 func (t *Trade) SubscribePrivateTopic(nResumeType THOST_TE_RESUME_TYPE) {
-
 	C.tSubscribePrivateTopic(t.api, C.int(nResumeType))
 }
 
 func (t *Trade) SubscribePublicTopic(nResumeType THOST_TE_RESUME_TYPE) {
-
 	C.tSubscribePublicTopic(t.api, C.int(nResumeType))
 }
 
 func (t *Trade) ReqAuthenticate(pReqAuthenticateField *CThostFtdcReqAuthenticateField, nRequestID int) int32 {
-
 	res := C.tReqAuthenticate(t.api, (*C.struct_CThostFtdcReqAuthenticateField)(unsafe.Pointer(pReqAuthenticateField)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) RegisterUserSystemInfo(pUserSystemInfo *CThostFtdcUserSystemInfoField) int32 {
-
 	res := C.tRegisterUserSystemInfo(t.api, (*C.struct_CThostFtdcUserSystemInfoField)(unsafe.Pointer(pUserSystemInfo)))
 	return int32(res)
 }
 
 func (t *Trade) SubmitUserSystemInfo(pUserSystemInfo *CThostFtdcUserSystemInfoField) int32 {
-
 	res := C.tSubmitUserSystemInfo(t.api, (*C.struct_CThostFtdcUserSystemInfoField)(unsafe.Pointer(pUserSystemInfo)))
 	return int32(res)
 }
@@ -424,560 +450,552 @@ func (t *Trade) ReqUserLogin(pReqUserLoginField *CThostFtdcReqUserLoginField, nR
 }
 
 func (t *Trade) ReqUserLogout(pUserLogout *CThostFtdcUserLogoutField, nRequestID int) int32 {
-
 	res := C.tReqUserLogout(t.api, (*C.struct_CThostFtdcUserLogoutField)(unsafe.Pointer(pUserLogout)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqUserPasswordUpdate(pUserPasswordUpdate *CThostFtdcUserPasswordUpdateField, nRequestID int) int32 {
-
 	res := C.tReqUserPasswordUpdate(t.api, (*C.struct_CThostFtdcUserPasswordUpdateField)(unsafe.Pointer(pUserPasswordUpdate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqTradingAccountPasswordUpdate(pTradingAccountPasswordUpdate *CThostFtdcTradingAccountPasswordUpdateField, nRequestID int) int32 {
-
 	res := C.tReqTradingAccountPasswordUpdate(t.api, (*C.struct_CThostFtdcTradingAccountPasswordUpdateField)(unsafe.Pointer(pTradingAccountPasswordUpdate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqUserAuthMethod(pReqUserAuthMethod *CThostFtdcReqUserAuthMethodField, nRequestID int) int32 {
-
 	res := C.tReqUserAuthMethod(t.api, (*C.struct_CThostFtdcReqUserAuthMethodField)(unsafe.Pointer(pReqUserAuthMethod)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqGenUserCaptcha(pReqGenUserCaptcha *CThostFtdcReqGenUserCaptchaField, nRequestID int) int32 {
-
 	res := C.tReqGenUserCaptcha(t.api, (*C.struct_CThostFtdcReqGenUserCaptchaField)(unsafe.Pointer(pReqGenUserCaptcha)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqGenUserText(pReqGenUserText *CThostFtdcReqGenUserTextField, nRequestID int) int32 {
-
 	res := C.tReqGenUserText(t.api, (*C.struct_CThostFtdcReqGenUserTextField)(unsafe.Pointer(pReqGenUserText)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqUserLoginWithCaptcha(pReqUserLoginWithCaptcha *CThostFtdcReqUserLoginWithCaptchaField, nRequestID int) int32 {
-
 	res := C.tReqUserLoginWithCaptcha(t.api, (*C.struct_CThostFtdcReqUserLoginWithCaptchaField)(unsafe.Pointer(pReqUserLoginWithCaptcha)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqUserLoginWithText(pReqUserLoginWithText *CThostFtdcReqUserLoginWithTextField, nRequestID int) int32 {
-
 	res := C.tReqUserLoginWithText(t.api, (*C.struct_CThostFtdcReqUserLoginWithTextField)(unsafe.Pointer(pReqUserLoginWithText)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqUserLoginWithOTP(pReqUserLoginWithOTP *CThostFtdcReqUserLoginWithOTPField, nRequestID int) int32 {
-
 	res := C.tReqUserLoginWithOTP(t.api, (*C.struct_CThostFtdcReqUserLoginWithOTPField)(unsafe.Pointer(pReqUserLoginWithOTP)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqOrderInsert(pInputOrder *CThostFtdcInputOrderField, nRequestID int) int32 {
-
 	res := C.tReqOrderInsert(t.api, (*C.struct_CThostFtdcInputOrderField)(unsafe.Pointer(pInputOrder)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqParkedOrderInsert(pParkedOrder *CThostFtdcParkedOrderField, nRequestID int) int32 {
-
 	res := C.tReqParkedOrderInsert(t.api, (*C.struct_CThostFtdcParkedOrderField)(unsafe.Pointer(pParkedOrder)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqParkedOrderAction(pParkedOrderAction *CThostFtdcParkedOrderActionField, nRequestID int) int32 {
-
 	res := C.tReqParkedOrderAction(t.api, (*C.struct_CThostFtdcParkedOrderActionField)(unsafe.Pointer(pParkedOrderAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqOrderAction(pInputOrderAction *CThostFtdcInputOrderActionField, nRequestID int) int32 {
-
 	res := C.tReqOrderAction(t.api, (*C.struct_CThostFtdcInputOrderActionField)(unsafe.Pointer(pInputOrderAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryMaxOrderVolume(pQryMaxOrderVolume *CThostFtdcQryMaxOrderVolumeField, nRequestID int) int32 {
-
 	res := C.tReqQryMaxOrderVolume(t.api, (*C.struct_CThostFtdcQryMaxOrderVolumeField)(unsafe.Pointer(pQryMaxOrderVolume)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqSettlementInfoConfirm(pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, nRequestID int) int32 {
-
 	res := C.tReqSettlementInfoConfirm(t.api, (*C.struct_CThostFtdcSettlementInfoConfirmField)(unsafe.Pointer(pSettlementInfoConfirm)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqRemoveParkedOrder(pRemoveParkedOrder *CThostFtdcRemoveParkedOrderField, nRequestID int) int32 {
-
 	res := C.tReqRemoveParkedOrder(t.api, (*C.struct_CThostFtdcRemoveParkedOrderField)(unsafe.Pointer(pRemoveParkedOrder)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqRemoveParkedOrderAction(pRemoveParkedOrderAction *CThostFtdcRemoveParkedOrderActionField, nRequestID int) int32 {
-
 	res := C.tReqRemoveParkedOrderAction(t.api, (*C.struct_CThostFtdcRemoveParkedOrderActionField)(unsafe.Pointer(pRemoveParkedOrderAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqExecOrderInsert(pInputExecOrder *CThostFtdcInputExecOrderField, nRequestID int) int32 {
-
 	res := C.tReqExecOrderInsert(t.api, (*C.struct_CThostFtdcInputExecOrderField)(unsafe.Pointer(pInputExecOrder)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqExecOrderAction(pInputExecOrderAction *CThostFtdcInputExecOrderActionField, nRequestID int) int32 {
-
 	res := C.tReqExecOrderAction(t.api, (*C.struct_CThostFtdcInputExecOrderActionField)(unsafe.Pointer(pInputExecOrderAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqForQuoteInsert(pInputForQuote *CThostFtdcInputForQuoteField, nRequestID int) int32 {
-
 	res := C.tReqForQuoteInsert(t.api, (*C.struct_CThostFtdcInputForQuoteField)(unsafe.Pointer(pInputForQuote)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQuoteInsert(pInputQuote *CThostFtdcInputQuoteField, nRequestID int) int32 {
-
 	res := C.tReqQuoteInsert(t.api, (*C.struct_CThostFtdcInputQuoteField)(unsafe.Pointer(pInputQuote)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQuoteAction(pInputQuoteAction *CThostFtdcInputQuoteActionField, nRequestID int) int32 {
-
 	res := C.tReqQuoteAction(t.api, (*C.struct_CThostFtdcInputQuoteActionField)(unsafe.Pointer(pInputQuoteAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqBatchOrderAction(pInputBatchOrderAction *CThostFtdcInputBatchOrderActionField, nRequestID int) int32 {
-
 	res := C.tReqBatchOrderAction(t.api, (*C.struct_CThostFtdcInputBatchOrderActionField)(unsafe.Pointer(pInputBatchOrderAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqOptionSelfCloseInsert(pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, nRequestID int) int32 {
-
 	res := C.tReqOptionSelfCloseInsert(t.api, (*C.struct_CThostFtdcInputOptionSelfCloseField)(unsafe.Pointer(pInputOptionSelfClose)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqOptionSelfCloseAction(pInputOptionSelfCloseAction *CThostFtdcInputOptionSelfCloseActionField, nRequestID int) int32 {
-
 	res := C.tReqOptionSelfCloseAction(t.api, (*C.struct_CThostFtdcInputOptionSelfCloseActionField)(unsafe.Pointer(pInputOptionSelfCloseAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqCombActionInsert(pInputCombAction *CThostFtdcInputCombActionField, nRequestID int) int32 {
-
 	res := C.tReqCombActionInsert(t.api, (*C.struct_CThostFtdcInputCombActionField)(unsafe.Pointer(pInputCombAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryOrder(pQryOrder *CThostFtdcQryOrderField, nRequestID int) int32 {
-
 	res := C.tReqQryOrder(t.api, (*C.struct_CThostFtdcQryOrderField)(unsafe.Pointer(pQryOrder)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryTrade(pQryTrade *CThostFtdcQryTradeField, nRequestID int) int32 {
-
 	res := C.tReqQryTrade(t.api, (*C.struct_CThostFtdcQryTradeField)(unsafe.Pointer(pQryTrade)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestorPosition(pQryInvestorPosition *CThostFtdcQryInvestorPositionField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestorPosition(t.api, (*C.struct_CThostFtdcQryInvestorPositionField)(unsafe.Pointer(pQryInvestorPosition)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryTradingAccount(pQryTradingAccount *CThostFtdcQryTradingAccountField, nRequestID int) int32 {
-
 	res := C.tReqQryTradingAccount(t.api, (*C.struct_CThostFtdcQryTradingAccountField)(unsafe.Pointer(pQryTradingAccount)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestor(pQryInvestor *CThostFtdcQryInvestorField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestor(t.api, (*C.struct_CThostFtdcQryInvestorField)(unsafe.Pointer(pQryInvestor)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryTradingCode(pQryTradingCode *CThostFtdcQryTradingCodeField, nRequestID int) int32 {
-
 	res := C.tReqQryTradingCode(t.api, (*C.struct_CThostFtdcQryTradingCodeField)(unsafe.Pointer(pQryTradingCode)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInstrumentMarginRate(pQryInstrumentMarginRate *CThostFtdcQryInstrumentMarginRateField, nRequestID int) int32 {
-
 	res := C.tReqQryInstrumentMarginRate(t.api, (*C.struct_CThostFtdcQryInstrumentMarginRateField)(unsafe.Pointer(pQryInstrumentMarginRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInstrumentCommissionRate(pQryInstrumentCommissionRate *CThostFtdcQryInstrumentCommissionRateField, nRequestID int) int32 {
-
 	res := C.tReqQryInstrumentCommissionRate(t.api, (*C.struct_CThostFtdcQryInstrumentCommissionRateField)(unsafe.Pointer(pQryInstrumentCommissionRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryExchange(pQryExchange *CThostFtdcQryExchangeField, nRequestID int) int32 {
-
 	res := C.tReqQryExchange(t.api, (*C.struct_CThostFtdcQryExchangeField)(unsafe.Pointer(pQryExchange)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryProduct(pQryProduct *CThostFtdcQryProductField, nRequestID int) int32 {
-
 	res := C.tReqQryProduct(t.api, (*C.struct_CThostFtdcQryProductField)(unsafe.Pointer(pQryProduct)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInstrument(pQryInstrument *CThostFtdcQryInstrumentField, nRequestID int) int32 {
-
 	res := C.tReqQryInstrument(t.api, (*C.struct_CThostFtdcQryInstrumentField)(unsafe.Pointer(pQryInstrument)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryDepthMarketData(pQryDepthMarketData *CThostFtdcQryDepthMarketDataField, nRequestID int) int32 {
-
 	res := C.tReqQryDepthMarketData(t.api, (*C.struct_CThostFtdcQryDepthMarketDataField)(unsafe.Pointer(pQryDepthMarketData)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryTraderOffer(pQryTraderOffer *CThostFtdcQryTraderOfferField, nRequestID int) int32 {
-
 	res := C.tReqQryTraderOffer(t.api, (*C.struct_CThostFtdcQryTraderOfferField)(unsafe.Pointer(pQryTraderOffer)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySettlementInfo(pQrySettlementInfo *CThostFtdcQrySettlementInfoField, nRequestID int) int32 {
-
 	res := C.tReqQrySettlementInfo(t.api, (*C.struct_CThostFtdcQrySettlementInfoField)(unsafe.Pointer(pQrySettlementInfo)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryTransferBank(pQryTransferBank *CThostFtdcQryTransferBankField, nRequestID int) int32 {
-
 	res := C.tReqQryTransferBank(t.api, (*C.struct_CThostFtdcQryTransferBankField)(unsafe.Pointer(pQryTransferBank)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestorPositionDetail(pQryInvestorPositionDetail *CThostFtdcQryInvestorPositionDetailField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestorPositionDetail(t.api, (*C.struct_CThostFtdcQryInvestorPositionDetailField)(unsafe.Pointer(pQryInvestorPositionDetail)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryNotice(pQryNotice *CThostFtdcQryNoticeField, nRequestID int) int32 {
-
 	res := C.tReqQryNotice(t.api, (*C.struct_CThostFtdcQryNoticeField)(unsafe.Pointer(pQryNotice)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySettlementInfoConfirm(pQrySettlementInfoConfirm *CThostFtdcQrySettlementInfoConfirmField, nRequestID int) int32 {
-
 	res := C.tReqQrySettlementInfoConfirm(t.api, (*C.struct_CThostFtdcQrySettlementInfoConfirmField)(unsafe.Pointer(pQrySettlementInfoConfirm)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestorPositionCombineDetail(pQryInvestorPositionCombineDetail *CThostFtdcQryInvestorPositionCombineDetailField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestorPositionCombineDetail(t.api, (*C.struct_CThostFtdcQryInvestorPositionCombineDetailField)(unsafe.Pointer(pQryInvestorPositionCombineDetail)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryCFMMCTradingAccountKey(pQryCFMMCTradingAccountKey *CThostFtdcQryCFMMCTradingAccountKeyField, nRequestID int) int32 {
-
 	res := C.tReqQryCFMMCTradingAccountKey(t.api, (*C.struct_CThostFtdcQryCFMMCTradingAccountKeyField)(unsafe.Pointer(pQryCFMMCTradingAccountKey)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryEWarrantOffset(pQryEWarrantOffset *CThostFtdcQryEWarrantOffsetField, nRequestID int) int32 {
-
 	res := C.tReqQryEWarrantOffset(t.api, (*C.struct_CThostFtdcQryEWarrantOffsetField)(unsafe.Pointer(pQryEWarrantOffset)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestorProductGroupMargin(pQryInvestorProductGroupMargin *CThostFtdcQryInvestorProductGroupMarginField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestorProductGroupMargin(t.api, (*C.struct_CThostFtdcQryInvestorProductGroupMarginField)(unsafe.Pointer(pQryInvestorProductGroupMargin)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryExchangeMarginRate(pQryExchangeMarginRate *CThostFtdcQryExchangeMarginRateField, nRequestID int) int32 {
-
 	res := C.tReqQryExchangeMarginRate(t.api, (*C.struct_CThostFtdcQryExchangeMarginRateField)(unsafe.Pointer(pQryExchangeMarginRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryExchangeMarginRateAdjust(pQryExchangeMarginRateAdjust *CThostFtdcQryExchangeMarginRateAdjustField, nRequestID int) int32 {
-
 	res := C.tReqQryExchangeMarginRateAdjust(t.api, (*C.struct_CThostFtdcQryExchangeMarginRateAdjustField)(unsafe.Pointer(pQryExchangeMarginRateAdjust)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryExchangeRate(pQryExchangeRate *CThostFtdcQryExchangeRateField, nRequestID int) int32 {
-
 	res := C.tReqQryExchangeRate(t.api, (*C.struct_CThostFtdcQryExchangeRateField)(unsafe.Pointer(pQryExchangeRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySecAgentACIDMap(pQrySecAgentACIDMap *CThostFtdcQrySecAgentACIDMapField, nRequestID int) int32 {
-
 	res := C.tReqQrySecAgentACIDMap(t.api, (*C.struct_CThostFtdcQrySecAgentACIDMapField)(unsafe.Pointer(pQrySecAgentACIDMap)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryProductExchRate(pQryProductExchRate *CThostFtdcQryProductExchRateField, nRequestID int) int32 {
-
 	res := C.tReqQryProductExchRate(t.api, (*C.struct_CThostFtdcQryProductExchRateField)(unsafe.Pointer(pQryProductExchRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryProductGroup(pQryProductGroup *CThostFtdcQryProductGroupField, nRequestID int) int32 {
-
 	res := C.tReqQryProductGroup(t.api, (*C.struct_CThostFtdcQryProductGroupField)(unsafe.Pointer(pQryProductGroup)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryMMInstrumentCommissionRate(pQryMMInstrumentCommissionRate *CThostFtdcQryMMInstrumentCommissionRateField, nRequestID int) int32 {
-
 	res := C.tReqQryMMInstrumentCommissionRate(t.api, (*C.struct_CThostFtdcQryMMInstrumentCommissionRateField)(unsafe.Pointer(pQryMMInstrumentCommissionRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryMMOptionInstrCommRate(pQryMMOptionInstrCommRate *CThostFtdcQryMMOptionInstrCommRateField, nRequestID int) int32 {
-
 	res := C.tReqQryMMOptionInstrCommRate(t.api, (*C.struct_CThostFtdcQryMMOptionInstrCommRateField)(unsafe.Pointer(pQryMMOptionInstrCommRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInstrumentOrderCommRate(pQryInstrumentOrderCommRate *CThostFtdcQryInstrumentOrderCommRateField, nRequestID int) int32 {
-
 	res := C.tReqQryInstrumentOrderCommRate(t.api, (*C.struct_CThostFtdcQryInstrumentOrderCommRateField)(unsafe.Pointer(pQryInstrumentOrderCommRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySecAgentTradingAccount(pQryTradingAccount *CThostFtdcQryTradingAccountField, nRequestID int) int32 {
-
 	res := C.tReqQrySecAgentTradingAccount(t.api, (*C.struct_CThostFtdcQryTradingAccountField)(unsafe.Pointer(pQryTradingAccount)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySecAgentCheckMode(pQrySecAgentCheckMode *CThostFtdcQrySecAgentCheckModeField, nRequestID int) int32 {
-
 	res := C.tReqQrySecAgentCheckMode(t.api, (*C.struct_CThostFtdcQrySecAgentCheckModeField)(unsafe.Pointer(pQrySecAgentCheckMode)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySecAgentTradeInfo(pQrySecAgentTradeInfo *CThostFtdcQrySecAgentTradeInfoField, nRequestID int) int32 {
-
 	res := C.tReqQrySecAgentTradeInfo(t.api, (*C.struct_CThostFtdcQrySecAgentTradeInfoField)(unsafe.Pointer(pQrySecAgentTradeInfo)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryOptionInstrTradeCost(pQryOptionInstrTradeCost *CThostFtdcQryOptionInstrTradeCostField, nRequestID int) int32 {
-
 	res := C.tReqQryOptionInstrTradeCost(t.api, (*C.struct_CThostFtdcQryOptionInstrTradeCostField)(unsafe.Pointer(pQryOptionInstrTradeCost)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryOptionInstrCommRate(pQryOptionInstrCommRate *CThostFtdcQryOptionInstrCommRateField, nRequestID int) int32 {
-
 	res := C.tReqQryOptionInstrCommRate(t.api, (*C.struct_CThostFtdcQryOptionInstrCommRateField)(unsafe.Pointer(pQryOptionInstrCommRate)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryExecOrder(pQryExecOrder *CThostFtdcQryExecOrderField, nRequestID int) int32 {
-
 	res := C.tReqQryExecOrder(t.api, (*C.struct_CThostFtdcQryExecOrderField)(unsafe.Pointer(pQryExecOrder)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryForQuote(pQryForQuote *CThostFtdcQryForQuoteField, nRequestID int) int32 {
-
 	res := C.tReqQryForQuote(t.api, (*C.struct_CThostFtdcQryForQuoteField)(unsafe.Pointer(pQryForQuote)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryQuote(pQryQuote *CThostFtdcQryQuoteField, nRequestID int) int32 {
-
 	res := C.tReqQryQuote(t.api, (*C.struct_CThostFtdcQryQuoteField)(unsafe.Pointer(pQryQuote)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryOptionSelfClose(pQryOptionSelfClose *CThostFtdcQryOptionSelfCloseField, nRequestID int) int32 {
-
 	res := C.tReqQryOptionSelfClose(t.api, (*C.struct_CThostFtdcQryOptionSelfCloseField)(unsafe.Pointer(pQryOptionSelfClose)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestUnit(pQryInvestUnit *CThostFtdcQryInvestUnitField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestUnit(t.api, (*C.struct_CThostFtdcQryInvestUnitField)(unsafe.Pointer(pQryInvestUnit)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryCombInstrumentGuard(pQryCombInstrumentGuard *CThostFtdcQryCombInstrumentGuardField, nRequestID int) int32 {
-
 	res := C.tReqQryCombInstrumentGuard(t.api, (*C.struct_CThostFtdcQryCombInstrumentGuardField)(unsafe.Pointer(pQryCombInstrumentGuard)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryCombAction(pQryCombAction *CThostFtdcQryCombActionField, nRequestID int) int32 {
-
 	res := C.tReqQryCombAction(t.api, (*C.struct_CThostFtdcQryCombActionField)(unsafe.Pointer(pQryCombAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryTransferSerial(pQryTransferSerial *CThostFtdcQryTransferSerialField, nRequestID int) int32 {
-
 	res := C.tReqQryTransferSerial(t.api, (*C.struct_CThostFtdcQryTransferSerialField)(unsafe.Pointer(pQryTransferSerial)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryAccountregister(pQryAccountregister *CThostFtdcQryAccountregisterField, nRequestID int) int32 {
-
 	res := C.tReqQryAccountregister(t.api, (*C.struct_CThostFtdcQryAccountregisterField)(unsafe.Pointer(pQryAccountregister)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryContractBank(pQryContractBank *CThostFtdcQryContractBankField, nRequestID int) int32 {
-
 	res := C.tReqQryContractBank(t.api, (*C.struct_CThostFtdcQryContractBankField)(unsafe.Pointer(pQryContractBank)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryParkedOrder(pQryParkedOrder *CThostFtdcQryParkedOrderField, nRequestID int) int32 {
-
 	res := C.tReqQryParkedOrder(t.api, (*C.struct_CThostFtdcQryParkedOrderField)(unsafe.Pointer(pQryParkedOrder)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryParkedOrderAction(pQryParkedOrderAction *CThostFtdcQryParkedOrderActionField, nRequestID int) int32 {
-
 	res := C.tReqQryParkedOrderAction(t.api, (*C.struct_CThostFtdcQryParkedOrderActionField)(unsafe.Pointer(pQryParkedOrderAction)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryTradingNotice(pQryTradingNotice *CThostFtdcQryTradingNoticeField, nRequestID int) int32 {
-
 	res := C.tReqQryTradingNotice(t.api, (*C.struct_CThostFtdcQryTradingNoticeField)(unsafe.Pointer(pQryTradingNotice)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryBrokerTradingParams(pQryBrokerTradingParams *CThostFtdcQryBrokerTradingParamsField, nRequestID int) int32 {
-
 	res := C.tReqQryBrokerTradingParams(t.api, (*C.struct_CThostFtdcQryBrokerTradingParamsField)(unsafe.Pointer(pQryBrokerTradingParams)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryBrokerTradingAlgos(pQryBrokerTradingAlgos *CThostFtdcQryBrokerTradingAlgosField, nRequestID int) int32 {
-
 	res := C.tReqQryBrokerTradingAlgos(t.api, (*C.struct_CThostFtdcQryBrokerTradingAlgosField)(unsafe.Pointer(pQryBrokerTradingAlgos)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQueryCFMMCTradingAccountToken(pQueryCFMMCTradingAccountToken *CThostFtdcQueryCFMMCTradingAccountTokenField, nRequestID int) int32 {
-
 	res := C.tReqQueryCFMMCTradingAccountToken(t.api, (*C.struct_CThostFtdcQueryCFMMCTradingAccountTokenField)(unsafe.Pointer(pQueryCFMMCTradingAccountToken)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqFromBankToFutureByFuture(pReqTransfer *CThostFtdcReqTransferField, nRequestID int) int32 {
-
 	res := C.tReqFromBankToFutureByFuture(t.api, (*C.struct_CThostFtdcReqTransferField)(unsafe.Pointer(pReqTransfer)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqFromFutureToBankByFuture(pReqTransfer *CThostFtdcReqTransferField, nRequestID int) int32 {
-
 	res := C.tReqFromFutureToBankByFuture(t.api, (*C.struct_CThostFtdcReqTransferField)(unsafe.Pointer(pReqTransfer)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQueryBankAccountMoneyByFuture(pReqQueryAccount *CThostFtdcReqQueryAccountField, nRequestID int) int32 {
-
 	res := C.tReqQueryBankAccountMoneyByFuture(t.api, (*C.struct_CThostFtdcReqQueryAccountField)(unsafe.Pointer(pReqQueryAccount)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryClassifiedInstrument(pQryClassifiedInstrument *CThostFtdcQryClassifiedInstrumentField, nRequestID int) int32 {
-
 	res := C.tReqQryClassifiedInstrument(t.api, (*C.struct_CThostFtdcQryClassifiedInstrumentField)(unsafe.Pointer(pQryClassifiedInstrument)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryCombPromotionParam(pQryCombPromotionParam *CThostFtdcQryCombPromotionParamField, nRequestID int) int32 {
-
 	res := C.tReqQryCombPromotionParam(t.api, (*C.struct_CThostFtdcQryCombPromotionParamField)(unsafe.Pointer(pQryCombPromotionParam)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryRiskSettleInvstPosition(pQryRiskSettleInvstPosition *CThostFtdcQryRiskSettleInvstPositionField, nRequestID int) int32 {
-
 	res := C.tReqQryRiskSettleInvstPosition(t.api, (*C.struct_CThostFtdcQryRiskSettleInvstPositionField)(unsafe.Pointer(pQryRiskSettleInvstPosition)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryRiskSettleProductStatus(pQryRiskSettleProductStatus *CThostFtdcQryRiskSettleProductStatusField, nRequestID int) int32 {
-
 	res := C.tReqQryRiskSettleProductStatus(t.api, (*C.struct_CThostFtdcQryRiskSettleProductStatusField)(unsafe.Pointer(pQryRiskSettleProductStatus)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySPBMFutureParameter(pQrySPBMFutureParameter *CThostFtdcQrySPBMFutureParameterField, nRequestID int) int32 {
-
 	res := C.tReqQrySPBMFutureParameter(t.api, (*C.struct_CThostFtdcQrySPBMFutureParameterField)(unsafe.Pointer(pQrySPBMFutureParameter)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySPBMOptionParameter(pQrySPBMOptionParameter *CThostFtdcQrySPBMOptionParameterField, nRequestID int) int32 {
-
 	res := C.tReqQrySPBMOptionParameter(t.api, (*C.struct_CThostFtdcQrySPBMOptionParameterField)(unsafe.Pointer(pQrySPBMOptionParameter)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySPBMIntraParameter(pQrySPBMIntraParameter *CThostFtdcQrySPBMIntraParameterField, nRequestID int) int32 {
-
 	res := C.tReqQrySPBMIntraParameter(t.api, (*C.struct_CThostFtdcQrySPBMIntraParameterField)(unsafe.Pointer(pQrySPBMIntraParameter)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySPBMInterParameter(pQrySPBMInterParameter *CThostFtdcQrySPBMInterParameterField, nRequestID int) int32 {
-
 	res := C.tReqQrySPBMInterParameter(t.api, (*C.struct_CThostFtdcQrySPBMInterParameterField)(unsafe.Pointer(pQrySPBMInterParameter)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySPBMPortfDefinition(pQrySPBMPortfDefinition *CThostFtdcQrySPBMPortfDefinitionField, nRequestID int) int32 {
-
 	res := C.tReqQrySPBMPortfDefinition(t.api, (*C.struct_CThostFtdcQrySPBMPortfDefinitionField)(unsafe.Pointer(pQrySPBMPortfDefinition)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQrySPBMInvestorPortfDef(pQrySPBMInvestorPortfDef *CThostFtdcQrySPBMInvestorPortfDefField, nRequestID int) int32 {
-
 	res := C.tReqQrySPBMInvestorPortfDef(t.api, (*C.struct_CThostFtdcQrySPBMInvestorPortfDefField)(unsafe.Pointer(pQrySPBMInvestorPortfDef)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestorPortfMarginRatio(pQryInvestorPortfMarginRatio *CThostFtdcQryInvestorPortfMarginRatioField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestorPortfMarginRatio(t.api, (*C.struct_CThostFtdcQryInvestorPortfMarginRatioField)(unsafe.Pointer(pQryInvestorPortfMarginRatio)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (t *Trade) ReqQryInvestorProdSPBMDetail(pQryInvestorProdSPBMDetail *CThostFtdcQryInvestorProdSPBMDetailField, nRequestID int) int32 {
-
 	res := C.tReqQryInvestorProdSPBMDetail(t.api, (*C.struct_CThostFtdcQryInvestorProdSPBMDetailField)(unsafe.Pointer(pQryInvestorProdSPBMDetail)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorCommoditySPMMMargin(pQryInvestorCommoditySPMMMargin *CThostFtdcQryInvestorCommoditySPMMMarginField, nRequestID int) int32 {
+	res := C.tReqQryInvestorCommoditySPMMMargin(t.api, (*C.struct_CThostFtdcQryInvestorCommoditySPMMMarginField)(unsafe.Pointer(pQryInvestorCommoditySPMMMargin)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorCommodityGroupSPMMMargin(pQryInvestorCommodityGroupSPMMMargin *CThostFtdcQryInvestorCommodityGroupSPMMMarginField, nRequestID int) int32 {
+	res := C.tReqQryInvestorCommodityGroupSPMMMargin(t.api, (*C.struct_CThostFtdcQryInvestorCommodityGroupSPMMMarginField)(unsafe.Pointer(pQryInvestorCommodityGroupSPMMMargin)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQrySPMMInstParam(pQrySPMMInstParam *CThostFtdcQrySPMMInstParamField, nRequestID int) int32 {
+	res := C.tReqQrySPMMInstParam(t.api, (*C.struct_CThostFtdcQrySPMMInstParamField)(unsafe.Pointer(pQrySPMMInstParam)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQrySPMMProductParam(pQrySPMMProductParam *CThostFtdcQrySPMMProductParamField, nRequestID int) int32 {
+	res := C.tReqQrySPMMProductParam(t.api, (*C.struct_CThostFtdcQrySPMMProductParamField)(unsafe.Pointer(pQrySPMMProductParam)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQrySPBMAddOnInterParameter(pQrySPBMAddOnInterParameter *CThostFtdcQrySPBMAddOnInterParameterField, nRequestID int) int32 {
+	res := C.tReqQrySPBMAddOnInterParameter(t.api, (*C.struct_CThostFtdcQrySPBMAddOnInterParameterField)(unsafe.Pointer(pQrySPBMAddOnInterParameter)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSCombProductInfo(pQryRCAMSCombProductInfo *CThostFtdcQryRCAMSCombProductInfoField, nRequestID int) int32 {
+	res := C.tReqQryRCAMSCombProductInfo(t.api, (*C.struct_CThostFtdcQryRCAMSCombProductInfoField)(unsafe.Pointer(pQryRCAMSCombProductInfo)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSInstrParameter(pQryRCAMSInstrParameter *CThostFtdcQryRCAMSInstrParameterField, nRequestID int) int32 {
+	res := C.tReqQryRCAMSInstrParameter(t.api, (*C.struct_CThostFtdcQryRCAMSInstrParameterField)(unsafe.Pointer(pQryRCAMSInstrParameter)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSIntraParameter(pQryRCAMSIntraParameter *CThostFtdcQryRCAMSIntraParameterField, nRequestID int) int32 {
+	res := C.tReqQryRCAMSIntraParameter(t.api, (*C.struct_CThostFtdcQryRCAMSIntraParameterField)(unsafe.Pointer(pQryRCAMSIntraParameter)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSInterParameter(pQryRCAMSInterParameter *CThostFtdcQryRCAMSInterParameterField, nRequestID int) int32 {
+	res := C.tReqQryRCAMSInterParameter(t.api, (*C.struct_CThostFtdcQryRCAMSInterParameterField)(unsafe.Pointer(pQryRCAMSInterParameter)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSShortOptAdjustParam(pQryRCAMSShortOptAdjustParam *CThostFtdcQryRCAMSShortOptAdjustParamField, nRequestID int) int32 {
+	res := C.tReqQryRCAMSShortOptAdjustParam(t.api, (*C.struct_CThostFtdcQryRCAMSShortOptAdjustParamField)(unsafe.Pointer(pQryRCAMSShortOptAdjustParam)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRCAMSInvestorCombPosition(pQryRCAMSInvestorCombPosition *CThostFtdcQryRCAMSInvestorCombPositionField, nRequestID int) int32 {
+	res := C.tReqQryRCAMSInvestorCombPosition(t.api, (*C.struct_CThostFtdcQryRCAMSInvestorCombPositionField)(unsafe.Pointer(pQryRCAMSInvestorCombPosition)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorProdRCAMSMargin(pQryInvestorProdRCAMSMargin *CThostFtdcQryInvestorProdRCAMSMarginField, nRequestID int) int32 {
+	res := C.tReqQryInvestorProdRCAMSMargin(t.api, (*C.struct_CThostFtdcQryInvestorProdRCAMSMarginField)(unsafe.Pointer(pQryInvestorProdRCAMSMargin)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRULEInstrParameter(pQryRULEInstrParameter *CThostFtdcQryRULEInstrParameterField, nRequestID int) int32 {
+	res := C.tReqQryRULEInstrParameter(t.api, (*C.struct_CThostFtdcQryRULEInstrParameterField)(unsafe.Pointer(pQryRULEInstrParameter)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRULEIntraParameter(pQryRULEIntraParameter *CThostFtdcQryRULEIntraParameterField, nRequestID int) int32 {
+	res := C.tReqQryRULEIntraParameter(t.api, (*C.struct_CThostFtdcQryRULEIntraParameterField)(unsafe.Pointer(pQryRULEIntraParameter)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryRULEInterParameter(pQryRULEInterParameter *CThostFtdcQryRULEInterParameterField, nRequestID int) int32 {
+	res := C.tReqQryRULEInterParameter(t.api, (*C.struct_CThostFtdcQryRULEInterParameterField)(unsafe.Pointer(pQryRULEInterParameter)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin *CThostFtdcQryInvestorProdRULEMarginField, nRequestID int) int32 {
+	res := C.tReqQryInvestorProdRULEMargin(t.api, (*C.struct_CThostFtdcQryInvestorProdRULEMarginField)(unsafe.Pointer(pQryInvestorProdRULEMargin)), C.int(nRequestID))
+	return int32(res)
+}
+
+func (t *Trade) ReqQryInvestorPortfSetting(pQryInvestorPortfSetting *CThostFtdcQryInvestorPortfSettingField, nRequestID int) int32 {
+	res := C.tReqQryInvestorPortfSetting(t.api, (*C.struct_CThostFtdcQryInvestorPortfSettingField)(unsafe.Pointer(pQryInvestorPortfSetting)), C.int(nRequestID))
 	return int32(res)
 }
 
@@ -1807,6 +1825,108 @@ func (t *Trade) OnRspQryInvestorPortfMarginRatio(fn func(pInvestorPortfMarginRat
 func (t *Trade) OnRspQryInvestorProdSPBMDetail(fn func(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
 	t.OnRspQryInvestorProdSPBMDetail_ = fn
 	C.tOnRspQryInvestorProdSPBMDetail(t.pSpi, C.tOnRspQryInvestorProdSPBMDetail_)
+}
+
+// 投资者商品组SPMM记录查询响应
+func (t *Trade) OnRspQryInvestorCommoditySPMMMargin(fn func(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorCommoditySPMMMargin_ = fn
+	C.tOnRspQryInvestorCommoditySPMMMargin(t.pSpi, C.tOnRspQryInvestorCommoditySPMMMargin_)
+}
+
+// 投资者商品群SPMM记录查询响应
+func (t *Trade) OnRspQryInvestorCommodityGroupSPMMMargin(fn func(pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorCommodityGroupSPMMMargin_ = fn
+	C.tOnRspQryInvestorCommodityGroupSPMMMargin(t.pSpi, C.tOnRspQryInvestorCommodityGroupSPMMMargin_)
+}
+
+// SPMM合约参数查询响应
+func (t *Trade) OnRspQrySPMMInstParam(fn func(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQrySPMMInstParam_ = fn
+	C.tOnRspQrySPMMInstParam(t.pSpi, C.tOnRspQrySPMMInstParam_)
+}
+
+// SPMM产品参数查询响应
+func (t *Trade) OnRspQrySPMMProductParam(fn func(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQrySPMMProductParam_ = fn
+	C.tOnRspQrySPMMProductParam(t.pSpi, C.tOnRspQrySPMMProductParam_)
+}
+
+// SPBM附加跨品种抵扣参数查询响应
+func (t *Trade) OnRspQrySPBMAddOnInterParameter(fn func(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQrySPBMAddOnInterParameter_ = fn
+	C.tOnRspQrySPBMAddOnInterParameter(t.pSpi, C.tOnRspQrySPBMAddOnInterParameter_)
+}
+
+// RCAMS产品组合信息查询响应
+func (t *Trade) OnRspQryRCAMSCombProductInfo(fn func(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSCombProductInfo_ = fn
+	C.tOnRspQryRCAMSCombProductInfo(t.pSpi, C.tOnRspQryRCAMSCombProductInfo_)
+}
+
+// RCAMS同合约风险对冲参数查询响应
+func (t *Trade) OnRspQryRCAMSInstrParameter(fn func(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSInstrParameter_ = fn
+	C.tOnRspQryRCAMSInstrParameter(t.pSpi, C.tOnRspQryRCAMSInstrParameter_)
+}
+
+// RCAMS品种内风险对冲参数查询响应
+func (t *Trade) OnRspQryRCAMSIntraParameter(fn func(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSIntraParameter_ = fn
+	C.tOnRspQryRCAMSIntraParameter(t.pSpi, C.tOnRspQryRCAMSIntraParameter_)
+}
+
+// RCAMS跨品种风险折抵参数查询响应
+func (t *Trade) OnRspQryRCAMSInterParameter(fn func(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSInterParameter_ = fn
+	C.tOnRspQryRCAMSInterParameter(t.pSpi, C.tOnRspQryRCAMSInterParameter_)
+}
+
+// RCAMS空头期权风险调整参数查询响应
+func (t *Trade) OnRspQryRCAMSShortOptAdjustParam(fn func(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSShortOptAdjustParam_ = fn
+	C.tOnRspQryRCAMSShortOptAdjustParam(t.pSpi, C.tOnRspQryRCAMSShortOptAdjustParam_)
+}
+
+// RCAMS策略组合持仓查询响应
+func (t *Trade) OnRspQryRCAMSInvestorCombPosition(fn func(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRCAMSInvestorCombPosition_ = fn
+	C.tOnRspQryRCAMSInvestorCombPosition(t.pSpi, C.tOnRspQryRCAMSInvestorCombPosition_)
+}
+
+// 投资者品种RCAMS保证金查询响应
+func (t *Trade) OnRspQryInvestorProdRCAMSMargin(fn func(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorProdRCAMSMargin_ = fn
+	C.tOnRspQryInvestorProdRCAMSMargin(t.pSpi, C.tOnRspQryInvestorProdRCAMSMargin_)
+}
+
+// RULE合约保证金参数查询响应
+func (t *Trade) OnRspQryRULEInstrParameter(fn func(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRULEInstrParameter_ = fn
+	C.tOnRspQryRULEInstrParameter(t.pSpi, C.tOnRspQryRULEInstrParameter_)
+}
+
+// RULE品种内对锁仓折扣参数查询响应
+func (t *Trade) OnRspQryRULEIntraParameter(fn func(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRULEIntraParameter_ = fn
+	C.tOnRspQryRULEIntraParameter(t.pSpi, C.tOnRspQryRULEIntraParameter_)
+}
+
+// RULE跨品种抵扣参数查询响应
+func (t *Trade) OnRspQryRULEInterParameter(fn func(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryRULEInterParameter_ = fn
+	C.tOnRspQryRULEInterParameter(t.pSpi, C.tOnRspQryRULEInterParameter_)
+}
+
+// 投资者产品RULE保证金查询响应
+func (t *Trade) OnRspQryInvestorProdRULEMargin(fn func(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorProdRULEMargin_ = fn
+	C.tOnRspQryInvestorProdRULEMargin(t.pSpi, C.tOnRspQryInvestorProdRULEMargin_)
+}
+
+// 投资者投资者新组保设置查询响应
+func (t *Trade) OnRspQryInvestorPortfSetting(fn func(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)) {
+	t.OnRspQryInvestorPortfSetting_ = fn
+	C.tOnRspQryInvestorPortfSetting(t.pSpi, C.tOnRspQryInvestorPortfSetting_)
 }
 
 //export tOnFrontConnected_
@@ -2909,6 +3029,142 @@ func tOnRspQryInvestorPortfMarginRatio_(pInvestorPortfMarginRatio *C.struct_CTho
 func tOnRspQryInvestorProdSPBMDetail_(pInvestorProdSPBMDetail *C.struct_CThostFtdcInvestorProdSPBMDetailField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
 	if t.OnRspQryInvestorProdSPBMDetail_ != nil {
 		t.OnRspQryInvestorProdSPBMDetail_((*CThostFtdcInvestorProdSPBMDetailField)(unsafe.Pointer(pInvestorProdSPBMDetail)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryInvestorCommoditySPMMMargin_
+func tOnRspQryInvestorCommoditySPMMMargin_(pInvestorCommoditySPMMMargin *C.struct_CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryInvestorCommoditySPMMMargin_ != nil {
+		t.OnRspQryInvestorCommoditySPMMMargin_((*CThostFtdcInvestorCommoditySPMMMarginField)(unsafe.Pointer(pInvestorCommoditySPMMMargin)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryInvestorCommodityGroupSPMMMargin_
+func tOnRspQryInvestorCommodityGroupSPMMMargin_(pInvestorCommodityGroupSPMMMargin *C.struct_CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryInvestorCommodityGroupSPMMMargin_ != nil {
+		t.OnRspQryInvestorCommodityGroupSPMMMargin_((*CThostFtdcInvestorCommodityGroupSPMMMarginField)(unsafe.Pointer(pInvestorCommodityGroupSPMMMargin)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQrySPMMInstParam_
+func tOnRspQrySPMMInstParam_(pSPMMInstParam *C.struct_CThostFtdcSPMMInstParamField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQrySPMMInstParam_ != nil {
+		t.OnRspQrySPMMInstParam_((*CThostFtdcSPMMInstParamField)(unsafe.Pointer(pSPMMInstParam)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQrySPMMProductParam_
+func tOnRspQrySPMMProductParam_(pSPMMProductParam *C.struct_CThostFtdcSPMMProductParamField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQrySPMMProductParam_ != nil {
+		t.OnRspQrySPMMProductParam_((*CThostFtdcSPMMProductParamField)(unsafe.Pointer(pSPMMProductParam)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQrySPBMAddOnInterParameter_
+func tOnRspQrySPBMAddOnInterParameter_(pSPBMAddOnInterParameter *C.struct_CThostFtdcSPBMAddOnInterParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQrySPBMAddOnInterParameter_ != nil {
+		t.OnRspQrySPBMAddOnInterParameter_((*CThostFtdcSPBMAddOnInterParameterField)(unsafe.Pointer(pSPBMAddOnInterParameter)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRCAMSCombProductInfo_
+func tOnRspQryRCAMSCombProductInfo_(pRCAMSCombProductInfo *C.struct_CThostFtdcRCAMSCombProductInfoField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRCAMSCombProductInfo_ != nil {
+		t.OnRspQryRCAMSCombProductInfo_((*CThostFtdcRCAMSCombProductInfoField)(unsafe.Pointer(pRCAMSCombProductInfo)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRCAMSInstrParameter_
+func tOnRspQryRCAMSInstrParameter_(pRCAMSInstrParameter *C.struct_CThostFtdcRCAMSInstrParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRCAMSInstrParameter_ != nil {
+		t.OnRspQryRCAMSInstrParameter_((*CThostFtdcRCAMSInstrParameterField)(unsafe.Pointer(pRCAMSInstrParameter)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRCAMSIntraParameter_
+func tOnRspQryRCAMSIntraParameter_(pRCAMSIntraParameter *C.struct_CThostFtdcRCAMSIntraParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRCAMSIntraParameter_ != nil {
+		t.OnRspQryRCAMSIntraParameter_((*CThostFtdcRCAMSIntraParameterField)(unsafe.Pointer(pRCAMSIntraParameter)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRCAMSInterParameter_
+func tOnRspQryRCAMSInterParameter_(pRCAMSInterParameter *C.struct_CThostFtdcRCAMSInterParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRCAMSInterParameter_ != nil {
+		t.OnRspQryRCAMSInterParameter_((*CThostFtdcRCAMSInterParameterField)(unsafe.Pointer(pRCAMSInterParameter)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRCAMSShortOptAdjustParam_
+func tOnRspQryRCAMSShortOptAdjustParam_(pRCAMSShortOptAdjustParam *C.struct_CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRCAMSShortOptAdjustParam_ != nil {
+		t.OnRspQryRCAMSShortOptAdjustParam_((*CThostFtdcRCAMSShortOptAdjustParamField)(unsafe.Pointer(pRCAMSShortOptAdjustParam)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRCAMSInvestorCombPosition_
+func tOnRspQryRCAMSInvestorCombPosition_(pRCAMSInvestorCombPosition *C.struct_CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRCAMSInvestorCombPosition_ != nil {
+		t.OnRspQryRCAMSInvestorCombPosition_((*CThostFtdcRCAMSInvestorCombPositionField)(unsafe.Pointer(pRCAMSInvestorCombPosition)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryInvestorProdRCAMSMargin_
+func tOnRspQryInvestorProdRCAMSMargin_(pInvestorProdRCAMSMargin *C.struct_CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryInvestorProdRCAMSMargin_ != nil {
+		t.OnRspQryInvestorProdRCAMSMargin_((*CThostFtdcInvestorProdRCAMSMarginField)(unsafe.Pointer(pInvestorProdRCAMSMargin)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRULEInstrParameter_
+func tOnRspQryRULEInstrParameter_(pRULEInstrParameter *C.struct_CThostFtdcRULEInstrParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRULEInstrParameter_ != nil {
+		t.OnRspQryRULEInstrParameter_((*CThostFtdcRULEInstrParameterField)(unsafe.Pointer(pRULEInstrParameter)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRULEIntraParameter_
+func tOnRspQryRULEIntraParameter_(pRULEIntraParameter *C.struct_CThostFtdcRULEIntraParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRULEIntraParameter_ != nil {
+		t.OnRspQryRULEIntraParameter_((*CThostFtdcRULEIntraParameterField)(unsafe.Pointer(pRULEIntraParameter)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryRULEInterParameter_
+func tOnRspQryRULEInterParameter_(pRULEInterParameter *C.struct_CThostFtdcRULEInterParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryRULEInterParameter_ != nil {
+		t.OnRspQryRULEInterParameter_((*CThostFtdcRULEInterParameterField)(unsafe.Pointer(pRULEInterParameter)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryInvestorProdRULEMargin_
+func tOnRspQryInvestorProdRULEMargin_(pInvestorProdRULEMargin *C.struct_CThostFtdcInvestorProdRULEMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryInvestorProdRULEMargin_ != nil {
+		t.OnRspQryInvestorProdRULEMargin_((*CThostFtdcInvestorProdRULEMarginField)(unsafe.Pointer(pInvestorProdRULEMargin)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+	}
+	return 0
+}
+
+//export tOnRspQryInvestorPortfSetting_
+func tOnRspQryInvestorPortfSetting_(pInvestorPortfSetting *C.struct_CThostFtdcInvestorPortfSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) C.int {
+	if t.OnRspQryInvestorPortfSetting_ != nil {
+		t.OnRspQryInvestorPortfSetting_((*CThostFtdcInvestorPortfSettingField)(unsafe.Pointer(pInvestorPortfSetting)), (*CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 	}
 	return 0
 }

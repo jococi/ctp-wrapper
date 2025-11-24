@@ -54,9 +54,9 @@ DLL_EXPORT_C_DECL void* WPCTP qGetTradingDay(void *api);
 [[ range .On ]]
 // [[ .Comment ]]
 DLL_EXPORT_C_DECL void WPCTP q[[ .FuncName ]](void* spi, void* func);
-DLL_EXPORT_C_DECL int q[[ .FuncName ]]_([[ range $i, $v := .FuncFields ]][[ if gt $i 0]], [[ end ]][[ .FieldType|struct_Type ]] [[ .FieldName ]][[ end ]]);
+DLL_EXPORT_C_DECL int q[[ .FuncName ]]_([[ range $i, $v := .FuncFields ]][[ if gt $i 0]], [[ end ]][[ .FieldType|struct_Type ]] [[if or (hasPrefix .FieldName "*") (hasSuffix .FieldType "*")]]*[[end]][[trimPrefix .FieldName "*"]][[if .IsArray]][][[end]][[ end ]]);
 [[ end ]]
 [[ range .Fn ]]
 // [[ .Comment ]]
-DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP q[[ .FuncName ]](void *api[[ range .FuncFields ]], [[.FieldType|struct_Type]] [[.FieldName]][[if eq .FieldName "*ppInstrumentID"]][][[end]][[end]]);
+DLL_EXPORT_C_DECL [[ .FuncRtn ]] WPCTP q[[ .FuncName ]](void *api[[ range .FuncFields ]], [[.FieldType|struct_Type]] [[if or (hasPrefix .FieldName "*") (hasSuffix .FieldType "*")]]*[[end]][[trimPrefix .FieldName "*"]][[if .IsArray]][][[end]][[end]]);
 [[ end ]]

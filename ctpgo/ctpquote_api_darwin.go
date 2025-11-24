@@ -85,38 +85,31 @@ func (q *Quote) GetTradingDay() string {
 }
 
 func (q *Quote) Release() {
-
 	C.qRelease(q.api)
 }
 
 func (q *Quote) Init() {
-
 	C.qInit(q.api)
 }
 
 func (q *Quote) Join() int32 {
-
 	res := C.qJoin(q.api)
 	return int32(res)
 }
 
 func (q *Quote) RegisterFront(pszFrontAddress []byte) {
-
 	C.qRegisterFront(q.api, (*C.char)(unsafe.Pointer(C.CBytes(pszFrontAddress))))
 }
 
 func (q *Quote) RegisterNameServer(pszNsAddress []byte) {
-
 	C.qRegisterNameServer(q.api, (*C.char)(unsafe.Pointer(C.CBytes(pszNsAddress))))
 }
 
 func (q *Quote) RegisterFensUserInfo(pFensUserInfo *CThostFtdcFensUserInfoField) {
-
 	C.qRegisterFensUserInfo(q.api, (*C.struct_CThostFtdcFensUserInfoField)(unsafe.Pointer(pFensUserInfo)))
 }
 
 func (q *Quote) RegisterSpi() {
-
 	C.qRegisterSpi(q.api, q.pSpi)
 }
 
@@ -130,7 +123,6 @@ func (q *Quote) SubscribeMarketData(ppInstrumentID [][]byte, nCount int) int32 {
 	if nCount > 0 {
 		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
-
 	res := C.qSubscribeMarketData(q.api, _ppPtr, C.int(nCount))
 	for i := 0; i < nCount; i++ {
 		if tmp_arr[i] != nil {
@@ -150,7 +142,6 @@ func (q *Quote) UnSubscribeMarketData(ppInstrumentID [][]byte, nCount int) int32
 	if nCount > 0 {
 		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
-
 	res := C.qUnSubscribeMarketData(q.api, _ppPtr, C.int(nCount))
 	for i := 0; i < nCount; i++ {
 		if tmp_arr[i] != nil {
@@ -170,7 +161,6 @@ func (q *Quote) SubscribeForQuoteRsp(ppInstrumentID [][]byte, nCount int) int32 
 	if nCount > 0 {
 		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
-
 	res := C.qSubscribeForQuoteRsp(q.api, _ppPtr, C.int(nCount))
 	for i := 0; i < nCount; i++ {
 		if tmp_arr[i] != nil {
@@ -190,7 +180,6 @@ func (q *Quote) UnSubscribeForQuoteRsp(ppInstrumentID [][]byte, nCount int) int3
 	if nCount > 0 {
 		_ppPtr = (**C.char)(unsafe.Pointer(&tmp_arr[0]))
 	}
-
 	res := C.qUnSubscribeForQuoteRsp(q.api, _ppPtr, C.int(nCount))
 	for i := 0; i < nCount; i++ {
 		if tmp_arr[i] != nil {
@@ -201,19 +190,16 @@ func (q *Quote) UnSubscribeForQuoteRsp(ppInstrumentID [][]byte, nCount int) int3
 }
 
 func (q *Quote) ReqUserLogin(pReqUserLoginField *CThostFtdcReqUserLoginField, nRequestID int) int32 {
-
 	res := C.qReqUserLogin(q.api, (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (q *Quote) ReqUserLogout(pUserLogout *CThostFtdcUserLogoutField, nRequestID int) int32 {
-
 	res := C.qReqUserLogout(q.api, (*C.struct_CThostFtdcUserLogoutField)(unsafe.Pointer(pUserLogout)), C.int(nRequestID))
 	return int32(res)
 }
 
 func (q *Quote) ReqQryMulticastInstrument(pQryMulticastInstrument *CThostFtdcQryMulticastInstrumentField, nRequestID int) int32 {
-
 	res := C.qReqQryMulticastInstrument(q.api, (*C.struct_CThostFtdcQryMulticastInstrumentField)(unsafe.Pointer(pQryMulticastInstrument)), C.int(nRequestID))
 	return int32(res)
 }
