@@ -54,10 +54,10 @@ int ctpTraderReqUserLoginWithSystemInfo(CtpTraderApiHandle handle,
 
 ```bash
 # 基本用法
-python3 generate.py --input ../ctpapi/linux --output ./output
+python3 generate_c_api.py --input ../ctpapi/linux --output ./output
 
 # 指定不同平台的头文件
-python3 generate.py --input ../ctpapi/macos --output ./output_macos
+python3 generate_c_api.py --input ../ctpapi/macos --output ./output_macos
 ```
 
 ## 生成的文件

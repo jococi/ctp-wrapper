@@ -15,7 +15,7 @@ CTP C++ API 转 C API 代码生成器
   解决方案: C API 统一提供带 systemInfo 的版本，Linux/Windows 内部忽略
 
 用法：
-    python generate.py --input ../ctpapi/linux --output ./output
+    python3 generate_c_api.py --input ../ctpapi/linux --output ../csrc
 """
 
 import re
