@@ -16,7 +16,7 @@ MD_SRC := $(CSRC_DIR)/ctp_md_c_api.cpp
 TRADER_SRC := $(CSRC_DIR)/ctp_trader_c_api.cpp
 
 # 编译器标志
-CXXFLAGS := -std=c++11 -fPIC -O3 -Wall -Wextra
+CXXFLAGS := -std=c++17 -fPIC -O3 -Wall -Wextra -Wno-unused-parameter
 LDFLAGS :=
 
 # 根据平台设置
@@ -24,8 +24,9 @@ ifeq ($(UNAME_S),Darwin)
     # macOS
     PLATFORM := macos
     CXX := clang++
-    MD_LIB := $(CTPAPI_DIR)/macos/libctpmd_c_api.dylib
-    TRADER_LIB := $(CTPAPI_DIR)/macos/libctptrader_c_api.dylib
+    # 输出到 libs 目录
+    MD_LIB := $(LIBS_DIR)/libctpmd_c_api.dylib
+    TRADER_LIB := $(LIBS_DIR)/libctptrader_c_api.dylib
     
     # 头文件路径 (macOS上使用软链接,直接指向macos目录即可)
     # 注意: 代码中使用相对路径 ctpapi/macos/xxx.h, 所以需要包含项目根目录
@@ -34,15 +35,16 @@ ifeq ($(UNAME_S),Darwin)
     INCLUDE_DATACOLLECT := -I. -I$(CTPAPI_DIR)/macos
     INCLUDE_COMMON := -I. -I$(CTPAPI_DIR)/macos -I$(CSRC_DIR)
     
-    # Framework 路径和链接
+    # Framework 路径和链接（编译时使用）
     FRAMEWORK_PATH := -F$(CTPAPI_DIR)/macos
     MD_FRAMEWORKS := -framework thostmduserapi_se
     TRADER_FRAMEWORKS := -framework thosttraderapi_se -framework MacDataCollect \
                          -framework IOKit -framework Foundation -framework CoreFoundation
     
-    # 安装名称和rpath
+    # 安装名称和rpath（运行时在可执行文件所在目录查找）
     INSTALL_NAME_MD := -install_name @rpath/libctpmd_c_api.dylib
     INSTALL_NAME_TRADER := -install_name @rpath/libctptrader_c_api.dylib
+    # @loader_path 表示可执行文件所在目录，运行时会在那里查找 frameworks
     RPATH := -Wl,-rpath,@loader_path
     
     CXXFLAGS += $(FRAMEWORK_PATH)
@@ -52,8 +54,9 @@ else ifeq ($(UNAME_S),Linux)
     # Linux
     PLATFORM := linux
     CXX := g++
-    MD_LIB := $(CTPAPI_DIR)/linux/libctpmd_c_api.so
-    TRADER_LIB := $(CTPAPI_DIR)/linux/libctptrader_c_api.so
+    # 输出到 libs 目录
+    MD_LIB := $(LIBS_DIR)/libctpmd_c_api.so
+    TRADER_LIB := $(LIBS_DIR)/libctptrader_c_api.so
     
     # 头文件路径
     # 注意: 代码中使用相对路径 ctpapi/linux/xxx.h, 所以需要包含项目根目录
@@ -62,46 +65,49 @@ else ifeq ($(UNAME_S),Linux)
     INCLUDE_DATACOLLECT := -I. -I$(CTPAPI_DIR)/linux
     INCLUDE_COMMON := -I. -I$(CTPAPI_DIR)/linux -I$(CSRC_DIR)
     
-    # 库路径和链接
+    # 库路径和链接（编译时使用官方库）
     LIB_PATH := -L$(CTPAPI_DIR)/linux
     MD_LIBS := -lthostmduserapi_se
     TRADER_LIBS := -lthosttraderapi_se -lLinuxDataCollect
     
+    # $ORIGIN 表示可执行文件所在目录，运行时会在那里查找 .so 文件
     LDFLAGS += $(LIB_PATH) -Wl,-rpath,$$ORIGIN
     
-else ifeq ($(OS),Windows_NT)
-    # Windows (需要 MSVC)
-    PLATFORM := windows
-    CXX := cl
-    MD_LIB := $(CTPAPI_DIR)/windows/ctpmd_c_api.dll
-    TRADER_LIB := $(CTPAPI_DIR)/windows/ctptrader_c_api.dll
+# else ifeq ($(OS),Windows_NT)
+#     # Windows (需要 MSVC)
+#     PLATFORM := windows
+#     CXX := cl
+#     # 输出到 libs 目录
+#     MD_LIB := $(LIBS_DIR)/ctpmd_c_api.dll
+#     TRADER_LIB := $(LIBS_DIR)/ctptrader_c_api.dll
     
-    # 头文件路径
-    # 注意: 代码中使用相对路径 ctpapi/windows/xxx.h, 所以需要包含项目根目录
-    INCLUDE_MD := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
-    INCLUDE_TRADER := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
-    INCLUDE_DATACOLLECT := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
-    INCLUDE_COMMON := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
+#     # 头文件路径
+#     # 注意: 代码中使用相对路径 ctpapi/windows/xxx.h, 所以需要包含项目根目录
+#     INCLUDE_MD := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
+#     INCLUDE_TRADER := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
+#     INCLUDE_DATACOLLECT := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
+#     INCLUDE_COMMON := /I. /I$(CTPAPI_DIR)\\windows /I$(CSRC_DIR)
     
-    # 库路径和链接
-    LIB_PATH := /LIBPATH:$(CTPAPI_DIR)\\windows
-    MD_LIBS := thostmduserapi_se.lib
-    TRADER_LIBS := thosttraderapi_se.lib WinDataCollect.lib
+#     # 库路径和链接（编译时使用官方库）
+#     LIB_PATH := /LIBPATH:$(CTPAPI_DIR)\\windows
+#     MD_LIBS := thostmduserapi_se.lib
+#     TRADER_LIBS := thosttraderapi_se.lib WinDataCollect.lib
     
-    CXXFLAGS := /LD /O2 /EHsc
-    LDFLAGS := $(LIB_PATH)
+#     CXXFLAGS := /LD /O2 /EHsc /std:c++17
+#     LDFLAGS := $(LIB_PATH)
 else
     $(error 不支持的操作系统: $(UNAME_S))
 endif
 
 # 默认目标
-.PHONY: all clean md trader help check-frameworks
+.PHONY: all clean md trader help check-frameworks install-deps
 
-all: check-frameworks md trader
+all: check-frameworks install-deps md trader
 	@echo ""
 	@echo "✓ 编译完成！"
 	@echo "  行情API: $(MD_LIB)"
 	@echo "  交易API: $(TRADER_LIB)"
+	@echo "  所有库已输出到: $(LIBS_DIR)/"
 
 # 检查 macOS frameworks
 check-frameworks:
@@ -120,6 +126,67 @@ ifeq ($(PLATFORM),macos)
 	fi
 	@echo "✓ Framework 检查通过"
 endif
+
+# 安装依赖库到 libs 目录（用于独立分发）
+install-deps:
+	@echo "准备 libs 目录..."
+	@mkdir -p $(LIBS_DIR)
+ifeq ($(PLATFORM),linux)
+	@echo "复制 Linux 官方库到 libs 目录..."
+	@if [ -f "$(CTPAPI_DIR)/linux/thostmduserapi_se.so" ]; then \
+		cp -f $(CTPAPI_DIR)/linux/thostmduserapi_se.so $(LIBS_DIR)/; \
+		echo "  ✓ thostmduserapi_se.so"; \
+	fi
+	@if [ -f "$(CTPAPI_DIR)/linux/thosttraderapi_se.so" ]; then \
+		cp -f $(CTPAPI_DIR)/linux/thosttraderapi_se.so $(LIBS_DIR)/; \
+		echo "  ✓ thosttraderapi_se.so"; \
+	fi
+	@if [ -f "$(CTPAPI_DIR)/linux/LinuxDataCollect.so" ]; then \
+		cp -f $(CTPAPI_DIR)/linux/LinuxDataCollect.so $(LIBS_DIR)/; \
+		echo "  ✓ LinuxDataCollect.so"; \
+	fi
+else ifeq ($(PLATFORM),windows)
+	@echo "复制 Windows 官方库到 libs 目录..."
+	@if [ -f "$(CTPAPI_DIR)/windows/thostmduserapi_se.dll" ]; then \
+		cp -f $(CTPAPI_DIR)/windows/thostmduserapi_se.dll $(LIBS_DIR)/; \
+		echo "  ✓ thostmduserapi_se.dll"; \
+	fi
+	@if [ -f "$(CTPAPI_DIR)/windows/thosttraderapi_se.dll" ]; then \
+		cp -f $(CTPAPI_DIR)/windows/thosttraderapi_se.dll $(LIBS_DIR)/; \
+		echo "  ✓ thosttraderapi_se.dll"; \
+	fi
+	@if [ -f "$(CTPAPI_DIR)/windows/WinDataCollect.dll" ]; then \
+		cp -f $(CTPAPI_DIR)/windows/WinDataCollect.dll $(LIBS_DIR)/; \
+		echo "  ✓ WinDataCollect.dll"; \
+	fi
+else ifeq ($(PLATFORM),macos)
+	@echo "复制 macOS frameworks 到 libs 目录..."
+	@if [ -d "$(CTPAPI_DIR)/macos/thostmduserapi_se.framework" ]; then \
+		if [ ! -d "$(LIBS_DIR)/thostmduserapi_se.framework" ]; then \
+			cp -R $(CTPAPI_DIR)/macos/thostmduserapi_se.framework $(LIBS_DIR)/; \
+			echo "  ✓ thostmduserapi_se.framework"; \
+		else \
+			echo "  ⊙ thostmduserapi_se.framework (已存在，跳过)"; \
+		fi \
+	fi
+	@if [ -d "$(CTPAPI_DIR)/macos/thosttraderapi_se.framework" ]; then \
+		if [ ! -d "$(LIBS_DIR)/thosttraderapi_se.framework" ]; then \
+			cp -R $(CTPAPI_DIR)/macos/thosttraderapi_se.framework $(LIBS_DIR)/; \
+			echo "  ✓ thosttraderapi_se.framework"; \
+		else \
+			echo "  ⊙ thosttraderapi_se.framework (已存在，跳过)"; \
+		fi \
+	fi
+	@if [ -d "$(CTPAPI_DIR)/macos/MacDataCollect.framework" ]; then \
+		if [ ! -d "$(LIBS_DIR)/MacDataCollect.framework" ]; then \
+			cp -R $(CTPAPI_DIR)/macos/MacDataCollect.framework $(LIBS_DIR)/; \
+			echo "  ✓ MacDataCollect.framework"; \
+		else \
+			echo "  ⊙ MacDataCollect.framework (已存在，跳过)"; \
+		fi \
+	fi
+endif
+	@echo "✓ 依赖库准备完成"
 
 # 编译行情API
 md: $(MD_LIB)
@@ -156,9 +223,13 @@ endif
 # 清理
 clean:
 	@echo "清理编译产物..."
-	@rm -f $(CTPAPI_DIR)/macos/libctpmd_c_api.* $(CTPAPI_DIR)/macos/libctptrader_c_api.*
-	@rm -f $(CTPAPI_DIR)/linux/libctpmd_c_api.* $(CTPAPI_DIR)/linux/libctptrader_c_api.*
-	@rm -f $(CTPAPI_DIR)/windows/ctpmd_c_api.* $(CTPAPI_DIR)/windows/ctptrader_c_api.*
+	@rm -f $(LIBS_DIR)/libctpmd_c_api.* $(LIBS_DIR)/libctptrader_c_api.*
+	@rm -f $(LIBS_DIR)/ctpmd_c_api.* $(LIBS_DIR)/ctptrader_c_api.*
+	@rm -f $(LIBS_DIR)/thostmduserapi_se.so $(LIBS_DIR)/thosttraderapi_se.so
+	@rm -f $(LIBS_DIR)/LinuxDataCollect.so
+	@rm -f $(LIBS_DIR)/thostmduserapi_se.dll $(LIBS_DIR)/thosttraderapi_se.dll
+	@rm -f $(LIBS_DIR)/WinDataCollect.dll
+	@rm -f $(LIBS_DIR)/*.framework
 	@rm -rf $(BUILD_DIR)
 	@echo "✓ 清理完成"
 
@@ -176,6 +247,11 @@ help:
 	@echo "当前平台: $(PLATFORM)"
 	@echo "编译器: $(CXX)"
 	@echo ""
-	@echo "输出目录: $(CTPAPI_DIR)/$(PLATFORM)"
+	@echo "输出目录: $(LIBS_DIR)/"
 	@echo "  行情API: $(MD_LIB)"
 	@echo "  交易API: $(TRADER_LIB)"
+	@echo ""
+	@echo "说明:"
+	@echo "  - 所有库（包括官方库）都会输出到 $(LIBS_DIR)/ 目录"
+	@echo "  - 运行时使用相对路径（@loader_path/$ORIGIN）查找依赖"
+	@echo "  - 可执行文件和 libs/ 目录放在一起即可独立分发"

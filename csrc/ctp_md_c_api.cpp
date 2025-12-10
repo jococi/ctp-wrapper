@@ -24,6 +24,8 @@
 // ========== SPI 包装类 ==========
 class MdSpiWrapper : public CThostFtdcMdSpi {
 public:
+    virtual ~MdSpiWrapper() = default;
+
     void* userData = nullptr;
 
     MdOnFrontConnectedCallback onFrontConnected = nullptr;

@@ -565,6 +565,8 @@ def generate_cpp_impl(
     lines.append(f"// ========== SPI 包装类 ==========")
     lines.append(f"class {prefix}SpiWrapper : public {cpp_spi_class} {{")
     lines.append(f"public:")
+    lines.append(f"    virtual ~{prefix}SpiWrapper() = default;")
+    lines.append(f"")
     lines.append(f"    void* userData = nullptr;")
     lines.append(f"")
     

@@ -24,6 +24,8 @@
 // ========== SPI 包装类 ==========
 class TraderSpiWrapper : public CThostFtdcTraderSpi {
 public:
+    virtual ~TraderSpiWrapper() = default;
+
     void* userData = nullptr;
 
     TraderOnFrontConnectedCallback onFrontConnected = nullptr;
