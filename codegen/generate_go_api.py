@@ -15,6 +15,8 @@ CTP C API 转 Go PureGo 包装代码生成器
 import re
 import os
 import argparse
+import subprocess
+import shutil
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Tuple, Set
@@ -2613,6 +2615,50 @@ require (
     print(f"  - trader_callbacks.go   : 交易回调 ({len(trader_callbacks)} 个)")
     print(f"  - md_default_spi.go     : 行情默认 SPI 实现")
     print(f"  - trader_default_spi.go : 交易默认 SPI 实现")
+    
+    # 自动格式化生成的 Go 代码
+    format_go_files(output_dir)
+
+
+def format_go_files(output_dir: Path):
+    """
+    使用 gofmt 格式化生成的 Go 文件
+    
+    gofmt 会自动对齐结构体字段、import 等，使代码符合 Go 规范
+    """
+    # 检查 gofmt 是否可用
+    gofmt_path = shutil.which('gofmt')
+    if not gofmt_path:
+        print("\n警告: gofmt 未找到，跳过代码格式化")
+        print("  请确保 Go 已安装并添加到 PATH 环境变量")
+        return
+    
+    print(f"\n使用 gofmt 格式化代码...")
+    
+    # 获取所有 .go 文件
+    go_files = list(output_dir.glob('*.go'))
+    
+    if not go_files:
+        print("  没有找到 .go 文件")
+        return
+    
+    # 格式化每个文件
+    success_count = 0
+    for go_file in go_files:
+        try:
+            result = subprocess.run(
+                ['gofmt', '-w', str(go_file)],
+                capture_output=True,
+                text=True
+            )
+            if result.returncode == 0:
+                success_count += 1
+            else:
+                print(f"  格式化失败 {go_file.name}: {result.stderr}")
+        except Exception as e:
+            print(f"  格式化出错 {go_file.name}: {e}")
+    
+    print(f"  成功格式化 {success_count}/{len(go_files)} 个文件")
 
 
 if __name__ == '__main__':

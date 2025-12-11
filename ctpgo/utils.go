@@ -24,18 +24,18 @@ func CStringArray(ss []string) (**byte, [][]byte) {
 	if len(ss) == 0 {
 		return nil, nil
 	}
-	
+
 	// 创建字节切片数组保存字符串数据
 	data := make([][]byte, len(ss))
 	ptrs := make([]*byte, len(ss))
-	
+
 	for i, s := range ss {
 		data[i] = make([]byte, len(s)+1)
 		copy(data[i], s)
 		data[i][len(s)] = 0
 		ptrs[i] = &data[i][0]
 	}
-	
+
 	return &ptrs[0], data
 }
 
@@ -44,12 +44,12 @@ func GoString(ptr *byte) string {
 	if ptr == nil {
 		return ""
 	}
-	
+
 	var length int
 	for p := ptr; *p != 0; p = (*byte)(unsafe.Add(unsafe.Pointer(p), 1)) {
 		length++
 	}
-	
+
 	return string(unsafe.Slice(ptr, length))
 }
 
@@ -75,7 +75,7 @@ func GB18030(b []byte) string {
 	if end == 0 {
 		return ""
 	}
-	
+
 	decoder := simplifiedchinese.GB18030.NewDecoder()
 	result, err := decoder.Bytes(b[:end])
 	if err != nil {
