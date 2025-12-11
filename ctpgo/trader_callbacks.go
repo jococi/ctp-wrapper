@@ -3,15 +3,17 @@ package ctpgo
 // 此文件由代码生成器自动生成，请勿手动修改
 // CTP 交易回调实现
 
-import "unsafe"
-
-// #include <stdint.h>
+/*
+#include <stdint.h>
+*/
 import "C"
+
+import "unsafe"
 
 // ========== 回调函数 ==========
 
-//export goOnFrontConnected
-func goOnFrontConnected(userData uintptr) {
+//export goTraderOnFrontConnected
+func goTraderOnFrontConnected(userData uintptr) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
@@ -19,8 +21,8 @@ func goOnFrontConnected(userData uintptr) {
 	api.spi.OnFrontConnected()
 }
 
-//export goOnFrontDisconnected
-func goOnFrontDisconnected(userData uintptr, nReason int32) {
+//export goTraderOnFrontDisconnected
+func goTraderOnFrontDisconnected(userData uintptr, nReason int32) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
@@ -28,8 +30,8 @@ func goOnFrontDisconnected(userData uintptr, nReason int32) {
 	api.spi.OnFrontDisconnected(nReason)
 }
 
-//export goOnHeartBeatWarning
-func goOnHeartBeatWarning(userData uintptr, nTimeLapse int32) {
+//export goTraderOnHeartBeatWarning
+func goTraderOnHeartBeatWarning(userData uintptr, nTimeLapse int32) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
@@ -37,1370 +39,1370 @@ func goOnHeartBeatWarning(userData uintptr, nTimeLapse int32) {
 	api.spi.OnHeartBeatWarning(nTimeLapse)
 }
 
-//export goOnRspAuthenticate
-func goOnRspAuthenticate(userData uintptr, pRspAuthenticateField *CThostFtdcRspAuthenticateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspAuthenticate
+func goTraderOnRspAuthenticate(userData uintptr, pRspAuthenticateField unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspAuthenticate(pRspAuthenticateField, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspAuthenticate((*CThostFtdcRspAuthenticateField)(pRspAuthenticateField), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspUserLogin
-func goOnRspUserLogin(userData uintptr, pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspUserLogin
+func goTraderOnRspUserLogin(userData uintptr, pRspUserLogin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspUserLogin(pRspUserLogin, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspUserLogin((*CThostFtdcRspUserLoginField)(pRspUserLogin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspUserLogout
-func goOnRspUserLogout(userData uintptr, pUserLogout *CThostFtdcUserLogoutField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspUserLogout
+func goTraderOnRspUserLogout(userData uintptr, pUserLogout unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspUserLogout(pUserLogout, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspUserLogout((*CThostFtdcUserLogoutField)(pUserLogout), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspUserPasswordUpdate
-func goOnRspUserPasswordUpdate(userData uintptr, pUserPasswordUpdate *CThostFtdcUserPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspUserPasswordUpdate
+func goTraderOnRspUserPasswordUpdate(userData uintptr, pUserPasswordUpdate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspUserPasswordUpdate(pUserPasswordUpdate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspUserPasswordUpdate((*CThostFtdcUserPasswordUpdateField)(pUserPasswordUpdate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspTradingAccountPasswordUpdate
-func goOnRspTradingAccountPasswordUpdate(userData uintptr, pTradingAccountPasswordUpdate *CThostFtdcTradingAccountPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspTradingAccountPasswordUpdate
+func goTraderOnRspTradingAccountPasswordUpdate(userData uintptr, pTradingAccountPasswordUpdate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspTradingAccountPasswordUpdate(pTradingAccountPasswordUpdate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspTradingAccountPasswordUpdate((*CThostFtdcTradingAccountPasswordUpdateField)(pTradingAccountPasswordUpdate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspUserAuthMethod
-func goOnRspUserAuthMethod(userData uintptr, pRspUserAuthMethod *CThostFtdcRspUserAuthMethodField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspUserAuthMethod
+func goTraderOnRspUserAuthMethod(userData uintptr, pRspUserAuthMethod unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspUserAuthMethod(pRspUserAuthMethod, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspUserAuthMethod((*CThostFtdcRspUserAuthMethodField)(pRspUserAuthMethod), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspGenUserCaptcha
-func goOnRspGenUserCaptcha(userData uintptr, pRspGenUserCaptcha *CThostFtdcRspGenUserCaptchaField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspGenUserCaptcha
+func goTraderOnRspGenUserCaptcha(userData uintptr, pRspGenUserCaptcha unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspGenUserCaptcha(pRspGenUserCaptcha, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspGenUserCaptcha((*CThostFtdcRspGenUserCaptchaField)(pRspGenUserCaptcha), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspGenUserText
-func goOnRspGenUserText(userData uintptr, pRspGenUserText *CThostFtdcRspGenUserTextField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspGenUserText
+func goTraderOnRspGenUserText(userData uintptr, pRspGenUserText unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspGenUserText(pRspGenUserText, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspGenUserText((*CThostFtdcRspGenUserTextField)(pRspGenUserText), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspOrderInsert
-func goOnRspOrderInsert(userData uintptr, pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspOrderInsert
+func goTraderOnRspOrderInsert(userData uintptr, pInputOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspOrderInsert(pInputOrder, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspOrderInsert((*CThostFtdcInputOrderField)(pInputOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspParkedOrderInsert
-func goOnRspParkedOrderInsert(userData uintptr, pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspParkedOrderInsert
+func goTraderOnRspParkedOrderInsert(userData uintptr, pParkedOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspParkedOrderInsert(pParkedOrder, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspParkedOrderInsert((*CThostFtdcParkedOrderField)(pParkedOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspParkedOrderAction
-func goOnRspParkedOrderAction(userData uintptr, pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspParkedOrderAction
+func goTraderOnRspParkedOrderAction(userData uintptr, pParkedOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspParkedOrderAction(pParkedOrderAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspParkedOrderAction((*CThostFtdcParkedOrderActionField)(pParkedOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspOrderAction
-func goOnRspOrderAction(userData uintptr, pInputOrderAction *CThostFtdcInputOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspOrderAction
+func goTraderOnRspOrderAction(userData uintptr, pInputOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspOrderAction(pInputOrderAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspOrderAction((*CThostFtdcInputOrderActionField)(pInputOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryMaxOrderVolume
-func goOnRspQryMaxOrderVolume(userData uintptr, pQryMaxOrderVolume *CThostFtdcQryMaxOrderVolumeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryMaxOrderVolume
+func goTraderOnRspQryMaxOrderVolume(userData uintptr, pQryMaxOrderVolume unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryMaxOrderVolume(pQryMaxOrderVolume, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryMaxOrderVolume((*CThostFtdcQryMaxOrderVolumeField)(pQryMaxOrderVolume), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspSettlementInfoConfirm
-func goOnRspSettlementInfoConfirm(userData uintptr, pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspSettlementInfoConfirm
+func goTraderOnRspSettlementInfoConfirm(userData uintptr, pSettlementInfoConfirm unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspSettlementInfoConfirm(pSettlementInfoConfirm, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspSettlementInfoConfirm((*CThostFtdcSettlementInfoConfirmField)(pSettlementInfoConfirm), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspRemoveParkedOrder
-func goOnRspRemoveParkedOrder(userData uintptr, pRemoveParkedOrder *CThostFtdcRemoveParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspRemoveParkedOrder
+func goTraderOnRspRemoveParkedOrder(userData uintptr, pRemoveParkedOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspRemoveParkedOrder(pRemoveParkedOrder, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspRemoveParkedOrder((*CThostFtdcRemoveParkedOrderField)(pRemoveParkedOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspRemoveParkedOrderAction
-func goOnRspRemoveParkedOrderAction(userData uintptr, pRemoveParkedOrderAction *CThostFtdcRemoveParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspRemoveParkedOrderAction
+func goTraderOnRspRemoveParkedOrderAction(userData uintptr, pRemoveParkedOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspRemoveParkedOrderAction(pRemoveParkedOrderAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspRemoveParkedOrderAction((*CThostFtdcRemoveParkedOrderActionField)(pRemoveParkedOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspExecOrderInsert
-func goOnRspExecOrderInsert(userData uintptr, pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspExecOrderInsert
+func goTraderOnRspExecOrderInsert(userData uintptr, pInputExecOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspExecOrderInsert(pInputExecOrder, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspExecOrderInsert((*CThostFtdcInputExecOrderField)(pInputExecOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspExecOrderAction
-func goOnRspExecOrderAction(userData uintptr, pInputExecOrderAction *CThostFtdcInputExecOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspExecOrderAction
+func goTraderOnRspExecOrderAction(userData uintptr, pInputExecOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspExecOrderAction(pInputExecOrderAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspExecOrderAction((*CThostFtdcInputExecOrderActionField)(pInputExecOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspForQuoteInsert
-func goOnRspForQuoteInsert(userData uintptr, pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspForQuoteInsert
+func goTraderOnRspForQuoteInsert(userData uintptr, pInputForQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspForQuoteInsert(pInputForQuote, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspForQuoteInsert((*CThostFtdcInputForQuoteField)(pInputForQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQuoteInsert
-func goOnRspQuoteInsert(userData uintptr, pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQuoteInsert
+func goTraderOnRspQuoteInsert(userData uintptr, pInputQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQuoteInsert(pInputQuote, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQuoteInsert((*CThostFtdcInputQuoteField)(pInputQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQuoteAction
-func goOnRspQuoteAction(userData uintptr, pInputQuoteAction *CThostFtdcInputQuoteActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQuoteAction
+func goTraderOnRspQuoteAction(userData uintptr, pInputQuoteAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQuoteAction(pInputQuoteAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQuoteAction((*CThostFtdcInputQuoteActionField)(pInputQuoteAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspBatchOrderAction
-func goOnRspBatchOrderAction(userData uintptr, pInputBatchOrderAction *CThostFtdcInputBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspBatchOrderAction
+func goTraderOnRspBatchOrderAction(userData uintptr, pInputBatchOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspBatchOrderAction(pInputBatchOrderAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspBatchOrderAction((*CThostFtdcInputBatchOrderActionField)(pInputBatchOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspOptionSelfCloseInsert
-func goOnRspOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspOptionSelfCloseInsert
+func goTraderOnRspOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClose unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspOptionSelfCloseInsert(pInputOptionSelfClose, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspOptionSelfCloseInsert((*CThostFtdcInputOptionSelfCloseField)(pInputOptionSelfClose), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspOptionSelfCloseAction
-func goOnRspOptionSelfCloseAction(userData uintptr, pInputOptionSelfCloseAction *CThostFtdcInputOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspOptionSelfCloseAction
+func goTraderOnRspOptionSelfCloseAction(userData uintptr, pInputOptionSelfCloseAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspOptionSelfCloseAction(pInputOptionSelfCloseAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspOptionSelfCloseAction((*CThostFtdcInputOptionSelfCloseActionField)(pInputOptionSelfCloseAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspCombActionInsert
-func goOnRspCombActionInsert(userData uintptr, pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspCombActionInsert
+func goTraderOnRspCombActionInsert(userData uintptr, pInputCombAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspCombActionInsert(pInputCombAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspCombActionInsert((*CThostFtdcInputCombActionField)(pInputCombAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryOrder
-func goOnRspQryOrder(userData uintptr, pOrder *CThostFtdcOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryOrder
+func goTraderOnRspQryOrder(userData uintptr, pOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryOrder(pOrder, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryOrder((*CThostFtdcOrderField)(pOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryTrade
-func goOnRspQryTrade(userData uintptr, pTrade *CThostFtdcTradeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryTrade
+func goTraderOnRspQryTrade(userData uintptr, pTrade unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryTrade(pTrade, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryTrade((*CThostFtdcTradeField)(pTrade), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorPosition
-func goOnRspQryInvestorPosition(userData uintptr, pInvestorPosition *CThostFtdcInvestorPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorPosition
+func goTraderOnRspQryInvestorPosition(userData uintptr, pInvestorPosition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorPosition(pInvestorPosition, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorPosition((*CThostFtdcInvestorPositionField)(pInvestorPosition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryTradingAccount
-func goOnRspQryTradingAccount(userData uintptr, pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryTradingAccount
+func goTraderOnRspQryTradingAccount(userData uintptr, pTradingAccount unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryTradingAccount(pTradingAccount, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryTradingAccount((*CThostFtdcTradingAccountField)(pTradingAccount), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestor
-func goOnRspQryInvestor(userData uintptr, pInvestor *CThostFtdcInvestorField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestor
+func goTraderOnRspQryInvestor(userData uintptr, pInvestor unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestor(pInvestor, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestor((*CThostFtdcInvestorField)(pInvestor), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryTradingCode
-func goOnRspQryTradingCode(userData uintptr, pTradingCode *CThostFtdcTradingCodeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryTradingCode
+func goTraderOnRspQryTradingCode(userData uintptr, pTradingCode unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryTradingCode(pTradingCode, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryTradingCode((*CThostFtdcTradingCodeField)(pTradingCode), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInstrumentMarginRate
-func goOnRspQryInstrumentMarginRate(userData uintptr, pInstrumentMarginRate *CThostFtdcInstrumentMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInstrumentMarginRate
+func goTraderOnRspQryInstrumentMarginRate(userData uintptr, pInstrumentMarginRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInstrumentMarginRate(pInstrumentMarginRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInstrumentMarginRate((*CThostFtdcInstrumentMarginRateField)(pInstrumentMarginRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInstrumentCommissionRate
-func goOnRspQryInstrumentCommissionRate(userData uintptr, pInstrumentCommissionRate *CThostFtdcInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInstrumentCommissionRate
+func goTraderOnRspQryInstrumentCommissionRate(userData uintptr, pInstrumentCommissionRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInstrumentCommissionRate((*CThostFtdcInstrumentCommissionRateField)(pInstrumentCommissionRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryExchange
-func goOnRspQryExchange(userData uintptr, pExchange *CThostFtdcExchangeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryExchange
+func goTraderOnRspQryExchange(userData uintptr, pExchange unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryExchange(pExchange, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryExchange((*CThostFtdcExchangeField)(pExchange), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryProduct
-func goOnRspQryProduct(userData uintptr, pProduct *CThostFtdcProductField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryProduct
+func goTraderOnRspQryProduct(userData uintptr, pProduct unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryProduct(pProduct, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryProduct((*CThostFtdcProductField)(pProduct), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInstrument
-func goOnRspQryInstrument(userData uintptr, pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInstrument
+func goTraderOnRspQryInstrument(userData uintptr, pInstrument unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInstrument(pInstrument, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInstrument((*CThostFtdcInstrumentField)(pInstrument), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryDepthMarketData
-func goOnRspQryDepthMarketData(userData uintptr, pDepthMarketData *CThostFtdcDepthMarketDataField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryDepthMarketData
+func goTraderOnRspQryDepthMarketData(userData uintptr, pDepthMarketData unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryDepthMarketData(pDepthMarketData, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryDepthMarketData((*CThostFtdcDepthMarketDataField)(pDepthMarketData), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryTraderOffer
-func goOnRspQryTraderOffer(userData uintptr, pTraderOffer *CThostFtdcTraderOfferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryTraderOffer
+func goTraderOnRspQryTraderOffer(userData uintptr, pTraderOffer unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryTraderOffer(pTraderOffer, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryTraderOffer((*CThostFtdcTraderOfferField)(pTraderOffer), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySettlementInfo
-func goOnRspQrySettlementInfo(userData uintptr, pSettlementInfo *CThostFtdcSettlementInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySettlementInfo
+func goTraderOnRspQrySettlementInfo(userData uintptr, pSettlementInfo unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySettlementInfo(pSettlementInfo, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySettlementInfo((*CThostFtdcSettlementInfoField)(pSettlementInfo), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryTransferBank
-func goOnRspQryTransferBank(userData uintptr, pTransferBank *CThostFtdcTransferBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryTransferBank
+func goTraderOnRspQryTransferBank(userData uintptr, pTransferBank unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryTransferBank(pTransferBank, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryTransferBank((*CThostFtdcTransferBankField)(pTransferBank), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorPositionDetail
-func goOnRspQryInvestorPositionDetail(userData uintptr, pInvestorPositionDetail *CThostFtdcInvestorPositionDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorPositionDetail
+func goTraderOnRspQryInvestorPositionDetail(userData uintptr, pInvestorPositionDetail unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorPositionDetail(pInvestorPositionDetail, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorPositionDetail((*CThostFtdcInvestorPositionDetailField)(pInvestorPositionDetail), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryNotice
-func goOnRspQryNotice(userData uintptr, pNotice *CThostFtdcNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryNotice
+func goTraderOnRspQryNotice(userData uintptr, pNotice unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryNotice(pNotice, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryNotice((*CThostFtdcNoticeField)(pNotice), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySettlementInfoConfirm
-func goOnRspQrySettlementInfoConfirm(userData uintptr, pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySettlementInfoConfirm
+func goTraderOnRspQrySettlementInfoConfirm(userData uintptr, pSettlementInfoConfirm unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySettlementInfoConfirm(pSettlementInfoConfirm, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySettlementInfoConfirm((*CThostFtdcSettlementInfoConfirmField)(pSettlementInfoConfirm), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorPositionCombineDetail
-func goOnRspQryInvestorPositionCombineDetail(userData uintptr, pInvestorPositionCombineDetail *CThostFtdcInvestorPositionCombineDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorPositionCombineDetail
+func goTraderOnRspQryInvestorPositionCombineDetail(userData uintptr, pInvestorPositionCombineDetail unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorPositionCombineDetail(pInvestorPositionCombineDetail, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorPositionCombineDetail((*CThostFtdcInvestorPositionCombineDetailField)(pInvestorPositionCombineDetail), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryCFMMCTradingAccountKey
-func goOnRspQryCFMMCTradingAccountKey(userData uintptr, pCFMMCTradingAccountKey *CThostFtdcCFMMCTradingAccountKeyField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryCFMMCTradingAccountKey
+func goTraderOnRspQryCFMMCTradingAccountKey(userData uintptr, pCFMMCTradingAccountKey unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryCFMMCTradingAccountKey(pCFMMCTradingAccountKey, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryCFMMCTradingAccountKey((*CThostFtdcCFMMCTradingAccountKeyField)(pCFMMCTradingAccountKey), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryEWarrantOffset
-func goOnRspQryEWarrantOffset(userData uintptr, pEWarrantOffset *CThostFtdcEWarrantOffsetField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryEWarrantOffset
+func goTraderOnRspQryEWarrantOffset(userData uintptr, pEWarrantOffset unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryEWarrantOffset(pEWarrantOffset, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryEWarrantOffset((*CThostFtdcEWarrantOffsetField)(pEWarrantOffset), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorProductGroupMargin
-func goOnRspQryInvestorProductGroupMargin(userData uintptr, pInvestorProductGroupMargin *CThostFtdcInvestorProductGroupMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorProductGroupMargin
+func goTraderOnRspQryInvestorProductGroupMargin(userData uintptr, pInvestorProductGroupMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorProductGroupMargin(pInvestorProductGroupMargin, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorProductGroupMargin((*CThostFtdcInvestorProductGroupMarginField)(pInvestorProductGroupMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryExchangeMarginRate
-func goOnRspQryExchangeMarginRate(userData uintptr, pExchangeMarginRate *CThostFtdcExchangeMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryExchangeMarginRate
+func goTraderOnRspQryExchangeMarginRate(userData uintptr, pExchangeMarginRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryExchangeMarginRate(pExchangeMarginRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryExchangeMarginRate((*CThostFtdcExchangeMarginRateField)(pExchangeMarginRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryExchangeMarginRateAdjust
-func goOnRspQryExchangeMarginRateAdjust(userData uintptr, pExchangeMarginRateAdjust *CThostFtdcExchangeMarginRateAdjustField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryExchangeMarginRateAdjust
+func goTraderOnRspQryExchangeMarginRateAdjust(userData uintptr, pExchangeMarginRateAdjust unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryExchangeMarginRateAdjust(pExchangeMarginRateAdjust, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryExchangeMarginRateAdjust((*CThostFtdcExchangeMarginRateAdjustField)(pExchangeMarginRateAdjust), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryExchangeRate
-func goOnRspQryExchangeRate(userData uintptr, pExchangeRate *CThostFtdcExchangeRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryExchangeRate
+func goTraderOnRspQryExchangeRate(userData uintptr, pExchangeRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryExchangeRate(pExchangeRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryExchangeRate((*CThostFtdcExchangeRateField)(pExchangeRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySecAgentACIDMap
-func goOnRspQrySecAgentACIDMap(userData uintptr, pSecAgentACIDMap *CThostFtdcSecAgentACIDMapField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySecAgentACIDMap
+func goTraderOnRspQrySecAgentACIDMap(userData uintptr, pSecAgentACIDMap unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySecAgentACIDMap(pSecAgentACIDMap, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySecAgentACIDMap((*CThostFtdcSecAgentACIDMapField)(pSecAgentACIDMap), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryProductExchRate
-func goOnRspQryProductExchRate(userData uintptr, pProductExchRate *CThostFtdcProductExchRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryProductExchRate
+func goTraderOnRspQryProductExchRate(userData uintptr, pProductExchRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryProductExchRate(pProductExchRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryProductExchRate((*CThostFtdcProductExchRateField)(pProductExchRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryProductGroup
-func goOnRspQryProductGroup(userData uintptr, pProductGroup *CThostFtdcProductGroupField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryProductGroup
+func goTraderOnRspQryProductGroup(userData uintptr, pProductGroup unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryProductGroup(pProductGroup, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryProductGroup((*CThostFtdcProductGroupField)(pProductGroup), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryMMInstrumentCommissionRate
-func goOnRspQryMMInstrumentCommissionRate(userData uintptr, pMMInstrumentCommissionRate *CThostFtdcMMInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryMMInstrumentCommissionRate
+func goTraderOnRspQryMMInstrumentCommissionRate(userData uintptr, pMMInstrumentCommissionRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryMMInstrumentCommissionRate(pMMInstrumentCommissionRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryMMInstrumentCommissionRate((*CThostFtdcMMInstrumentCommissionRateField)(pMMInstrumentCommissionRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryMMOptionInstrCommRate
-func goOnRspQryMMOptionInstrCommRate(userData uintptr, pMMOptionInstrCommRate *CThostFtdcMMOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryMMOptionInstrCommRate
+func goTraderOnRspQryMMOptionInstrCommRate(userData uintptr, pMMOptionInstrCommRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryMMOptionInstrCommRate(pMMOptionInstrCommRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryMMOptionInstrCommRate((*CThostFtdcMMOptionInstrCommRateField)(pMMOptionInstrCommRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInstrumentOrderCommRate
-func goOnRspQryInstrumentOrderCommRate(userData uintptr, pInstrumentOrderCommRate *CThostFtdcInstrumentOrderCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInstrumentOrderCommRate
+func goTraderOnRspQryInstrumentOrderCommRate(userData uintptr, pInstrumentOrderCommRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInstrumentOrderCommRate(pInstrumentOrderCommRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInstrumentOrderCommRate((*CThostFtdcInstrumentOrderCommRateField)(pInstrumentOrderCommRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySecAgentTradingAccount
-func goOnRspQrySecAgentTradingAccount(userData uintptr, pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySecAgentTradingAccount
+func goTraderOnRspQrySecAgentTradingAccount(userData uintptr, pTradingAccount unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySecAgentTradingAccount(pTradingAccount, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySecAgentTradingAccount((*CThostFtdcTradingAccountField)(pTradingAccount), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySecAgentCheckMode
-func goOnRspQrySecAgentCheckMode(userData uintptr, pSecAgentCheckMode *CThostFtdcSecAgentCheckModeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySecAgentCheckMode
+func goTraderOnRspQrySecAgentCheckMode(userData uintptr, pSecAgentCheckMode unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySecAgentCheckMode(pSecAgentCheckMode, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySecAgentCheckMode((*CThostFtdcSecAgentCheckModeField)(pSecAgentCheckMode), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySecAgentTradeInfo
-func goOnRspQrySecAgentTradeInfo(userData uintptr, pSecAgentTradeInfo *CThostFtdcSecAgentTradeInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySecAgentTradeInfo
+func goTraderOnRspQrySecAgentTradeInfo(userData uintptr, pSecAgentTradeInfo unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySecAgentTradeInfo(pSecAgentTradeInfo, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySecAgentTradeInfo((*CThostFtdcSecAgentTradeInfoField)(pSecAgentTradeInfo), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryOptionInstrTradeCost
-func goOnRspQryOptionInstrTradeCost(userData uintptr, pOptionInstrTradeCost *CThostFtdcOptionInstrTradeCostField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryOptionInstrTradeCost
+func goTraderOnRspQryOptionInstrTradeCost(userData uintptr, pOptionInstrTradeCost unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryOptionInstrTradeCost(pOptionInstrTradeCost, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryOptionInstrTradeCost((*CThostFtdcOptionInstrTradeCostField)(pOptionInstrTradeCost), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryOptionInstrCommRate
-func goOnRspQryOptionInstrCommRate(userData uintptr, pOptionInstrCommRate *CThostFtdcOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryOptionInstrCommRate
+func goTraderOnRspQryOptionInstrCommRate(userData uintptr, pOptionInstrCommRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryOptionInstrCommRate(pOptionInstrCommRate, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryOptionInstrCommRate((*CThostFtdcOptionInstrCommRateField)(pOptionInstrCommRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryExecOrder
-func goOnRspQryExecOrder(userData uintptr, pExecOrder *CThostFtdcExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryExecOrder
+func goTraderOnRspQryExecOrder(userData uintptr, pExecOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryExecOrder(pExecOrder, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryExecOrder((*CThostFtdcExecOrderField)(pExecOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryForQuote
-func goOnRspQryForQuote(userData uintptr, pForQuote *CThostFtdcForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryForQuote
+func goTraderOnRspQryForQuote(userData uintptr, pForQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryForQuote(pForQuote, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryForQuote((*CThostFtdcForQuoteField)(pForQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryQuote
-func goOnRspQryQuote(userData uintptr, pQuote *CThostFtdcQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryQuote
+func goTraderOnRspQryQuote(userData uintptr, pQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryQuote(pQuote, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryQuote((*CThostFtdcQuoteField)(pQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryOptionSelfClose
-func goOnRspQryOptionSelfClose(userData uintptr, pOptionSelfClose *CThostFtdcOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryOptionSelfClose
+func goTraderOnRspQryOptionSelfClose(userData uintptr, pOptionSelfClose unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryOptionSelfClose(pOptionSelfClose, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryOptionSelfClose((*CThostFtdcOptionSelfCloseField)(pOptionSelfClose), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestUnit
-func goOnRspQryInvestUnit(userData uintptr, pInvestUnit *CThostFtdcInvestUnitField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestUnit
+func goTraderOnRspQryInvestUnit(userData uintptr, pInvestUnit unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestUnit(pInvestUnit, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestUnit((*CThostFtdcInvestUnitField)(pInvestUnit), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryCombInstrumentGuard
-func goOnRspQryCombInstrumentGuard(userData uintptr, pCombInstrumentGuard *CThostFtdcCombInstrumentGuardField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryCombInstrumentGuard
+func goTraderOnRspQryCombInstrumentGuard(userData uintptr, pCombInstrumentGuard unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryCombInstrumentGuard(pCombInstrumentGuard, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryCombInstrumentGuard((*CThostFtdcCombInstrumentGuardField)(pCombInstrumentGuard), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryCombAction
-func goOnRspQryCombAction(userData uintptr, pCombAction *CThostFtdcCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryCombAction
+func goTraderOnRspQryCombAction(userData uintptr, pCombAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryCombAction(pCombAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryCombAction((*CThostFtdcCombActionField)(pCombAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryTransferSerial
-func goOnRspQryTransferSerial(userData uintptr, pTransferSerial *CThostFtdcTransferSerialField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryTransferSerial
+func goTraderOnRspQryTransferSerial(userData uintptr, pTransferSerial unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryTransferSerial(pTransferSerial, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryTransferSerial((*CThostFtdcTransferSerialField)(pTransferSerial), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryAccountregister
-func goOnRspQryAccountregister(userData uintptr, pAccountregister *CThostFtdcAccountregisterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryAccountregister
+func goTraderOnRspQryAccountregister(userData uintptr, pAccountregister unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryAccountregister(pAccountregister, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryAccountregister((*CThostFtdcAccountregisterField)(pAccountregister), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspError
-func goOnRspError(userData uintptr, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspError
+func goTraderOnRspError(userData uintptr, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspError(pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspError((*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRtnOrder
-func goOnRtnOrder(userData uintptr, pOrder *CThostFtdcOrderField) {
+//export goTraderOnRtnOrder
+func goTraderOnRtnOrder(userData uintptr, pOrder unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnOrder(pOrder)
+	api.spi.OnRtnOrder((*CThostFtdcOrderField)(pOrder))
 }
 
-//export goOnRtnTrade
-func goOnRtnTrade(userData uintptr, pTrade *CThostFtdcTradeField) {
+//export goTraderOnRtnTrade
+func goTraderOnRtnTrade(userData uintptr, pTrade unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnTrade(pTrade)
+	api.spi.OnRtnTrade((*CThostFtdcTradeField)(pTrade))
 }
 
-//export goOnErrRtnOrderInsert
-func goOnErrRtnOrderInsert(userData uintptr, pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnOrderInsert
+func goTraderOnErrRtnOrderInsert(userData uintptr, pInputOrder unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnOrderInsert(pInputOrder, pRspInfo)
+	api.spi.OnErrRtnOrderInsert((*CThostFtdcInputOrderField)(pInputOrder), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnOrderAction
-func goOnErrRtnOrderAction(userData uintptr, pOrderAction *CThostFtdcOrderActionField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnOrderAction
+func goTraderOnErrRtnOrderAction(userData uintptr, pOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnOrderAction(pOrderAction, pRspInfo)
+	api.spi.OnErrRtnOrderAction((*CThostFtdcOrderActionField)(pOrderAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnRtnInstrumentStatus
-func goOnRtnInstrumentStatus(userData uintptr, pInstrumentStatus *CThostFtdcInstrumentStatusField) {
+//export goTraderOnRtnInstrumentStatus
+func goTraderOnRtnInstrumentStatus(userData uintptr, pInstrumentStatus unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnInstrumentStatus(pInstrumentStatus)
+	api.spi.OnRtnInstrumentStatus((*CThostFtdcInstrumentStatusField)(pInstrumentStatus))
 }
 
-//export goOnRtnBulletin
-func goOnRtnBulletin(userData uintptr, pBulletin *CThostFtdcBulletinField) {
+//export goTraderOnRtnBulletin
+func goTraderOnRtnBulletin(userData uintptr, pBulletin unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnBulletin(pBulletin)
+	api.spi.OnRtnBulletin((*CThostFtdcBulletinField)(pBulletin))
 }
 
-//export goOnRtnTradingNotice
-func goOnRtnTradingNotice(userData uintptr, pTradingNoticeInfo *CThostFtdcTradingNoticeInfoField) {
+//export goTraderOnRtnTradingNotice
+func goTraderOnRtnTradingNotice(userData uintptr, pTradingNoticeInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnTradingNotice(pTradingNoticeInfo)
+	api.spi.OnRtnTradingNotice((*CThostFtdcTradingNoticeInfoField)(pTradingNoticeInfo))
 }
 
-//export goOnRtnErrorConditionalOrder
-func goOnRtnErrorConditionalOrder(userData uintptr, pErrorConditionalOrder *CThostFtdcErrorConditionalOrderField) {
+//export goTraderOnRtnErrorConditionalOrder
+func goTraderOnRtnErrorConditionalOrder(userData uintptr, pErrorConditionalOrder unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnErrorConditionalOrder(pErrorConditionalOrder)
+	api.spi.OnRtnErrorConditionalOrder((*CThostFtdcErrorConditionalOrderField)(pErrorConditionalOrder))
 }
 
-//export goOnRtnExecOrder
-func goOnRtnExecOrder(userData uintptr, pExecOrder *CThostFtdcExecOrderField) {
+//export goTraderOnRtnExecOrder
+func goTraderOnRtnExecOrder(userData uintptr, pExecOrder unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnExecOrder(pExecOrder)
+	api.spi.OnRtnExecOrder((*CThostFtdcExecOrderField)(pExecOrder))
 }
 
-//export goOnErrRtnExecOrderInsert
-func goOnErrRtnExecOrderInsert(userData uintptr, pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnExecOrderInsert
+func goTraderOnErrRtnExecOrderInsert(userData uintptr, pInputExecOrder unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnExecOrderInsert(pInputExecOrder, pRspInfo)
+	api.spi.OnErrRtnExecOrderInsert((*CThostFtdcInputExecOrderField)(pInputExecOrder), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnExecOrderAction
-func goOnErrRtnExecOrderAction(userData uintptr, pExecOrderAction *CThostFtdcExecOrderActionField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnExecOrderAction
+func goTraderOnErrRtnExecOrderAction(userData uintptr, pExecOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnExecOrderAction(pExecOrderAction, pRspInfo)
+	api.spi.OnErrRtnExecOrderAction((*CThostFtdcExecOrderActionField)(pExecOrderAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnForQuoteInsert
-func goOnErrRtnForQuoteInsert(userData uintptr, pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnForQuoteInsert
+func goTraderOnErrRtnForQuoteInsert(userData uintptr, pInputForQuote unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnForQuoteInsert(pInputForQuote, pRspInfo)
+	api.spi.OnErrRtnForQuoteInsert((*CThostFtdcInputForQuoteField)(pInputForQuote), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnRtnQuote
-func goOnRtnQuote(userData uintptr, pQuote *CThostFtdcQuoteField) {
+//export goTraderOnRtnQuote
+func goTraderOnRtnQuote(userData uintptr, pQuote unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnQuote(pQuote)
+	api.spi.OnRtnQuote((*CThostFtdcQuoteField)(pQuote))
 }
 
-//export goOnErrRtnQuoteInsert
-func goOnErrRtnQuoteInsert(userData uintptr, pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnQuoteInsert
+func goTraderOnErrRtnQuoteInsert(userData uintptr, pInputQuote unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnQuoteInsert(pInputQuote, pRspInfo)
+	api.spi.OnErrRtnQuoteInsert((*CThostFtdcInputQuoteField)(pInputQuote), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnQuoteAction
-func goOnErrRtnQuoteAction(userData uintptr, pQuoteAction *CThostFtdcQuoteActionField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnQuoteAction
+func goTraderOnErrRtnQuoteAction(userData uintptr, pQuoteAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnQuoteAction(pQuoteAction, pRspInfo)
+	api.spi.OnErrRtnQuoteAction((*CThostFtdcQuoteActionField)(pQuoteAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnRtnForQuoteRsp
-func goOnRtnForQuoteRsp(userData uintptr, pForQuoteRsp *CThostFtdcForQuoteRspField) {
+//export goTraderOnRtnForQuoteRsp
+func goTraderOnRtnForQuoteRsp(userData uintptr, pForQuoteRsp unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnForQuoteRsp(pForQuoteRsp)
+	api.spi.OnRtnForQuoteRsp((*CThostFtdcForQuoteRspField)(pForQuoteRsp))
 }
 
-//export goOnRtnCFMMCTradingAccountToken
-func goOnRtnCFMMCTradingAccountToken(userData uintptr, pCFMMCTradingAccountToken *CThostFtdcCFMMCTradingAccountTokenField) {
+//export goTraderOnRtnCFMMCTradingAccountToken
+func goTraderOnRtnCFMMCTradingAccountToken(userData uintptr, pCFMMCTradingAccountToken unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnCFMMCTradingAccountToken(pCFMMCTradingAccountToken)
+	api.spi.OnRtnCFMMCTradingAccountToken((*CThostFtdcCFMMCTradingAccountTokenField)(pCFMMCTradingAccountToken))
 }
 
-//export goOnErrRtnBatchOrderAction
-func goOnErrRtnBatchOrderAction(userData uintptr, pBatchOrderAction *CThostFtdcBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnBatchOrderAction
+func goTraderOnErrRtnBatchOrderAction(userData uintptr, pBatchOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnBatchOrderAction(pBatchOrderAction, pRspInfo)
+	api.spi.OnErrRtnBatchOrderAction((*CThostFtdcBatchOrderActionField)(pBatchOrderAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnRtnOptionSelfClose
-func goOnRtnOptionSelfClose(userData uintptr, pOptionSelfClose *CThostFtdcOptionSelfCloseField) {
+//export goTraderOnRtnOptionSelfClose
+func goTraderOnRtnOptionSelfClose(userData uintptr, pOptionSelfClose unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnOptionSelfClose(pOptionSelfClose)
+	api.spi.OnRtnOptionSelfClose((*CThostFtdcOptionSelfCloseField)(pOptionSelfClose))
 }
 
-//export goOnErrRtnOptionSelfCloseInsert
-func goOnErrRtnOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnOptionSelfCloseInsert
+func goTraderOnErrRtnOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClose unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnOptionSelfCloseInsert(pInputOptionSelfClose, pRspInfo)
+	api.spi.OnErrRtnOptionSelfCloseInsert((*CThostFtdcInputOptionSelfCloseField)(pInputOptionSelfClose), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnOptionSelfCloseAction
-func goOnErrRtnOptionSelfCloseAction(userData uintptr, pOptionSelfCloseAction *CThostFtdcOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnOptionSelfCloseAction
+func goTraderOnErrRtnOptionSelfCloseAction(userData uintptr, pOptionSelfCloseAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnOptionSelfCloseAction(pOptionSelfCloseAction, pRspInfo)
+	api.spi.OnErrRtnOptionSelfCloseAction((*CThostFtdcOptionSelfCloseActionField)(pOptionSelfCloseAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnRtnCombAction
-func goOnRtnCombAction(userData uintptr, pCombAction *CThostFtdcCombActionField) {
+//export goTraderOnRtnCombAction
+func goTraderOnRtnCombAction(userData uintptr, pCombAction unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnCombAction(pCombAction)
+	api.spi.OnRtnCombAction((*CThostFtdcCombActionField)(pCombAction))
 }
 
-//export goOnErrRtnCombActionInsert
-func goOnErrRtnCombActionInsert(userData uintptr, pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnCombActionInsert
+func goTraderOnErrRtnCombActionInsert(userData uintptr, pInputCombAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnCombActionInsert(pInputCombAction, pRspInfo)
+	api.spi.OnErrRtnCombActionInsert((*CThostFtdcInputCombActionField)(pInputCombAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnRspQryContractBank
-func goOnRspQryContractBank(userData uintptr, pContractBank *CThostFtdcContractBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryContractBank
+func goTraderOnRspQryContractBank(userData uintptr, pContractBank unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryContractBank(pContractBank, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryContractBank((*CThostFtdcContractBankField)(pContractBank), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryParkedOrder
-func goOnRspQryParkedOrder(userData uintptr, pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryParkedOrder
+func goTraderOnRspQryParkedOrder(userData uintptr, pParkedOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryParkedOrder(pParkedOrder, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryParkedOrder((*CThostFtdcParkedOrderField)(pParkedOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryParkedOrderAction
-func goOnRspQryParkedOrderAction(userData uintptr, pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryParkedOrderAction
+func goTraderOnRspQryParkedOrderAction(userData uintptr, pParkedOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryParkedOrderAction(pParkedOrderAction, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryParkedOrderAction((*CThostFtdcParkedOrderActionField)(pParkedOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryTradingNotice
-func goOnRspQryTradingNotice(userData uintptr, pTradingNotice *CThostFtdcTradingNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryTradingNotice
+func goTraderOnRspQryTradingNotice(userData uintptr, pTradingNotice unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryTradingNotice(pTradingNotice, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryTradingNotice((*CThostFtdcTradingNoticeField)(pTradingNotice), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryBrokerTradingParams
-func goOnRspQryBrokerTradingParams(userData uintptr, pBrokerTradingParams *CThostFtdcBrokerTradingParamsField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryBrokerTradingParams
+func goTraderOnRspQryBrokerTradingParams(userData uintptr, pBrokerTradingParams unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryBrokerTradingParams(pBrokerTradingParams, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryBrokerTradingParams((*CThostFtdcBrokerTradingParamsField)(pBrokerTradingParams), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryBrokerTradingAlgos
-func goOnRspQryBrokerTradingAlgos(userData uintptr, pBrokerTradingAlgos *CThostFtdcBrokerTradingAlgosField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryBrokerTradingAlgos
+func goTraderOnRspQryBrokerTradingAlgos(userData uintptr, pBrokerTradingAlgos unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryBrokerTradingAlgos(pBrokerTradingAlgos, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryBrokerTradingAlgos((*CThostFtdcBrokerTradingAlgosField)(pBrokerTradingAlgos), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQueryCFMMCTradingAccountToken
-func goOnRspQueryCFMMCTradingAccountToken(userData uintptr, pQueryCFMMCTradingAccountToken *CThostFtdcQueryCFMMCTradingAccountTokenField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQueryCFMMCTradingAccountToken
+func goTraderOnRspQueryCFMMCTradingAccountToken(userData uintptr, pQueryCFMMCTradingAccountToken unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQueryCFMMCTradingAccountToken(pQueryCFMMCTradingAccountToken, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQueryCFMMCTradingAccountToken((*CThostFtdcQueryCFMMCTradingAccountTokenField)(pQueryCFMMCTradingAccountToken), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRtnFromBankToFutureByBank
-func goOnRtnFromBankToFutureByBank(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+//export goTraderOnRtnFromBankToFutureByBank
+func goTraderOnRtnFromBankToFutureByBank(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnFromBankToFutureByBank(pRspTransfer)
+	api.spi.OnRtnFromBankToFutureByBank((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goOnRtnFromFutureToBankByBank
-func goOnRtnFromFutureToBankByBank(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+//export goTraderOnRtnFromFutureToBankByBank
+func goTraderOnRtnFromFutureToBankByBank(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnFromFutureToBankByBank(pRspTransfer)
+	api.spi.OnRtnFromFutureToBankByBank((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goOnRtnRepealFromBankToFutureByBank
-func goOnRtnRepealFromBankToFutureByBank(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+//export goTraderOnRtnRepealFromBankToFutureByBank
+func goTraderOnRtnRepealFromBankToFutureByBank(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnRepealFromBankToFutureByBank(pRspRepeal)
+	api.spi.OnRtnRepealFromBankToFutureByBank((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goOnRtnRepealFromFutureToBankByBank
-func goOnRtnRepealFromFutureToBankByBank(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+//export goTraderOnRtnRepealFromFutureToBankByBank
+func goTraderOnRtnRepealFromFutureToBankByBank(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnRepealFromFutureToBankByBank(pRspRepeal)
+	api.spi.OnRtnRepealFromFutureToBankByBank((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goOnRtnFromBankToFutureByFuture
-func goOnRtnFromBankToFutureByFuture(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+//export goTraderOnRtnFromBankToFutureByFuture
+func goTraderOnRtnFromBankToFutureByFuture(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnFromBankToFutureByFuture(pRspTransfer)
+	api.spi.OnRtnFromBankToFutureByFuture((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goOnRtnFromFutureToBankByFuture
-func goOnRtnFromFutureToBankByFuture(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+//export goTraderOnRtnFromFutureToBankByFuture
+func goTraderOnRtnFromFutureToBankByFuture(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnFromFutureToBankByFuture(pRspTransfer)
+	api.spi.OnRtnFromFutureToBankByFuture((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goOnRtnRepealFromBankToFutureByFutureManual
-func goOnRtnRepealFromBankToFutureByFutureManual(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+//export goTraderOnRtnRepealFromBankToFutureByFutureManual
+func goTraderOnRtnRepealFromBankToFutureByFutureManual(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnRepealFromBankToFutureByFutureManual(pRspRepeal)
+	api.spi.OnRtnRepealFromBankToFutureByFutureManual((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goOnRtnRepealFromFutureToBankByFutureManual
-func goOnRtnRepealFromFutureToBankByFutureManual(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+//export goTraderOnRtnRepealFromFutureToBankByFutureManual
+func goTraderOnRtnRepealFromFutureToBankByFutureManual(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnRepealFromFutureToBankByFutureManual(pRspRepeal)
+	api.spi.OnRtnRepealFromFutureToBankByFutureManual((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goOnRtnQueryBankBalanceByFuture
-func goOnRtnQueryBankBalanceByFuture(userData uintptr, pNotifyQueryAccount *CThostFtdcNotifyQueryAccountField) {
+//export goTraderOnRtnQueryBankBalanceByFuture
+func goTraderOnRtnQueryBankBalanceByFuture(userData uintptr, pNotifyQueryAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnQueryBankBalanceByFuture(pNotifyQueryAccount)
+	api.spi.OnRtnQueryBankBalanceByFuture((*CThostFtdcNotifyQueryAccountField)(pNotifyQueryAccount))
 }
 
-//export goOnErrRtnBankToFutureByFuture
-func goOnErrRtnBankToFutureByFuture(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnBankToFutureByFuture
+func goTraderOnErrRtnBankToFutureByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnBankToFutureByFuture(pReqTransfer, pRspInfo)
+	api.spi.OnErrRtnBankToFutureByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnFutureToBankByFuture
-func goOnErrRtnFutureToBankByFuture(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnFutureToBankByFuture
+func goTraderOnErrRtnFutureToBankByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnFutureToBankByFuture(pReqTransfer, pRspInfo)
+	api.spi.OnErrRtnFutureToBankByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnRepealBankToFutureByFutureManual
-func goOnErrRtnRepealBankToFutureByFutureManual(userData uintptr, pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnRepealBankToFutureByFutureManual
+func goTraderOnErrRtnRepealBankToFutureByFutureManual(userData uintptr, pReqRepeal unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnRepealBankToFutureByFutureManual(pReqRepeal, pRspInfo)
+	api.spi.OnErrRtnRepealBankToFutureByFutureManual((*CThostFtdcReqRepealField)(pReqRepeal), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnRepealFutureToBankByFutureManual
-func goOnErrRtnRepealFutureToBankByFutureManual(userData uintptr, pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnRepealFutureToBankByFutureManual
+func goTraderOnErrRtnRepealFutureToBankByFutureManual(userData uintptr, pReqRepeal unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnRepealFutureToBankByFutureManual(pReqRepeal, pRspInfo)
+	api.spi.OnErrRtnRepealFutureToBankByFutureManual((*CThostFtdcReqRepealField)(pReqRepeal), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnErrRtnQueryBankBalanceByFuture
-func goOnErrRtnQueryBankBalanceByFuture(userData uintptr, pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField) {
+//export goTraderOnErrRtnQueryBankBalanceByFuture
+func goTraderOnErrRtnQueryBankBalanceByFuture(userData uintptr, pReqQueryAccount unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnErrRtnQueryBankBalanceByFuture(pReqQueryAccount, pRspInfo)
+	api.spi.OnErrRtnQueryBankBalanceByFuture((*CThostFtdcReqQueryAccountField)(pReqQueryAccount), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goOnRtnRepealFromBankToFutureByFuture
-func goOnRtnRepealFromBankToFutureByFuture(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+//export goTraderOnRtnRepealFromBankToFutureByFuture
+func goTraderOnRtnRepealFromBankToFutureByFuture(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnRepealFromBankToFutureByFuture(pRspRepeal)
+	api.spi.OnRtnRepealFromBankToFutureByFuture((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goOnRtnRepealFromFutureToBankByFuture
-func goOnRtnRepealFromFutureToBankByFuture(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+//export goTraderOnRtnRepealFromFutureToBankByFuture
+func goTraderOnRtnRepealFromFutureToBankByFuture(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnRepealFromFutureToBankByFuture(pRspRepeal)
+	api.spi.OnRtnRepealFromFutureToBankByFuture((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goOnRspFromBankToFutureByFuture
-func goOnRspFromBankToFutureByFuture(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspFromBankToFutureByFuture
+func goTraderOnRspFromBankToFutureByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspFromBankToFutureByFuture(pReqTransfer, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspFromBankToFutureByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspFromFutureToBankByFuture
-func goOnRspFromFutureToBankByFuture(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspFromFutureToBankByFuture
+func goTraderOnRspFromFutureToBankByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspFromFutureToBankByFuture(pReqTransfer, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspFromFutureToBankByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQueryBankAccountMoneyByFuture
-func goOnRspQueryBankAccountMoneyByFuture(userData uintptr, pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQueryBankAccountMoneyByFuture
+func goTraderOnRspQueryBankAccountMoneyByFuture(userData uintptr, pReqQueryAccount unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQueryBankAccountMoneyByFuture(pReqQueryAccount, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQueryBankAccountMoneyByFuture((*CThostFtdcReqQueryAccountField)(pReqQueryAccount), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRtnOpenAccountByBank
-func goOnRtnOpenAccountByBank(userData uintptr, pOpenAccount *CThostFtdcOpenAccountField) {
+//export goTraderOnRtnOpenAccountByBank
+func goTraderOnRtnOpenAccountByBank(userData uintptr, pOpenAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnOpenAccountByBank(pOpenAccount)
+	api.spi.OnRtnOpenAccountByBank((*CThostFtdcOpenAccountField)(pOpenAccount))
 }
 
-//export goOnRtnCancelAccountByBank
-func goOnRtnCancelAccountByBank(userData uintptr, pCancelAccount *CThostFtdcCancelAccountField) {
+//export goTraderOnRtnCancelAccountByBank
+func goTraderOnRtnCancelAccountByBank(userData uintptr, pCancelAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnCancelAccountByBank(pCancelAccount)
+	api.spi.OnRtnCancelAccountByBank((*CThostFtdcCancelAccountField)(pCancelAccount))
 }
 
-//export goOnRtnChangeAccountByBank
-func goOnRtnChangeAccountByBank(userData uintptr, pChangeAccount *CThostFtdcChangeAccountField) {
+//export goTraderOnRtnChangeAccountByBank
+func goTraderOnRtnChangeAccountByBank(userData uintptr, pChangeAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRtnChangeAccountByBank(pChangeAccount)
+	api.spi.OnRtnChangeAccountByBank((*CThostFtdcChangeAccountField)(pChangeAccount))
 }
 
-//export goOnRspQryClassifiedInstrument
-func goOnRspQryClassifiedInstrument(userData uintptr, pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryClassifiedInstrument
+func goTraderOnRspQryClassifiedInstrument(userData uintptr, pInstrument unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryClassifiedInstrument(pInstrument, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryClassifiedInstrument((*CThostFtdcInstrumentField)(pInstrument), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryCombPromotionParam
-func goOnRspQryCombPromotionParam(userData uintptr, pCombPromotionParam *CThostFtdcCombPromotionParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryCombPromotionParam
+func goTraderOnRspQryCombPromotionParam(userData uintptr, pCombPromotionParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryCombPromotionParam(pCombPromotionParam, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryCombPromotionParam((*CThostFtdcCombPromotionParamField)(pCombPromotionParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRiskSettleInvstPosition
-func goOnRspQryRiskSettleInvstPosition(userData uintptr, pRiskSettleInvstPosition *CThostFtdcRiskSettleInvstPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRiskSettleInvstPosition
+func goTraderOnRspQryRiskSettleInvstPosition(userData uintptr, pRiskSettleInvstPosition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRiskSettleInvstPosition(pRiskSettleInvstPosition, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRiskSettleInvstPosition((*CThostFtdcRiskSettleInvstPositionField)(pRiskSettleInvstPosition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRiskSettleProductStatus
-func goOnRspQryRiskSettleProductStatus(userData uintptr, pRiskSettleProductStatus *CThostFtdcRiskSettleProductStatusField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRiskSettleProductStatus
+func goTraderOnRspQryRiskSettleProductStatus(userData uintptr, pRiskSettleProductStatus unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRiskSettleProductStatus(pRiskSettleProductStatus, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRiskSettleProductStatus((*CThostFtdcRiskSettleProductStatusField)(pRiskSettleProductStatus), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPBMFutureParameter
-func goOnRspQrySPBMFutureParameter(userData uintptr, pSPBMFutureParameter *CThostFtdcSPBMFutureParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPBMFutureParameter
+func goTraderOnRspQrySPBMFutureParameter(userData uintptr, pSPBMFutureParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPBMFutureParameter(pSPBMFutureParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPBMFutureParameter((*CThostFtdcSPBMFutureParameterField)(pSPBMFutureParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPBMOptionParameter
-func goOnRspQrySPBMOptionParameter(userData uintptr, pSPBMOptionParameter *CThostFtdcSPBMOptionParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPBMOptionParameter
+func goTraderOnRspQrySPBMOptionParameter(userData uintptr, pSPBMOptionParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPBMOptionParameter(pSPBMOptionParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPBMOptionParameter((*CThostFtdcSPBMOptionParameterField)(pSPBMOptionParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPBMIntraParameter
-func goOnRspQrySPBMIntraParameter(userData uintptr, pSPBMIntraParameter *CThostFtdcSPBMIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPBMIntraParameter
+func goTraderOnRspQrySPBMIntraParameter(userData uintptr, pSPBMIntraParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPBMIntraParameter(pSPBMIntraParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPBMIntraParameter((*CThostFtdcSPBMIntraParameterField)(pSPBMIntraParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPBMInterParameter
-func goOnRspQrySPBMInterParameter(userData uintptr, pSPBMInterParameter *CThostFtdcSPBMInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPBMInterParameter
+func goTraderOnRspQrySPBMInterParameter(userData uintptr, pSPBMInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPBMInterParameter(pSPBMInterParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPBMInterParameter((*CThostFtdcSPBMInterParameterField)(pSPBMInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPBMPortfDefinition
-func goOnRspQrySPBMPortfDefinition(userData uintptr, pSPBMPortfDefinition *CThostFtdcSPBMPortfDefinitionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPBMPortfDefinition
+func goTraderOnRspQrySPBMPortfDefinition(userData uintptr, pSPBMPortfDefinition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPBMPortfDefinition(pSPBMPortfDefinition, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPBMPortfDefinition((*CThostFtdcSPBMPortfDefinitionField)(pSPBMPortfDefinition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPBMInvestorPortfDef
-func goOnRspQrySPBMInvestorPortfDef(userData uintptr, pSPBMInvestorPortfDef *CThostFtdcSPBMInvestorPortfDefField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPBMInvestorPortfDef
+func goTraderOnRspQrySPBMInvestorPortfDef(userData uintptr, pSPBMInvestorPortfDef unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPBMInvestorPortfDef(pSPBMInvestorPortfDef, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPBMInvestorPortfDef((*CThostFtdcSPBMInvestorPortfDefField)(pSPBMInvestorPortfDef), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorPortfMarginRatio
-func goOnRspQryInvestorPortfMarginRatio(userData uintptr, pInvestorPortfMarginRatio *CThostFtdcInvestorPortfMarginRatioField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorPortfMarginRatio
+func goTraderOnRspQryInvestorPortfMarginRatio(userData uintptr, pInvestorPortfMarginRatio unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorPortfMarginRatio(pInvestorPortfMarginRatio, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorPortfMarginRatio((*CThostFtdcInvestorPortfMarginRatioField)(pInvestorPortfMarginRatio), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorProdSPBMDetail
-func goOnRspQryInvestorProdSPBMDetail(userData uintptr, pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorProdSPBMDetail
+func goTraderOnRspQryInvestorProdSPBMDetail(userData uintptr, pInvestorProdSPBMDetail unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorProdSPBMDetail(pInvestorProdSPBMDetail, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorProdSPBMDetail((*CThostFtdcInvestorProdSPBMDetailField)(pInvestorProdSPBMDetail), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorCommoditySPMMMargin
-func goOnRspQryInvestorCommoditySPMMMargin(userData uintptr, pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorCommoditySPMMMargin
+func goTraderOnRspQryInvestorCommoditySPMMMargin(userData uintptr, pInvestorCommoditySPMMMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorCommoditySPMMMargin(pInvestorCommoditySPMMMargin, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorCommoditySPMMMargin((*CThostFtdcInvestorCommoditySPMMMarginField)(pInvestorCommoditySPMMMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorCommodityGroupSPMMMargin
-func goOnRspQryInvestorCommodityGroupSPMMMargin(userData uintptr, pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorCommodityGroupSPMMMargin
+func goTraderOnRspQryInvestorCommodityGroupSPMMMargin(userData uintptr, pInvestorCommodityGroupSPMMMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorCommodityGroupSPMMMargin(pInvestorCommodityGroupSPMMMargin, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorCommodityGroupSPMMMargin((*CThostFtdcInvestorCommodityGroupSPMMMarginField)(pInvestorCommodityGroupSPMMMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPMMInstParam
-func goOnRspQrySPMMInstParam(userData uintptr, pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPMMInstParam
+func goTraderOnRspQrySPMMInstParam(userData uintptr, pSPMMInstParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPMMInstParam(pSPMMInstParam, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPMMInstParam((*CThostFtdcSPMMInstParamField)(pSPMMInstParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPMMProductParam
-func goOnRspQrySPMMProductParam(userData uintptr, pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPMMProductParam
+func goTraderOnRspQrySPMMProductParam(userData uintptr, pSPMMProductParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPMMProductParam(pSPMMProductParam, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPMMProductParam((*CThostFtdcSPMMProductParamField)(pSPMMProductParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQrySPBMAddOnInterParameter
-func goOnRspQrySPBMAddOnInterParameter(userData uintptr, pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQrySPBMAddOnInterParameter
+func goTraderOnRspQrySPBMAddOnInterParameter(userData uintptr, pSPBMAddOnInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQrySPBMAddOnInterParameter(pSPBMAddOnInterParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQrySPBMAddOnInterParameter((*CThostFtdcSPBMAddOnInterParameterField)(pSPBMAddOnInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRCAMSCombProductInfo
-func goOnRspQryRCAMSCombProductInfo(userData uintptr, pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRCAMSCombProductInfo
+func goTraderOnRspQryRCAMSCombProductInfo(userData uintptr, pRCAMSCombProductInfo unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRCAMSCombProductInfo(pRCAMSCombProductInfo, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRCAMSCombProductInfo((*CThostFtdcRCAMSCombProductInfoField)(pRCAMSCombProductInfo), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRCAMSInstrParameter
-func goOnRspQryRCAMSInstrParameter(userData uintptr, pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRCAMSInstrParameter
+func goTraderOnRspQryRCAMSInstrParameter(userData uintptr, pRCAMSInstrParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRCAMSInstrParameter(pRCAMSInstrParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRCAMSInstrParameter((*CThostFtdcRCAMSInstrParameterField)(pRCAMSInstrParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRCAMSIntraParameter
-func goOnRspQryRCAMSIntraParameter(userData uintptr, pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRCAMSIntraParameter
+func goTraderOnRspQryRCAMSIntraParameter(userData uintptr, pRCAMSIntraParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRCAMSIntraParameter(pRCAMSIntraParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRCAMSIntraParameter((*CThostFtdcRCAMSIntraParameterField)(pRCAMSIntraParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRCAMSInterParameter
-func goOnRspQryRCAMSInterParameter(userData uintptr, pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRCAMSInterParameter
+func goTraderOnRspQryRCAMSInterParameter(userData uintptr, pRCAMSInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRCAMSInterParameter(pRCAMSInterParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRCAMSInterParameter((*CThostFtdcRCAMSInterParameterField)(pRCAMSInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRCAMSShortOptAdjustParam
-func goOnRspQryRCAMSShortOptAdjustParam(userData uintptr, pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRCAMSShortOptAdjustParam
+func goTraderOnRspQryRCAMSShortOptAdjustParam(userData uintptr, pRCAMSShortOptAdjustParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRCAMSShortOptAdjustParam(pRCAMSShortOptAdjustParam, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRCAMSShortOptAdjustParam((*CThostFtdcRCAMSShortOptAdjustParamField)(pRCAMSShortOptAdjustParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRCAMSInvestorCombPosition
-func goOnRspQryRCAMSInvestorCombPosition(userData uintptr, pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRCAMSInvestorCombPosition
+func goTraderOnRspQryRCAMSInvestorCombPosition(userData uintptr, pRCAMSInvestorCombPosition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRCAMSInvestorCombPosition(pRCAMSInvestorCombPosition, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRCAMSInvestorCombPosition((*CThostFtdcRCAMSInvestorCombPositionField)(pRCAMSInvestorCombPosition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorProdRCAMSMargin
-func goOnRspQryInvestorProdRCAMSMargin(userData uintptr, pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorProdRCAMSMargin
+func goTraderOnRspQryInvestorProdRCAMSMargin(userData uintptr, pInvestorProdRCAMSMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorProdRCAMSMargin(pInvestorProdRCAMSMargin, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorProdRCAMSMargin((*CThostFtdcInvestorProdRCAMSMarginField)(pInvestorProdRCAMSMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRULEInstrParameter
-func goOnRspQryRULEInstrParameter(userData uintptr, pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRULEInstrParameter
+func goTraderOnRspQryRULEInstrParameter(userData uintptr, pRULEInstrParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRULEInstrParameter(pRULEInstrParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRULEInstrParameter((*CThostFtdcRULEInstrParameterField)(pRULEInstrParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRULEIntraParameter
-func goOnRspQryRULEIntraParameter(userData uintptr, pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRULEIntraParameter
+func goTraderOnRspQryRULEIntraParameter(userData uintptr, pRULEIntraParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRULEIntraParameter(pRULEIntraParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRULEIntraParameter((*CThostFtdcRULEIntraParameterField)(pRULEIntraParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryRULEInterParameter
-func goOnRspQryRULEInterParameter(userData uintptr, pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryRULEInterParameter
+func goTraderOnRspQryRULEInterParameter(userData uintptr, pRULEInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryRULEInterParameter(pRULEInterParameter, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryRULEInterParameter((*CThostFtdcRULEInterParameterField)(pRULEInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorProdRULEMargin
-func goOnRspQryInvestorProdRULEMargin(userData uintptr, pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorProdRULEMargin
+func goTraderOnRspQryInvestorProdRULEMargin(userData uintptr, pInvestorProdRULEMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorProdRULEMargin(pInvestorProdRULEMargin, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorProdRULEMargin((*CThostFtdcInvestorProdRULEMarginField)(pInvestorProdRULEMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goOnRspQryInvestorPortfSetting
-func goOnRspQryInvestorPortfSetting(userData uintptr, pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+//export goTraderOnRspQryInvestorPortfSetting
+func goTraderOnRspQryInvestorPortfSetting(userData uintptr, pInvestorPortfSetting unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
-	api.spi.OnRspQryInvestorPortfSetting(pInvestorPortfSetting, pRspInfo, nRequestID, bIsLast)
+	api.spi.OnRspQryInvestorPortfSetting((*CThostFtdcInvestorPortfSettingField)(pInvestorPortfSetting), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }

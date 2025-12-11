@@ -2,3 +2,6 @@
 __pycache__
 log_quote
 log_trade
+
+libs/*
+!libs/.gitkeep

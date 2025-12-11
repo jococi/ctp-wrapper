@@ -41,11 +41,16 @@ ifeq ($(UNAME_S),Darwin)
     TRADER_FRAMEWORKS := -framework thosttraderapi_se -framework MacDataCollect \
                          -framework IOKit -framework Foundation -framework CoreFoundation
     
-    # 安装名称和rpath（运行时在可执行文件所在目录查找）
+    # 安装名称和rpath（运行时在可执行文件所在目录的 libs/ 子目录查找）
+    # install_name 使用 @rpath，由 rpath 控制实际搜索位置
     INSTALL_NAME_MD := -install_name @rpath/libctpmd_c_api.dylib
     INSTALL_NAME_TRADER := -install_name @rpath/libctptrader_c_api.dylib
-    # @loader_path 表示可执行文件所在目录，运行时会在那里查找 frameworks
-    RPATH := -Wl,-rpath,@loader_path
+    # @loader_path 表示加载该库的可执行文件所在目录
+    # 设置多个搜索路径：
+    # 1. @loader_path/libs - 可执行文件所在目录的 libs/ 子目录（c_api 库和依赖 frameworks 都在这里）
+    # 2. @loader_path/../libs - 可执行文件父目录的 libs/（备用）
+    # 3. @loader_path - 可执行文件所在目录（备用）
+    RPATH := -Wl,-rpath,@loader_path/libs -Wl,-rpath,@loader_path/../libs -Wl,-rpath,@loader_path
     
     CXXFLAGS += $(FRAMEWORK_PATH)
     LDFLAGS += $(RPATH)
@@ -70,8 +75,16 @@ else ifeq ($(UNAME_S),Linux)
     MD_LIBS := -lthostmduserapi_se
     TRADER_LIBS := -lthosttraderapi_se -lLinuxDataCollect
     
-    # $ORIGIN 表示可执行文件所在目录，运行时会在那里查找 .so 文件
-    LDFLAGS += $(LIB_PATH) -Wl,-rpath,$$ORIGIN
+    # SONAME 设置（类似 macOS 的 install_name）
+    SONAME_MD := -Wl,-soname,libctpmd_c_api.so
+    SONAME_TRADER := -Wl,-soname,libctptrader_c_api.so
+    
+    # $ORIGIN 表示加载该库的可执行文件所在目录，运行时会在那里查找 .so 文件
+    # 设置多个搜索路径：
+    # 1. $ORIGIN/libs - 可执行文件所在目录的 libs/ 子目录（c_api 库和依赖 .so 都在这里）
+    # 2. $ORIGIN/../libs - 可执行文件父目录的 libs/（备用）
+    # 3. $ORIGIN - 可执行文件所在目录（备用）
+    LDFLAGS += $(LIB_PATH) -Wl,-rpath,$$ORIGIN/libs -Wl,-rpath,$$ORIGIN/../libs -Wl,-rpath,$$ORIGIN
     
 # else ifeq ($(OS),Windows_NT)
 #     # Windows (需要 MSVC)
@@ -197,10 +210,14 @@ $(MD_LIB): $(MD_SRC) $(CSRC_DIR)/ctp_md_c_api.h
 ifeq ($(PLATFORM),windows)
 	$(CXX) $(CXXFLAGS) $(INCLUDE_MD) $(INCLUDE_COMMON) $(MD_SRC) \
 		$(LDFLAGS) $(MD_LIBS) /OUT:$@
-else
+else ifeq ($(PLATFORM),macos)
 	$(CXX) -shared $(CXXFLAGS) $(INCLUDE_MD) $(INCLUDE_COMMON) \
 		$(MD_SRC) -o $@ \
 		$(INSTALL_NAME_MD) $(LDFLAGS) $(MD_FRAMEWORKS) $(MD_LIBS)
+else
+	$(CXX) -shared $(CXXFLAGS) $(INCLUDE_MD) $(INCLUDE_COMMON) \
+		$(MD_SRC) -o $@ \
+		$(SONAME_MD) $(LDFLAGS) $(MD_LIBS)
 endif
 	@echo "✓ $@ 编译完成"
 
@@ -213,10 +230,14 @@ $(TRADER_LIB): $(TRADER_SRC) $(CSRC_DIR)/ctp_trader_c_api.h
 ifeq ($(PLATFORM),windows)
 	$(CXX) $(CXXFLAGS) $(INCLUDE_TRADER) $(INCLUDE_DATACOLLECT) $(INCLUDE_COMMON) \
 		$(TRADER_SRC) $(LDFLAGS) $(TRADER_LIBS) /OUT:$@
-else
+else ifeq ($(PLATFORM),macos)
 	$(CXX) -shared $(CXXFLAGS) $(INCLUDE_TRADER) $(INCLUDE_DATACOLLECT) $(INCLUDE_COMMON) \
 		$(TRADER_SRC) -o $@ \
 		$(INSTALL_NAME_TRADER) $(LDFLAGS) $(TRADER_FRAMEWORKS) $(TRADER_LIBS)
+else
+	$(CXX) -shared $(CXXFLAGS) $(INCLUDE_TRADER) $(INCLUDE_DATACOLLECT) $(INCLUDE_COMMON) \
+		$(TRADER_SRC) -o $@ \
+		$(SONAME_TRADER) $(LDFLAGS) $(TRADER_LIBS)
 endif
 	@echo "✓ $@ 编译完成"
 
@@ -229,7 +250,7 @@ clean:
 	@rm -f $(LIBS_DIR)/LinuxDataCollect.so
 	@rm -f $(LIBS_DIR)/thostmduserapi_se.dll $(LIBS_DIR)/thosttraderapi_se.dll
 	@rm -f $(LIBS_DIR)/WinDataCollect.dll
-	@rm -f $(LIBS_DIR)/*.framework
+	@rm -rf $(LIBS_DIR)/*.framework
 	@rm -rf $(BUILD_DIR)
 	@echo "✓ 清理完成"
 

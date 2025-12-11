@@ -288,10 +288,55 @@ def parse_params(param_str: str) -> List[CParam]:
         # 移除 const
         param_clean = param.replace('const', '').strip()
         
-        # 处理双指针 (char**)
-        if '**' in param_clean:
+        # 处理数组类型 (char* ppInstrumentID[] 或 char** ppInstrumentID)
+        if '[]' in param_clean:
+            # 对于 char* ppInstrumentID[] 格式，参数名在 [] 之前
+            # 先找到 [ 的位置
+            bracket_start = param_clean.index('[')
+            # 提取 [ 之前的部分
+            name_part = param_clean[:bracket_start].strip()
+            
+            # 从 name_part 中分离类型和参数名
+            # char* ppInstrumentID 格式
+            parts = name_part.split()
+            if len(parts) >= 2:
+                # 最后一个单词是参数名
+                name = parts[-1]
+                type_part = ' '.join(parts[:-1])
+            elif len(parts) == 1:
+                # 只有类型，没有参数名
+                type_part = parts[0]
+                name = ''
+            else:
+                type_part = ''
+                name = ''
+            
+            # 提取类型
+            if '*' in type_part:
+                # char* [] 格式
+                param_type = 'char'
+                params.append(CParam(
+                    type=param_type,
+                    name=name,
+                    is_pointer=True,
+                    is_const=is_const,
+                    is_array=True
+                ))
+            else:
+                # 其他数组类型
+                param_type = type_part if type_part else 'char'
+                params.append(CParam(
+                    type=param_type,
+                    name=name,
+                    is_pointer=False,
+                    is_const=is_const,
+                    is_array=True
+                ))
+            continue
+        elif '**' in param_clean:
+            # 处理双指针 (char** ppInstrumentID)
             parts = param_clean.replace('**', ' ** ').split()
-            parts = [p for p in parts if p]
+            parts = [p for p in parts if p and p != '*']
             if len(parts) >= 2:
                 name = parts[-1]
                 param_type = parts[0]
@@ -384,7 +429,7 @@ def extract_go_method_name(callback_name: str) -> str:
 
 # ========== Go 类型转换 ==========
 
-def c_type_to_go_type(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypedef]) -> str:
+def c_type_to_go_type(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypedef], is_array: bool = False) -> str:
     """将 C 类型转换为 Go 类型"""
     c_type = c_type.strip().replace('const', '').strip()
     
@@ -410,7 +455,10 @@ def c_type_to_go_type(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypede
             return CTP_TYPE_MAP.get(td.base_type, td.base_type)
     
     # 基础类型
-    if is_pointer:
+    if is_array and is_pointer and c_type == 'char':
+        # char* [] 格式，返回 **byte（指向字符串指针数组的指针）
+        return '**byte'
+    elif is_pointer:
         if c_type == 'void':
             return 'uintptr'
         elif c_type == 'char':
@@ -421,11 +469,14 @@ def c_type_to_go_type(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypede
     else:
         if c_type == 'void':
             return ''
+        # 处理 char* 返回类型（可能被解析为 char *）
+        if c_type == 'char *' or c_type == '*char':
+            return '*byte'
         return CTP_TYPE_MAP.get(c_type, c_type)
 
 
 def c_type_to_go_callback_param(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypedef]) -> str:
-    """将 C 类型转换为 Go 回调参数类型"""
+    """将 C 类型转换为 Go 回调参数类型（用于接口定义）"""
     c_type = c_type.strip().replace('const', '').strip()
     
     # 指针类型
@@ -447,6 +498,43 @@ def c_type_to_go_callback_param(c_type: str, is_pointer: bool, typedefs: Dict[st
         elif c_type == 'bool':
             return 'bool'
         return CTP_TYPE_MAP.get(c_type, c_type)
+
+
+def c_type_to_go_export_param(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypedef]) -> str:
+    """将 C 类型转换为 Go //export 函数参数类型（使用 C 类型，cgo 会自动转换）"""
+    c_type = c_type.strip().replace('const', '').strip()
+    
+    # 指针类型
+    if is_pointer:
+        if c_type == 'void':
+            return 'uintptr'
+        elif c_type == 'char':
+            return '*C.char'
+        elif c_type.startswith('CThostFtdc') and c_type.endswith('Field'):
+            # 对于 CTP Field 类型，使用 C 类型（cgo 会自动转换）
+            return f'*C.struct_{c_type}'
+        else:
+            # 其他类型，尝试使用 C 类型
+            return f'*C.{c_type}'
+    else:
+        if c_type == 'void':
+            return ''
+        elif c_type == 'int':
+            return 'C.int'
+        elif c_type == 'bool':
+            return 'C.bool'
+        elif c_type in CTP_TYPE_MAP:
+            go_type = CTP_TYPE_MAP[c_type]
+            if go_type == 'int32':
+                return 'C.int'
+            elif go_type == 'int16':
+                return 'C.short'
+            elif go_type == 'float64':
+                return 'C.double'
+            elif go_type == 'float32':
+                return 'C.float'
+            return f'C.{c_type}'
+        return f'C.{c_type}'
 
 
 # ========== 代码生成 ==========
@@ -625,10 +713,42 @@ def generate_md_api_go(functions: List[CFunction], callbacks: List[CallbackType]
     lines.append('import (')
     lines.append('\t"runtime"')
     lines.append('\t"sync"')
-    lines.append('\t"unsafe"')
     lines.append('')
     lines.append('\t"github.com/ebitengine/purego"')
     lines.append(')')
+    lines.append('')
+    
+    # 生成回调类型定义
+    lines.append('// ========== 回调类型定义 ==========')
+    lines.append('')
+    for cb in callbacks:
+        if not cb.name.startswith('Md'):
+            continue
+        
+        # 生成回调函数类型
+        callback_params = []
+        for p in cb.params:
+            go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
+            if p.name:
+                callback_params.append(f'{p.name} {go_type}')
+            else:
+                callback_params.append(go_type)
+        
+        param_str = ', '.join(callback_params)
+        lines.append(f'// {cb.name} {cb.comment}' if cb.comment else f'// {cb.name}')
+        lines.append(f'type {cb.name} func({param_str})')
+        lines.append('')
+    
+    # 生成回调结构体
+    lines.append('// MdSpiCallbacks 回调结构体（用于批量设置）')
+    lines.append('type MdSpiCallbacks struct {')
+    lines.append('\tUserData uintptr')
+    for cb in callbacks:
+        if not cb.name.startswith('Md'):
+            continue
+        field_name = cb.name.replace('Md', '').replace('Callback', '')
+        lines.append(f'\t{field_name} {cb.name}')
+    lines.append('}')
     lines.append('')
     
     # 生成 SPI 接口
@@ -680,22 +800,31 @@ def generate_md_api_go(functions: List[CFunction], callbacks: List[CallbackType]
         if not func.name.startswith('Md'):
             continue
         var_name = f'_{func.name}'
-        lines.append(f'\t{var_name} func(')
         
         # 生成参数类型
         param_types = []
         for p in func.params:
-            go_type = c_type_to_go_type(p.type, p.is_pointer, typedefs)
+            go_type = c_type_to_go_type(p.type, p.is_pointer, typedefs, p.is_array)
             param_types.append(go_type)
-        
-        lines.append(f'\t\t{", ".join(param_types)}')
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
-        if ret_type:
-            lines.append(f'\t) {ret_type}')
+        # 修复 *char * 类型为 *byte
+        if ret_type == '*char *':
+            ret_type = '*byte'
+        
+        # 生成函数签名（统一使用单行格式）
+        param_str = ', '.join(param_types) if param_types else ''
+        if param_str:
+            if ret_type:
+                lines.append(f'\t{var_name} func({param_str}) {ret_type}')
+            else:
+                lines.append(f'\t{var_name} func({param_str})')
         else:
-            lines.append('\t)')
+            if ret_type:
+                lines.append(f'\t{var_name} func() {ret_type}')
+            else:
+                lines.append(f'\t{var_name} func()')
     
     lines.append(')')
     lines.append('')
@@ -785,49 +914,78 @@ def generate_md_api_go(functions: List[CFunction], callbacks: List[CallbackType]
         for p in func.params[1:]:  # 跳过第一个 handle 参数
             go_type = c_type_to_go_type(p.type, p.is_pointer, typedefs)
             
+            # 清理参数名（移除可能的 [] 后缀）
+            param_name = p.name.replace('[]', '').strip() if p.name else ''
+            
             # 处理字符串参数
-            if p.type == 'char' and p.is_pointer:
-                params.append(f'{p.name} string')
-                call_args.append(f'CString({p.name})')
-            elif p.is_array and p.type == 'char':
-                # char** 类型（字符串数组）
-                params.append(f'{p.name} []string')
-                call_args.append(f'/* {p.name} */')  # 需要特殊处理
+            if p.is_array and p.type == 'char' and p.is_pointer:
+                # char* [] 或 char** 类型（字符串数组）
+                params.append(f'{param_name} []string')
+                # 将在方法体中特殊处理
+                call_args.append('_PLACEHOLDER_STRING_ARRAY_')
+            elif p.type == 'char' and p.is_pointer and not p.is_array:
+                params.append(f'{param_name} string')
+                call_args.append(f'CString({param_name})')
             else:
-                if p.name:
-                    params.append(f'{p.name} {go_type}')
-                    call_args.append(p.name)
+                if param_name:
+                    params.append(f'{param_name} {go_type}')
+                    call_args.append(param_name)
         
         param_str = ', '.join(params)
-        call_str = ', '.join(call_args)
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
+        # 修复 *char * 类型为 *byte
+        if ret_type == '*char *':
+            ret_type = '*byte'
         
         # 生成方法
         comment = f'// {method_name} {func.comment}' if func.comment else f'// {method_name}'
         lines.append(comment)
         
-        if ret_type:
+        # 特殊处理方法
+        if method_name == 'GetApiVersion':
+            lines.append(f'func (api *MdApi) {method_name}() string {{')
+            lines.append(f'\tptr := _{func.name}()')
+            lines.append('\tif ptr == nil {')
+            lines.append('\t\treturn ""')
+            lines.append('\t}')
+            lines.append('\treturn GoString(ptr)')
+        elif method_name == 'GetTradingDay':
+            lines.append(f'func (api *MdApi) {method_name}() string {{')
+            lines.append(f'\tptr := _{func.name}(api.handle)')
+            lines.append('\tif ptr == nil {')
+            lines.append('\t\treturn ""')
+            lines.append('\t}')
+            lines.append('\treturn GoString(ptr)')
+        elif '_PLACEHOLDER_STRING_ARRAY_' in call_args:
+            # 处理字符串数组参数
+            lines.append(f'func (api *MdApi) {method_name}({param_str}) int32 {{')
+            # 找到字符串数组参数的位置
+            array_param_idx = call_args.index('_PLACEHOLDER_STRING_ARRAY_')
+            array_param_name = params[array_param_idx - 1].split()[0]  # 获取参数名
+            lines.append(f'\tif len({array_param_name}) == 0 {{')
+            lines.append('\t\treturn 0')
+            lines.append('\t}')
+            lines.append(f'\t// 将字符串数组转换为 C 字符串数组')
+            lines.append(f'\tptrs, _ := CStringArray({array_param_name})')
+            # 替换占位符
+            call_args[array_param_idx] = 'ptrs'
+            call_str = ', '.join(call_args)
+            lines.append(f'\treturn _{func.name}({call_str})')
+        elif ret_type:
+            call_str = ', '.join(call_args)
             lines.append(f'func (api *MdApi) {method_name}({param_str}) {ret_type} {{')
             lines.append(f'\treturn _{func.name}({call_str})')
         else:
+            call_str = ', '.join(call_args)
             lines.append(f'func (api *MdApi) {method_name}({param_str}) {{')
             lines.append(f'\t_{func.name}({call_str})')
         
         lines.append('}')
         lines.append('')
     
-    # 生成 Release 方法
-    lines.append('// Release 释放 API 实例')
-    lines.append('func (api *MdApi) Release() {')
-    lines.append('\tif api.handle != 0 {')
-    lines.append('\t\t_MdRelease(api.handle)')
-    lines.append('\t\tunregisterMdInstance(api.userData)')
-    lines.append('\t\tapi.handle = 0')
-    lines.append('\t}')
-    lines.append('}')
-    lines.append('')
+    # Release 方法已经在 API 方法生成中处理，不需要重复生成
     
     # 生成 SetSpi 方法
     lines.append('// SetSpi 设置回调接口')
@@ -852,10 +1010,42 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('import (')
     lines.append('\t"runtime"')
     lines.append('\t"sync"')
-    lines.append('\t"unsafe"')
     lines.append('')
     lines.append('\t"github.com/ebitengine/purego"')
     lines.append(')')
+    lines.append('')
+    
+    # 生成回调类型定义
+    lines.append('// ========== 回调类型定义 ==========')
+    lines.append('')
+    for cb in callbacks:
+        if not cb.name.startswith('Trader'):
+            continue
+        
+        # 生成回调函数类型
+        callback_params = []
+        for p in cb.params:
+            go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
+            if p.name:
+                callback_params.append(f'{p.name} {go_type}')
+            else:
+                callback_params.append(go_type)
+        
+        param_str = ', '.join(callback_params)
+        lines.append(f'// {cb.name} {cb.comment}' if cb.comment else f'// {cb.name}')
+        lines.append(f'type {cb.name} func({param_str})')
+        lines.append('')
+    
+    # 生成回调结构体
+    lines.append('// TraderSpiCallbacks 回调结构体（用于批量设置）')
+    lines.append('type TraderSpiCallbacks struct {')
+    lines.append('\tUserData uintptr')
+    for cb in callbacks:
+        if not cb.name.startswith('Trader'):
+            continue
+        field_name = cb.name.replace('Trader', '').replace('Callback', '')
+        lines.append(f'\t{field_name} {cb.name}')
+    lines.append('}')
     lines.append('')
     
     # 生成 SPI 接口
@@ -907,22 +1097,31 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
         if not func.name.startswith('Trader'):
             continue
         var_name = f'_{func.name}'
-        lines.append(f'\t{var_name} func(')
         
         # 生成参数类型
         param_types = []
         for p in func.params:
-            go_type = c_type_to_go_type(p.type, p.is_pointer, typedefs)
+            go_type = c_type_to_go_type(p.type, p.is_pointer, typedefs, p.is_array)
             param_types.append(go_type)
-        
-        lines.append(f'\t\t{", ".join(param_types)}')
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
-        if ret_type:
-            lines.append(f'\t) {ret_type}')
+        # 修复 *char * 类型为 *byte
+        if ret_type == '*char *':
+            ret_type = '*byte'
+        
+        # 生成函数签名（统一使用单行格式）
+        param_str = ', '.join(param_types) if param_types else ''
+        if param_str:
+            if ret_type:
+                lines.append(f'\t{var_name} func({param_str}) {ret_type}')
+            else:
+                lines.append(f'\t{var_name} func({param_str})')
         else:
-            lines.append('\t)')
+            if ret_type:
+                lines.append(f'\t{var_name} func() {ret_type}')
+            else:
+                lines.append(f'\t{var_name} func()')
     
     lines.append(')')
     lines.append('')
@@ -1012,49 +1211,78 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
         for p in func.params[1:]:  # 跳过第一个 handle 参数
             go_type = c_type_to_go_type(p.type, p.is_pointer, typedefs)
             
+            # 清理参数名（移除可能的 [] 后缀）
+            param_name = p.name.replace('[]', '').strip() if p.name else ''
+            
             # 处理字符串参数
-            if p.type == 'char' and p.is_pointer:
-                params.append(f'{p.name} string')
-                call_args.append(f'CString({p.name})')
-            elif p.is_array and p.type == 'char':
-                # char** 类型（字符串数组）
-                params.append(f'{p.name} []string')
-                call_args.append(f'/* {p.name} */')  # 需要特殊处理
+            if p.is_array and p.type == 'char' and p.is_pointer:
+                # char* [] 或 char** 类型（字符串数组）
+                params.append(f'{param_name} []string')
+                # 将在方法体中特殊处理
+                call_args.append('_PLACEHOLDER_STRING_ARRAY_')
+            elif p.type == 'char' and p.is_pointer and not p.is_array:
+                params.append(f'{param_name} string')
+                call_args.append(f'CString({param_name})')
             else:
-                if p.name:
-                    params.append(f'{p.name} {go_type}')
-                    call_args.append(p.name)
+                if param_name:
+                    params.append(f'{param_name} {go_type}')
+                    call_args.append(param_name)
         
         param_str = ', '.join(params)
-        call_str = ', '.join(call_args)
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
+        # 修复 *char * 类型为 *byte
+        if ret_type == '*char *':
+            ret_type = '*byte'
         
         # 生成方法
         comment = f'// {method_name} {func.comment}' if func.comment else f'// {method_name}'
         lines.append(comment)
         
-        if ret_type:
+        # 特殊处理方法
+        if method_name == 'GetApiVersion':
+            lines.append(f'func (api *TraderApi) {method_name}() string {{')
+            lines.append(f'\tptr := _{func.name}()')
+            lines.append('\tif ptr == nil {')
+            lines.append('\t\treturn ""')
+            lines.append('\t}')
+            lines.append('\treturn GoString(ptr)')
+        elif method_name == 'GetTradingDay':
+            lines.append(f'func (api *TraderApi) {method_name}() string {{')
+            lines.append(f'\tptr := _{func.name}(api.handle)')
+            lines.append('\tif ptr == nil {')
+            lines.append('\t\treturn ""')
+            lines.append('\t}')
+            lines.append('\treturn GoString(ptr)')
+        elif '_PLACEHOLDER_STRING_ARRAY_' in call_args:
+            # 处理字符串数组参数
+            lines.append(f'func (api *TraderApi) {method_name}({param_str}) int32 {{')
+            # 找到字符串数组参数的位置
+            array_param_idx = call_args.index('_PLACEHOLDER_STRING_ARRAY_')
+            array_param_name = params[array_param_idx - 1].split()[0]  # 获取参数名
+            lines.append(f'\tif len({array_param_name}) == 0 {{')
+            lines.append('\t\treturn 0')
+            lines.append('\t}')
+            lines.append(f'\t// 将字符串数组转换为 C 字符串数组')
+            lines.append(f'\tptrs, _ := CStringArray({array_param_name})')
+            # 替换占位符
+            call_args[array_param_idx] = 'ptrs'
+            call_str = ', '.join(call_args)
+            lines.append(f'\treturn _{func.name}({call_str})')
+        elif ret_type:
+            call_str = ', '.join(call_args)
             lines.append(f'func (api *TraderApi) {method_name}({param_str}) {ret_type} {{')
             lines.append(f'\treturn _{func.name}({call_str})')
         else:
+            call_str = ', '.join(call_args)
             lines.append(f'func (api *TraderApi) {method_name}({param_str}) {{')
             lines.append(f'\t_{func.name}({call_str})')
         
         lines.append('}')
         lines.append('')
     
-    # 生成 Release 方法
-    lines.append('// Release 释放 API 实例')
-    lines.append('func (api *TraderApi) Release() {')
-    lines.append('\tif api.handle != 0 {')
-    lines.append('\t\t_TraderRelease(api.handle)')
-    lines.append('\t\tunregisterTraderInstance(api.userData)')
-    lines.append('\t\tapi.handle = 0')
-    lines.append('\t}')
-    lines.append('}')
-    lines.append('')
+    # Release 方法已经在 API 方法生成中处理，不需要重复生成
     
     # 生成 SetSpi 方法
     lines.append('// SetSpi 设置回调接口')
@@ -1076,10 +1304,12 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
     lines.append('// 此文件由代码生成器自动生成，请勿手动修改')
     lines.append('// CTP 行情回调实现')
     lines.append('')
-    lines.append('import "unsafe"')
-    lines.append('')
-    lines.append('// #include <stdint.h>')
+    lines.append('/*')
+    lines.append('#include <stdint.h>')
+    lines.append('*/')
     lines.append('import "C"')
+    lines.append('')
+    lines.append('import "unsafe"')
     lines.append('')
     
     # 生成回调函数
@@ -1090,15 +1320,25 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
         if not cb.name.startswith('Md'):
             continue
         
-        # 生成 Go 回调函数
+        # 生成 Go 回调函数（//export 函数）
+        # 注意：//export 函数的参数类型必须是 C 兼容的
+        # 对于 CTP Field 类型，使用 unsafe.Pointer 传递，然后在函数内部转换
         go_params = ['userData uintptr']
+        call_args = []
         for p in cb.params[1:]:
-            go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
-            if p.name:
-                go_params.append(f'{p.name} {go_type}')
+            if p.type.startswith('CThostFtdc') and p.type.endswith('Field') and p.is_pointer:
+                # CTP Field 类型：使用 unsafe.Pointer 作为参数，然后在函数内部转换
+                go_params.append(f'{p.name} unsafe.Pointer')
+                # 在函数调用时转换为 Go 类型
+                call_args.append(f'(*{p.type})({p.name})')
+            else:
+                go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
+                if p.name:
+                    go_params.append(f'{p.name} {go_type}')
+                    call_args.append(p.name)
         
         param_str = ', '.join(go_params)
-        func_name = f'go{cb.go_method_name}'
+        func_name = f'goMd{cb.go_method_name}'
         
         lines.append(f'//export {func_name}')
         lines.append(f'func {func_name}({param_str}) {{')
@@ -1108,12 +1348,7 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
         lines.append('\t}')
         
         # 调用 SPI 方法
-        call_args = []
-        for p in cb.params[1:]:
-            if p.name:
-                call_args.append(p.name)
-        
-        call_str = ', '.join(call_args)
+        call_str = ', '.join(call_args) if call_args else ''
         lines.append(f'\tapi.spi.{cb.go_method_name}({call_str})')
         lines.append('}')
         lines.append('')
@@ -1129,10 +1364,12 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
     lines.append('// 此文件由代码生成器自动生成，请勿手动修改')
     lines.append('// CTP 交易回调实现')
     lines.append('')
-    lines.append('import "unsafe"')
-    lines.append('')
-    lines.append('// #include <stdint.h>')
+    lines.append('/*')
+    lines.append('#include <stdint.h>')
+    lines.append('*/')
     lines.append('import "C"')
+    lines.append('')
+    lines.append('import "unsafe"')
     lines.append('')
     
     # 生成回调函数
@@ -1143,15 +1380,25 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
         if not cb.name.startswith('Trader'):
             continue
         
-        # 生成 Go 回调函数
+        # 生成 Go 回调函数（//export 函数）
+        # 注意：//export 函数的参数类型必须是 C 兼容的
+        # 对于 CTP Field 类型，使用 unsafe.Pointer 传递，然后在函数内部转换
         go_params = ['userData uintptr']
+        call_args = []
         for p in cb.params[1:]:
-            go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
-            if p.name:
-                go_params.append(f'{p.name} {go_type}')
+            if p.type.startswith('CThostFtdc') and p.type.endswith('Field') and p.is_pointer:
+                # CTP Field 类型：使用 unsafe.Pointer 作为参数，然后在函数内部转换
+                go_params.append(f'{p.name} unsafe.Pointer')
+                # 在函数调用时转换为 Go 类型
+                call_args.append(f'(*{p.type})({p.name})')
+            else:
+                go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
+                if p.name:
+                    go_params.append(f'{p.name} {go_type}')
+                    call_args.append(p.name)
         
         param_str = ', '.join(go_params)
-        func_name = f'go{cb.go_method_name}'
+        func_name = f'goTrader{cb.go_method_name}'
         
         lines.append(f'//export {func_name}')
         lines.append(f'func {func_name}({param_str}) {{')
@@ -1161,12 +1408,7 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
         lines.append('\t}')
         
         # 调用 SPI 方法
-        call_args = []
-        for p in cb.params[1:]:
-            if p.name:
-                call_args.append(p.name)
-        
-        call_str = ', '.join(call_args)
+        call_str = ', '.join(call_args) if call_args else ''
         lines.append(f'\tapi.spi.{cb.go_method_name}({call_str})')
         lines.append('}')
         lines.append('')
@@ -1307,21 +1549,61 @@ func GetTraderLibHandle() uintptr {
 '''
 
 
-def generate_default_spi_go() -> str:
+def generate_default_spi_go(callbacks: List[CallbackType], typedefs: Dict[str, CTypedef]) -> str:
     """生成 default_spi.go - 默认 SPI 实现"""
-    return '''package ctpgo
-
-// 此文件由代码生成器自动生成，请勿手动修改
-// 默认 SPI 空实现，可用于嵌入
-
-// DefaultMdSpi 默认行情回调实现（空实现）
-// 使用方式：嵌入到自定义结构体中，只需实现需要的方法
-type DefaultMdSpi struct{}
-
-// DefaultTraderSpi 默认交易回调实现（空实现）
-// 使用方式：嵌入到自定义结构体中，只需实现需要的方法
-type DefaultTraderSpi struct{}
-'''
+    lines = []
+    lines.append('package ctpgo')
+    lines.append('')
+    lines.append('// 此文件由代码生成器自动生成，请勿手动修改')
+    lines.append('// 默认 SPI 空实现，可用于嵌入')
+    lines.append('')
+    lines.append('// DefaultMdSpi 默认行情回调实现（空实现）')
+    lines.append('// 使用方式：嵌入到自定义结构体中，只需实现需要的方法')
+    lines.append('// 例如：type MySpi struct { DefaultMdSpi }')
+    lines.append('//       func (s *MySpi) OnRtnDepthMarketData(...) { ... }')
+    lines.append('type DefaultMdSpi struct{}')
+    lines.append('')
+    
+    # 生成 MdSpi 接口的所有空实现
+    md_callbacks = [cb for cb in callbacks if cb.name.startswith('Md')]
+    for cb in md_callbacks:
+        method_params = []
+        for p in cb.params[1:]:  # 跳过 userData
+            go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
+            if p.name:
+                method_params.append(f'{p.name} {go_type}')
+            else:
+                method_params.append(go_type)
+        param_str = ', '.join(method_params)
+        lines.append(f'func (s *DefaultMdSpi) {cb.go_method_name}({param_str}) {{')
+        lines.append('\t// 空实现')
+        lines.append('}')
+        lines.append('')
+    
+    lines.append('// DefaultTraderSpi 默认交易回调实现（空实现）')
+    lines.append('// 使用方式：嵌入到自定义结构体中，只需实现需要的方法')
+    lines.append('// 例如：type MySpi struct { DefaultTraderSpi }')
+    lines.append('//       func (s *MySpi) OnRtnOrder(...) { ... }')
+    lines.append('type DefaultTraderSpi struct{}')
+    lines.append('')
+    
+    # 生成 TraderSpi 接口的所有空实现
+    trader_callbacks = [cb for cb in callbacks if cb.name.startswith('Trader')]
+    for cb in trader_callbacks:
+        method_params = []
+        for p in cb.params[1:]:  # 跳过 userData
+            go_type = c_type_to_go_callback_param(p.type, p.is_pointer, typedefs)
+            if p.name:
+                method_params.append(f'{p.name} {go_type}')
+            else:
+                method_params.append(go_type)
+        param_str = ', '.join(method_params)
+        lines.append(f'func (s *DefaultTraderSpi) {cb.go_method_name}({param_str}) {{')
+        lines.append('\t// 空实现')
+        lines.append('}')
+        lines.append('')
+    
+    return '\n'.join(lines)
 
 
 # ========== 主函数 ==========
@@ -1400,7 +1682,8 @@ def main():
     
     # default_spi.go
     default_spi_file = output_dir / 'default_spi.go'
-    default_spi_file.write_text(generate_default_spi_go(), encoding='utf-8')
+    all_callbacks = md_callbacks + trader_callbacks
+    default_spi_file.write_text(generate_default_spi_go(all_callbacks, typedefs), encoding='utf-8')
     print(f"  生成 {default_spi_file}")
     
     # go.mod
