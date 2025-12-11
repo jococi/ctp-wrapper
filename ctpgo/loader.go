@@ -10,8 +10,6 @@ import (
 	"runtime"
 	"strings"
 	"sync"
-
-	"github.com/ebitengine/purego"
 )
 
 var (
@@ -138,13 +136,13 @@ func LoadCTPLibrary(libPath string) error {
 
 	// 加载行情 C 包装库
 	var err error
-	mdLib, err = purego.Dlopen(mdPath, purego.RTLD_NOW|purego.RTLD_GLOBAL)
+	mdLib, err = openLibrary(mdPath)
 	if err != nil {
 		return fmt.Errorf("failed to load md C wrapper library: %w", err)
 	}
 
 	// 加载交易 C 包装库
-	traderLib, err = purego.Dlopen(traderPath, purego.RTLD_NOW|purego.RTLD_GLOBAL)
+	traderLib, err = openLibrary(traderPath)
 	if err != nil {
 		return fmt.Errorf("failed to load trader C wrapper library: %w", err)
 	}

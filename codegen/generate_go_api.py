@@ -1908,6 +1908,7 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
     lines.append('// 此文件由代码生成器自动生成，请勿手动修改')
     lines.append('// CTP 行情回调实现')
     lines.append('// 使用 purego.NewCallback 替代 CGO，支持 Windows 平台无需 C 编译器')
+    lines.append('// 注意：Windows 的 syscall.NewCallback 要求回调函数必须返回 uintptr')
     lines.append('')
     lines.append('import (')
     lines.append('\t"unsafe"')
@@ -1947,15 +1948,17 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
         if any(p.type.startswith('CThostFtdc') for p in cb.params[1:]):
             comment += '（C 调用约定版本）'
         lines.append(comment)
-        lines.append(f'func {func_name}({param_str}) {{')
+        # Windows 的 syscall.NewCallback 要求回调函数必须返回 uintptr
+        lines.append(f'func {func_name}({param_str}) uintptr {{')
         lines.append('\tapi := getMdInstance(userData)')
         lines.append('\tif api == nil || api.spi == nil {')
-        lines.append('\t\treturn')
+        lines.append('\t\treturn 0')
         lines.append('\t}')
         
         # 调用 SPI 方法
         call_str = ', '.join(call_args) if call_args else ''
         lines.append(f'\tapi.spi.{cb.go_method_name}({call_str})')
+        lines.append('\treturn 0')
         lines.append('}')
         lines.append('')
     
@@ -1964,6 +1967,7 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
     lines.append('// 这些函数使用 purego.NewCallback 将 Go 函数转换为 C 函数指针，无需 CGO')
     lines.append('// purego.NewCallback 返回 uintptr，需要转换为函数类型')
     lines.append('// 注意：purego.NewCallback 不支持 unsafe.Pointer 参数，需要用具体指针类型的 wrapper')
+    lines.append('// 注意：Windows 要求 wrapper 函数也必须返回 uintptr')
     lines.append('')
     
     for cb in callbacks:
@@ -1984,6 +1988,7 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
         
         if has_ctp_field_ptr:
             # 需要 wrapper：purego.NewCallback 不支持 unsafe.Pointer，需要用具体指针类型
+            # Windows 要求 wrapper 函数也必须返回 uintptr
             wrapper_params = ['userData uintptr']
             call_args = ['userData']
             for p in cb.params[1:]:
@@ -1999,8 +2004,8 @@ def generate_md_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[str, 
             
             wrapper_param_str = ', '.join(wrapper_params)
             call_arg_str = ', '.join(call_args)
-            lines.append(f'\twrapper := func({wrapper_param_str}) {{')
-            lines.append(f'\t\t{func_name}({call_arg_str})')
+            lines.append(f'\twrapper := func({wrapper_param_str}) uintptr {{')
+            lines.append(f'\t\treturn {func_name}({call_arg_str})')
             lines.append('\t}')
             lines.append('\treturn purego.NewCallback(wrapper)')
         else:
@@ -2025,6 +2030,7 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
     lines.append('// 此文件由代码生成器自动生成，请勿手动修改')
     lines.append('// CTP 交易回调实现')
     lines.append('// 使用 purego.NewCallback 替代 CGO，支持 Windows 平台无需 C 编译器')
+    lines.append('// 注意：Windows 的 syscall.NewCallback 要求回调函数必须返回 uintptr')
     lines.append('')
     lines.append('import (')
     lines.append('\t"unsafe"')
@@ -2061,20 +2067,23 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
         if any(p.type.startswith('CThostFtdc') for p in cb.params[1:]):
             comment += '（C 调用约定版本）'
         lines.append(comment)
-        lines.append(f'func {func_name}({param_str}) {{')
+        # Windows 的 syscall.NewCallback 要求回调函数必须返回 uintptr
+        lines.append(f'func {func_name}({param_str}) uintptr {{')
         lines.append('\tapi := getTraderInstance(userData)')
         lines.append('\tif api == nil || api.spi == nil {')
-        lines.append('\t\treturn')
+        lines.append('\t\treturn 0')
         lines.append('\t}')
         
         call_str = ', '.join(call_args) if call_args else ''
         lines.append(f'\tapi.spi.{cb.go_method_name}({call_str})')
+        lines.append('\treturn 0')
         lines.append('}')
         lines.append('')
     
     # 生成 GetGoTraderOnXxx 辅助函数
     lines.append('// ========== 辅助函数：使用 purego.NewCallback 获取 C 函数指针 ==========')
     lines.append('// 注意：purego.NewCallback 不支持 unsafe.Pointer 参数，需要用具体指针类型的 wrapper')
+    lines.append('// 注意：Windows 要求 wrapper 函数也必须返回 uintptr')
     lines.append('')
     
     for cb in callbacks:
@@ -2095,6 +2104,7 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
         
         if has_ctp_field_ptr:
             # 需要 wrapper：purego.NewCallback 不支持 unsafe.Pointer，需要用具体指针类型
+            # Windows 要求 wrapper 函数也必须返回 uintptr
             wrapper_params = ['userData uintptr']
             call_args = ['userData']
             for p in cb.params[1:]:
@@ -2109,8 +2119,8 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
             
             wrapper_param_str = ', '.join(wrapper_params)
             call_arg_str = ', '.join(call_args)
-            lines.append(f'\twrapper := func({wrapper_param_str}) {{')
-            lines.append(f'\t\t{func_name}({call_arg_str})')
+            lines.append(f'\twrapper := func({wrapper_param_str}) uintptr {{')
+            lines.append(f'\t\treturn {func_name}({call_arg_str})')
             lines.append('\t}')
             lines.append('\treturn purego.NewCallback(wrapper)')
         else:
@@ -2121,6 +2131,71 @@ def generate_trader_callbacks_go(callbacks: List[CallbackType], typedefs: Dict[s
         lines.append('')
     
     return '\n'.join(lines)
+
+
+def generate_loader_windows_go() -> str:
+    """
+    生成 loader_windows.go - Windows 平台动态库加载
+    
+    使用 syscall.LoadLibrary 加载 DLL，并通过 SetDllDirectory 设置依赖库搜索路径
+    """
+    return '''//go:build windows
+
+package ctpgo
+
+import (
+	"path/filepath"
+	"syscall"
+	"unsafe"
+)
+
+var (
+	kernel32            = syscall.NewLazyDLL("kernel32.dll")
+	procSetDllDirectory = kernel32.NewProc("SetDllDirectoryW")
+)
+
+// openLibrary 在 Windows 上加载动态库
+// 需要先设置 DLL 搜索目录，确保能找到依赖库
+func openLibrary(path string) (uintptr, error) {
+	// 1. 转换为绝对路径
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return 0, err
+	}
+
+	// 2. 设置 DLL 搜索目录（让 Windows 能找到依赖库）
+	dllDir := filepath.Dir(absPath)
+	dllDirPtr, _ := syscall.UTF16PtrFromString(dllDir)
+	procSetDllDirectory.Call(uintptr(unsafe.Pointer(dllDirPtr)))
+
+	// 3. 加载库
+	handle, err := syscall.LoadLibrary(absPath)
+	if err != nil {
+		return 0, err
+	}
+
+	return uintptr(handle), nil
+}
+'''
+
+
+def generate_loader_unix_go() -> str:
+    """
+    生成 loader_unix.go - Unix 平台动态库加载
+    
+    使用 purego.Dlopen 加载动态库（支持 Linux、macOS、FreeBSD、NetBSD）
+    """
+    return '''//go:build darwin || freebsd || linux || netbsd
+
+package ctpgo
+
+import "github.com/ebitengine/purego"
+
+// openLibrary 在 Unix 上使用 purego.Dlopen 加载动态库
+func openLibrary(path string) (uintptr, error) {
+	return purego.Dlopen(path, purego.RTLD_NOW|purego.RTLD_GLOBAL)
+}
+'''
 
 
 def generate_loader_go() -> str:
@@ -2146,8 +2221,6 @@ import (
 	"runtime"
 	"strings"
 	"sync"
-
-	"github.com/ebitengine/purego"
 )
 
 var (
@@ -2274,13 +2347,13 @@ func LoadCTPLibrary(libPath string) error {
 
 	// 加载行情 C 包装库
 	var err error
-	mdLib, err = purego.Dlopen(mdPath, purego.RTLD_NOW|purego.RTLD_GLOBAL)
+	mdLib, err = openLibrary(mdPath)
 	if err != nil {
 		return fmt.Errorf("failed to load md C wrapper library: %w", err)
 	}
 
 	// 加载交易 C 包装库
-	traderLib, err = purego.Dlopen(traderPath, purego.RTLD_NOW|purego.RTLD_GLOBAL)
+	traderLib, err = openLibrary(traderPath)
 	if err != nil {
 		return fmt.Errorf("failed to load trader C wrapper library: %w", err)
 	}
@@ -2471,6 +2544,16 @@ def main():
     loader_file.write_text(generate_loader_go(), encoding='utf-8')
     print(f"  生成 {loader_file}")
     
+    # loader_windows.go
+    loader_windows_file = output_dir / 'loader_windows.go'
+    loader_windows_file.write_text(generate_loader_windows_go(), encoding='utf-8')
+    print(f"  生成 {loader_windows_file}")
+    
+    # loader_unix.go
+    loader_unix_file = output_dir / 'loader_unix.go'
+    loader_unix_file.write_text(generate_loader_unix_go(), encoding='utf-8')
+    print(f"  生成 {loader_unix_file}")
+    
     # md_api.go
     md_api_file = output_dir / 'md_api.go'
     md_api_file.write_text(generate_md_api_go(md_functions, md_callbacks, typedefs), encoding='utf-8')
@@ -2521,6 +2604,8 @@ require (
     print(f"  - utils.go              : 工具函数")
     print(f"  - datatype.go           : 枚举和结构体定义 ({len(structs)} 个)")
     print(f"  - struct.go             : 结构体定义 ({len(structs)} 个)")
+    print(f"  - loader_windows.go     : Windows 动态库加载")
+    print(f"  - loader_unix.go        : Unix 动态库加载")
     print(f"  - loader.go             : 动态库加载")
     print(f"  - md_api.go             : 行情 API ({len(md_functions)} 个方法)")
     print(f"  - trader_api.go         : 交易 API ({len(trader_functions)} 个方法)")

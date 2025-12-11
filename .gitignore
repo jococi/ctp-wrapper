@@ -5,3 +5,7 @@ log_trade
 
 libs/*
 !libs/.gitkeep
+
+# 环境变量文件
+.env
+.env.local
