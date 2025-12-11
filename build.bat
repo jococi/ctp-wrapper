@@ -121,10 +121,6 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 echo   [SUCCESS] %LIBS_DIR%\ctpmd_c_api.dll
-REM Clean temporary files
-if exist "ctp_md_c_api.exp" del /Q "ctp_md_c_api.exp" >nul 2>&1
-if exist "ctp_md_c_api.lib" del /Q "ctp_md_c_api.lib" >nul 2>&1
-if exist "ctp_md_c_api.obj" del /Q "ctp_md_c_api.obj" >nul 2>&1
 
 REM Build Trader API
 echo.
@@ -143,10 +139,23 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 echo   [SUCCESS] %LIBS_DIR%\ctptrader_c_api.dll
-REM Clean temporary files
-if exist "ctp_trader_c_api.exp" del /Q "ctp_trader_c_api.exp" >nul 2>&1
-if exist "ctp_trader_c_api.lib" del /Q "ctp_trader_c_api.lib" >nul 2>&1
-if exist "ctp_trader_c_api.obj" del /Q "ctp_trader_c_api.obj" >nul 2>&1
+
+REM Clean temporary files (compiled in current directory)
+echo.
+echo Cleaning temporary files...
+if exist "ctpmd_c_api.exp" del /Q "ctpmd_c_api.exp" >nul 2>&1
+if exist "ctpmd_c_api.lib" del /Q "ctpmd_c_api.lib" >nul 2>&1
+if exist "ctpmd_c_api.obj" del /Q "ctpmd_c_api.obj" >nul 2>&1
+if exist "ctpmd_c_api.pdb" del /Q "ctpmd_c_api.pdb" >nul 2>&1
+if exist "ctptrader_c_api.exp" del /Q "ctptrader_c_api.exp" >nul 2>&1
+if exist "ctptrader_c_api.lib" del /Q "ctptrader_c_api.lib" >nul 2>&1
+if exist "ctptrader_c_api.obj" del /Q "ctptrader_c_api.obj" >nul 2>&1
+if exist "ctptrader_c_api.pdb" del /Q "ctptrader_c_api.pdb" >nul 2>&1
+REM Clean any other .obj files in current directory
+if exist "*.obj" del /Q *.obj >nul 2>&1
+REM Clean any .pdb files in current directory (debug info)
+if exist "*.pdb" del /Q *.pdb >nul 2>&1
+echo   [OK] Temporary files cleaned
 
 echo.
 echo ========================================
