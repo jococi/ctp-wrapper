@@ -4,7 +4,7 @@
  * 自动生成，请勿手动修改
  */
 
-#include "ctp_md_c_api.h"
+#include "ctpmd_c_api.h"
 
 // 平台相关的原始 CTP 头文件
 // 注意: 编译时需要正确设置头文件搜索路径

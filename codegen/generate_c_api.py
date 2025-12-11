@@ -534,7 +534,7 @@ def generate_cpp_impl(
     
     prefix = f"{api_name}"
     prefix_lower = f"{api_name}"
-    header_name = f"ctp_{api_name.lower()}_c_api.h"
+    header_name = f"ctp{api_name.lower()}_c_api.h"
     
     lines = []
     lines.append(f"/**")
@@ -839,13 +839,13 @@ def process_api(input_dir: Path, output_dir: Path, api_name: str,
     
     # 生成 C 头文件
     c_header = generate_c_header(api_name, spi_methods, api_methods, spi_class, api_class)
-    header_output = output_dir / f"ctp_{api_name.lower()}_c_api.h"
+    header_output = output_dir / f"ctp{api_name.lower()}_c_api.h"
     header_output.write_text(c_header, encoding='utf-8')
     print(f"  生成 {header_output}")
     
     # 生成 C++ 实现文件
     cpp_impl = generate_cpp_impl(api_name, spi_methods, api_methods, spi_class, api_class)
-    impl_output = output_dir / f"ctp_{api_name.lower()}_c_api.cpp"
+    impl_output = output_dir / f"ctp{api_name.lower()}_c_api.cpp"
     impl_output.write_text(cpp_impl, encoding='utf-8')
     print(f"  生成 {impl_output}")
 

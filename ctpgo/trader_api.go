@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
+	"unsafe"
 
 	"github.com/ebitengine/purego"
 )
@@ -480,323 +481,323 @@ type TraderOnRspQryInvestorPortfSettingCallback func(userData uintptr, pInvestor
 
 // TraderSpiCallbacks 回调结构体（用于批量设置）
 type TraderSpiCallbacks struct {
-	UserData                                  uintptr
-	OnFrontConnected                          TraderOnFrontConnectedCallback
-	OnFrontDisconnected                       TraderOnFrontDisconnectedCallback
-	OnHeartBeatWarning                        TraderOnHeartBeatWarningCallback
-	OnRspAuthenticate                         TraderOnRspAuthenticateCallback
-	OnRspUserLogin                            TraderOnRspUserLoginCallback
-	OnRspUserLogout                           TraderOnRspUserLogoutCallback
-	OnRspUserPasswordUpdate                   TraderOnRspUserPasswordUpdateCallback
-	OnRspTradingAccountPasswordUpdate         TraderOnRspTradingAccountPasswordUpdateCallback
-	OnRspUserAuthMethod                       TraderOnRspUserAuthMethodCallback
-	OnRspGenUserCaptcha                       TraderOnRspGenUserCaptchaCallback
-	OnRspGenUserText                          TraderOnRspGenUserTextCallback
-	OnRspOrderInsert                          TraderOnRspOrderInsertCallback
-	OnRspParkedOrderInsert                    TraderOnRspParkedOrderInsertCallback
-	OnRspParkedOrderAction                    TraderOnRspParkedOrderActionCallback
-	OnRspOrderAction                          TraderOnRspOrderActionCallback
-	OnRspQryMaxOrderVolume                    TraderOnRspQryMaxOrderVolumeCallback
-	OnRspSettlementInfoConfirm                TraderOnRspSettlementInfoConfirmCallback
-	OnRspRemoveParkedOrder                    TraderOnRspRemoveParkedOrderCallback
-	OnRspRemoveParkedOrderAction              TraderOnRspRemoveParkedOrderActionCallback
-	OnRspExecOrderInsert                      TraderOnRspExecOrderInsertCallback
-	OnRspExecOrderAction                      TraderOnRspExecOrderActionCallback
-	OnRspForQuoteInsert                       TraderOnRspForQuoteInsertCallback
-	OnRspQuoteInsert                          TraderOnRspQuoteInsertCallback
-	OnRspQuoteAction                          TraderOnRspQuoteActionCallback
-	OnRspBatchOrderAction                     TraderOnRspBatchOrderActionCallback
-	OnRspOptionSelfCloseInsert                TraderOnRspOptionSelfCloseInsertCallback
-	OnRspOptionSelfCloseAction                TraderOnRspOptionSelfCloseActionCallback
-	OnRspCombActionInsert                     TraderOnRspCombActionInsertCallback
-	OnRspQryOrder                             TraderOnRspQryOrderCallback
-	OnRspQryTrade                             TraderOnRspQryTradeCallback
-	OnRspQryInvestorPosition                  TraderOnRspQryInvestorPositionCallback
-	OnRspQryTradingAccount                    TraderOnRspQryTradingAccountCallback
-	OnRspQryInvestor                          TraderOnRspQryInvestorCallback
-	OnRspQryTradingCode                       TraderOnRspQryTradingCodeCallback
-	OnRspQryInstrumentMarginRate              TraderOnRspQryInstrumentMarginRateCallback
-	OnRspQryInstrumentCommissionRate          TraderOnRspQryInstrumentCommissionRateCallback
-	OnRspQryExchange                          TraderOnRspQryExchangeCallback
-	OnRspQryProduct                           TraderOnRspQryProductCallback
-	OnRspQryInstrument                        TraderOnRspQryInstrumentCallback
-	OnRspQryDepthMarketData                   TraderOnRspQryDepthMarketDataCallback
-	OnRspQryOffer                             TraderOnRspQryTraderOfferCallback
-	OnRspQrySettlementInfo                    TraderOnRspQrySettlementInfoCallback
-	OnRspQryTransferBank                      TraderOnRspQryTransferBankCallback
-	OnRspQryInvestorPositionDetail            TraderOnRspQryInvestorPositionDetailCallback
-	OnRspQryNotice                            TraderOnRspQryNoticeCallback
-	OnRspQrySettlementInfoConfirm             TraderOnRspQrySettlementInfoConfirmCallback
-	OnRspQryInvestorPositionCombineDetail     TraderOnRspQryInvestorPositionCombineDetailCallback
-	OnRspQryCFMMCTradingAccountKey            TraderOnRspQryCFMMCTradingAccountKeyCallback
-	OnRspQryEWarrantOffset                    TraderOnRspQryEWarrantOffsetCallback
-	OnRspQryInvestorProductGroupMargin        TraderOnRspQryInvestorProductGroupMarginCallback
-	OnRspQryExchangeMarginRate                TraderOnRspQryExchangeMarginRateCallback
-	OnRspQryExchangeMarginRateAdjust          TraderOnRspQryExchangeMarginRateAdjustCallback
-	OnRspQryExchangeRate                      TraderOnRspQryExchangeRateCallback
-	OnRspQrySecAgentACIDMap                   TraderOnRspQrySecAgentACIDMapCallback
-	OnRspQryProductExchRate                   TraderOnRspQryProductExchRateCallback
-	OnRspQryProductGroup                      TraderOnRspQryProductGroupCallback
-	OnRspQryMMInstrumentCommissionRate        TraderOnRspQryMMInstrumentCommissionRateCallback
-	OnRspQryMMOptionInstrCommRate             TraderOnRspQryMMOptionInstrCommRateCallback
-	OnRspQryInstrumentOrderCommRate           TraderOnRspQryInstrumentOrderCommRateCallback
-	OnRspQrySecAgentTradingAccount            TraderOnRspQrySecAgentTradingAccountCallback
-	OnRspQrySecAgentCheckMode                 TraderOnRspQrySecAgentCheckModeCallback
-	OnRspQrySecAgentTradeInfo                 TraderOnRspQrySecAgentTradeInfoCallback
-	OnRspQryOptionInstrTradeCost              TraderOnRspQryOptionInstrTradeCostCallback
-	OnRspQryOptionInstrCommRate               TraderOnRspQryOptionInstrCommRateCallback
-	OnRspQryExecOrder                         TraderOnRspQryExecOrderCallback
-	OnRspQryForQuote                          TraderOnRspQryForQuoteCallback
-	OnRspQryQuote                             TraderOnRspQryQuoteCallback
-	OnRspQryOptionSelfClose                   TraderOnRspQryOptionSelfCloseCallback
-	OnRspQryInvestUnit                        TraderOnRspQryInvestUnitCallback
-	OnRspQryCombInstrumentGuard               TraderOnRspQryCombInstrumentGuardCallback
-	OnRspQryCombAction                        TraderOnRspQryCombActionCallback
-	OnRspQryTransferSerial                    TraderOnRspQryTransferSerialCallback
-	OnRspQryAccountregister                   TraderOnRspQryAccountregisterCallback
-	OnRspError                                TraderOnRspErrorCallback
-	OnRtnOrder                                TraderOnRtnOrderCallback
-	OnRtnTrade                                TraderOnRtnTradeCallback
-	OnErrRtnOrderInsert                       TraderOnErrRtnOrderInsertCallback
-	OnErrRtnOrderAction                       TraderOnErrRtnOrderActionCallback
-	OnRtnInstrumentStatus                     TraderOnRtnInstrumentStatusCallback
-	OnRtnBulletin                             TraderOnRtnBulletinCallback
-	OnRtnTradingNotice                        TraderOnRtnTradingNoticeCallback
-	OnRtnErrorConditionalOrder                TraderOnRtnErrorConditionalOrderCallback
-	OnRtnExecOrder                            TraderOnRtnExecOrderCallback
-	OnErrRtnExecOrderInsert                   TraderOnErrRtnExecOrderInsertCallback
-	OnErrRtnExecOrderAction                   TraderOnErrRtnExecOrderActionCallback
-	OnErrRtnForQuoteInsert                    TraderOnErrRtnForQuoteInsertCallback
-	OnRtnQuote                                TraderOnRtnQuoteCallback
-	OnErrRtnQuoteInsert                       TraderOnErrRtnQuoteInsertCallback
-	OnErrRtnQuoteAction                       TraderOnErrRtnQuoteActionCallback
-	OnRtnForQuoteRsp                          TraderOnRtnForQuoteRspCallback
-	OnRtnCFMMCTradingAccountToken             TraderOnRtnCFMMCTradingAccountTokenCallback
-	OnErrRtnBatchOrderAction                  TraderOnErrRtnBatchOrderActionCallback
-	OnRtnOptionSelfClose                      TraderOnRtnOptionSelfCloseCallback
-	OnErrRtnOptionSelfCloseInsert             TraderOnErrRtnOptionSelfCloseInsertCallback
-	OnErrRtnOptionSelfCloseAction             TraderOnErrRtnOptionSelfCloseActionCallback
-	OnRtnCombAction                           TraderOnRtnCombActionCallback
-	OnErrRtnCombActionInsert                  TraderOnErrRtnCombActionInsertCallback
-	OnRspQryContractBank                      TraderOnRspQryContractBankCallback
-	OnRspQryParkedOrder                       TraderOnRspQryParkedOrderCallback
-	OnRspQryParkedOrderAction                 TraderOnRspQryParkedOrderActionCallback
-	OnRspQryTradingNotice                     TraderOnRspQryTradingNoticeCallback
-	OnRspQryBrokerTradingParams               TraderOnRspQryBrokerTradingParamsCallback
-	OnRspQryBrokerTradingAlgos                TraderOnRspQryBrokerTradingAlgosCallback
-	OnRspQueryCFMMCTradingAccountToken        TraderOnRspQueryCFMMCTradingAccountTokenCallback
-	OnRtnFromBankToFutureByBank               TraderOnRtnFromBankToFutureByBankCallback
-	OnRtnFromFutureToBankByBank               TraderOnRtnFromFutureToBankByBankCallback
-	OnRtnRepealFromBankToFutureByBank         TraderOnRtnRepealFromBankToFutureByBankCallback
-	OnRtnRepealFromFutureToBankByBank         TraderOnRtnRepealFromFutureToBankByBankCallback
-	OnRtnFromBankToFutureByFuture             TraderOnRtnFromBankToFutureByFutureCallback
-	OnRtnFromFutureToBankByFuture             TraderOnRtnFromFutureToBankByFutureCallback
+	UserData uintptr
+	OnFrontConnected TraderOnFrontConnectedCallback
+	OnFrontDisconnected TraderOnFrontDisconnectedCallback
+	OnHeartBeatWarning TraderOnHeartBeatWarningCallback
+	OnRspAuthenticate TraderOnRspAuthenticateCallback
+	OnRspUserLogin TraderOnRspUserLoginCallback
+	OnRspUserLogout TraderOnRspUserLogoutCallback
+	OnRspUserPasswordUpdate TraderOnRspUserPasswordUpdateCallback
+	OnRspTradingAccountPasswordUpdate TraderOnRspTradingAccountPasswordUpdateCallback
+	OnRspUserAuthMethod TraderOnRspUserAuthMethodCallback
+	OnRspGenUserCaptcha TraderOnRspGenUserCaptchaCallback
+	OnRspGenUserText TraderOnRspGenUserTextCallback
+	OnRspOrderInsert TraderOnRspOrderInsertCallback
+	OnRspParkedOrderInsert TraderOnRspParkedOrderInsertCallback
+	OnRspParkedOrderAction TraderOnRspParkedOrderActionCallback
+	OnRspOrderAction TraderOnRspOrderActionCallback
+	OnRspQryMaxOrderVolume TraderOnRspQryMaxOrderVolumeCallback
+	OnRspSettlementInfoConfirm TraderOnRspSettlementInfoConfirmCallback
+	OnRspRemoveParkedOrder TraderOnRspRemoveParkedOrderCallback
+	OnRspRemoveParkedOrderAction TraderOnRspRemoveParkedOrderActionCallback
+	OnRspExecOrderInsert TraderOnRspExecOrderInsertCallback
+	OnRspExecOrderAction TraderOnRspExecOrderActionCallback
+	OnRspForQuoteInsert TraderOnRspForQuoteInsertCallback
+	OnRspQuoteInsert TraderOnRspQuoteInsertCallback
+	OnRspQuoteAction TraderOnRspQuoteActionCallback
+	OnRspBatchOrderAction TraderOnRspBatchOrderActionCallback
+	OnRspOptionSelfCloseInsert TraderOnRspOptionSelfCloseInsertCallback
+	OnRspOptionSelfCloseAction TraderOnRspOptionSelfCloseActionCallback
+	OnRspCombActionInsert TraderOnRspCombActionInsertCallback
+	OnRspQryOrder TraderOnRspQryOrderCallback
+	OnRspQryTrade TraderOnRspQryTradeCallback
+	OnRspQryInvestorPosition TraderOnRspQryInvestorPositionCallback
+	OnRspQryTradingAccount TraderOnRspQryTradingAccountCallback
+	OnRspQryInvestor TraderOnRspQryInvestorCallback
+	OnRspQryTradingCode TraderOnRspQryTradingCodeCallback
+	OnRspQryInstrumentMarginRate TraderOnRspQryInstrumentMarginRateCallback
+	OnRspQryInstrumentCommissionRate TraderOnRspQryInstrumentCommissionRateCallback
+	OnRspQryExchange TraderOnRspQryExchangeCallback
+	OnRspQryProduct TraderOnRspQryProductCallback
+	OnRspQryInstrument TraderOnRspQryInstrumentCallback
+	OnRspQryDepthMarketData TraderOnRspQryDepthMarketDataCallback
+	OnRspQryOffer TraderOnRspQryTraderOfferCallback
+	OnRspQrySettlementInfo TraderOnRspQrySettlementInfoCallback
+	OnRspQryTransferBank TraderOnRspQryTransferBankCallback
+	OnRspQryInvestorPositionDetail TraderOnRspQryInvestorPositionDetailCallback
+	OnRspQryNotice TraderOnRspQryNoticeCallback
+	OnRspQrySettlementInfoConfirm TraderOnRspQrySettlementInfoConfirmCallback
+	OnRspQryInvestorPositionCombineDetail TraderOnRspQryInvestorPositionCombineDetailCallback
+	OnRspQryCFMMCTradingAccountKey TraderOnRspQryCFMMCTradingAccountKeyCallback
+	OnRspQryEWarrantOffset TraderOnRspQryEWarrantOffsetCallback
+	OnRspQryInvestorProductGroupMargin TraderOnRspQryInvestorProductGroupMarginCallback
+	OnRspQryExchangeMarginRate TraderOnRspQryExchangeMarginRateCallback
+	OnRspQryExchangeMarginRateAdjust TraderOnRspQryExchangeMarginRateAdjustCallback
+	OnRspQryExchangeRate TraderOnRspQryExchangeRateCallback
+	OnRspQrySecAgentACIDMap TraderOnRspQrySecAgentACIDMapCallback
+	OnRspQryProductExchRate TraderOnRspQryProductExchRateCallback
+	OnRspQryProductGroup TraderOnRspQryProductGroupCallback
+	OnRspQryMMInstrumentCommissionRate TraderOnRspQryMMInstrumentCommissionRateCallback
+	OnRspQryMMOptionInstrCommRate TraderOnRspQryMMOptionInstrCommRateCallback
+	OnRspQryInstrumentOrderCommRate TraderOnRspQryInstrumentOrderCommRateCallback
+	OnRspQrySecAgentTradingAccount TraderOnRspQrySecAgentTradingAccountCallback
+	OnRspQrySecAgentCheckMode TraderOnRspQrySecAgentCheckModeCallback
+	OnRspQrySecAgentTradeInfo TraderOnRspQrySecAgentTradeInfoCallback
+	OnRspQryOptionInstrTradeCost TraderOnRspQryOptionInstrTradeCostCallback
+	OnRspQryOptionInstrCommRate TraderOnRspQryOptionInstrCommRateCallback
+	OnRspQryExecOrder TraderOnRspQryExecOrderCallback
+	OnRspQryForQuote TraderOnRspQryForQuoteCallback
+	OnRspQryQuote TraderOnRspQryQuoteCallback
+	OnRspQryOptionSelfClose TraderOnRspQryOptionSelfCloseCallback
+	OnRspQryInvestUnit TraderOnRspQryInvestUnitCallback
+	OnRspQryCombInstrumentGuard TraderOnRspQryCombInstrumentGuardCallback
+	OnRspQryCombAction TraderOnRspQryCombActionCallback
+	OnRspQryTransferSerial TraderOnRspQryTransferSerialCallback
+	OnRspQryAccountregister TraderOnRspQryAccountregisterCallback
+	OnRspError TraderOnRspErrorCallback
+	OnRtnOrder TraderOnRtnOrderCallback
+	OnRtnTrade TraderOnRtnTradeCallback
+	OnErrRtnOrderInsert TraderOnErrRtnOrderInsertCallback
+	OnErrRtnOrderAction TraderOnErrRtnOrderActionCallback
+	OnRtnInstrumentStatus TraderOnRtnInstrumentStatusCallback
+	OnRtnBulletin TraderOnRtnBulletinCallback
+	OnRtnTradingNotice TraderOnRtnTradingNoticeCallback
+	OnRtnErrorConditionalOrder TraderOnRtnErrorConditionalOrderCallback
+	OnRtnExecOrder TraderOnRtnExecOrderCallback
+	OnErrRtnExecOrderInsert TraderOnErrRtnExecOrderInsertCallback
+	OnErrRtnExecOrderAction TraderOnErrRtnExecOrderActionCallback
+	OnErrRtnForQuoteInsert TraderOnErrRtnForQuoteInsertCallback
+	OnRtnQuote TraderOnRtnQuoteCallback
+	OnErrRtnQuoteInsert TraderOnErrRtnQuoteInsertCallback
+	OnErrRtnQuoteAction TraderOnErrRtnQuoteActionCallback
+	OnRtnForQuoteRsp TraderOnRtnForQuoteRspCallback
+	OnRtnCFMMCTradingAccountToken TraderOnRtnCFMMCTradingAccountTokenCallback
+	OnErrRtnBatchOrderAction TraderOnErrRtnBatchOrderActionCallback
+	OnRtnOptionSelfClose TraderOnRtnOptionSelfCloseCallback
+	OnErrRtnOptionSelfCloseInsert TraderOnErrRtnOptionSelfCloseInsertCallback
+	OnErrRtnOptionSelfCloseAction TraderOnErrRtnOptionSelfCloseActionCallback
+	OnRtnCombAction TraderOnRtnCombActionCallback
+	OnErrRtnCombActionInsert TraderOnErrRtnCombActionInsertCallback
+	OnRspQryContractBank TraderOnRspQryContractBankCallback
+	OnRspQryParkedOrder TraderOnRspQryParkedOrderCallback
+	OnRspQryParkedOrderAction TraderOnRspQryParkedOrderActionCallback
+	OnRspQryTradingNotice TraderOnRspQryTradingNoticeCallback
+	OnRspQryBrokerTradingParams TraderOnRspQryBrokerTradingParamsCallback
+	OnRspQryBrokerTradingAlgos TraderOnRspQryBrokerTradingAlgosCallback
+	OnRspQueryCFMMCTradingAccountToken TraderOnRspQueryCFMMCTradingAccountTokenCallback
+	OnRtnFromBankToFutureByBank TraderOnRtnFromBankToFutureByBankCallback
+	OnRtnFromFutureToBankByBank TraderOnRtnFromFutureToBankByBankCallback
+	OnRtnRepealFromBankToFutureByBank TraderOnRtnRepealFromBankToFutureByBankCallback
+	OnRtnRepealFromFutureToBankByBank TraderOnRtnRepealFromFutureToBankByBankCallback
+	OnRtnFromBankToFutureByFuture TraderOnRtnFromBankToFutureByFutureCallback
+	OnRtnFromFutureToBankByFuture TraderOnRtnFromFutureToBankByFutureCallback
 	OnRtnRepealFromBankToFutureByFutureManual TraderOnRtnRepealFromBankToFutureByFutureManualCallback
 	OnRtnRepealFromFutureToBankByFutureManual TraderOnRtnRepealFromFutureToBankByFutureManualCallback
-	OnRtnQueryBankBalanceByFuture             TraderOnRtnQueryBankBalanceByFutureCallback
-	OnErrRtnBankToFutureByFuture              TraderOnErrRtnBankToFutureByFutureCallback
-	OnErrRtnFutureToBankByFuture              TraderOnErrRtnFutureToBankByFutureCallback
-	OnErrRtnRepealBankToFutureByFutureManual  TraderOnErrRtnRepealBankToFutureByFutureManualCallback
-	OnErrRtnRepealFutureToBankByFutureManual  TraderOnErrRtnRepealFutureToBankByFutureManualCallback
-	OnErrRtnQueryBankBalanceByFuture          TraderOnErrRtnQueryBankBalanceByFutureCallback
-	OnRtnRepealFromBankToFutureByFuture       TraderOnRtnRepealFromBankToFutureByFutureCallback
-	OnRtnRepealFromFutureToBankByFuture       TraderOnRtnRepealFromFutureToBankByFutureCallback
-	OnRspFromBankToFutureByFuture             TraderOnRspFromBankToFutureByFutureCallback
-	OnRspFromFutureToBankByFuture             TraderOnRspFromFutureToBankByFutureCallback
-	OnRspQueryBankAccountMoneyByFuture        TraderOnRspQueryBankAccountMoneyByFutureCallback
-	OnRtnOpenAccountByBank                    TraderOnRtnOpenAccountByBankCallback
-	OnRtnCancelAccountByBank                  TraderOnRtnCancelAccountByBankCallback
-	OnRtnChangeAccountByBank                  TraderOnRtnChangeAccountByBankCallback
-	OnRspQryClassifiedInstrument              TraderOnRspQryClassifiedInstrumentCallback
-	OnRspQryCombPromotionParam                TraderOnRspQryCombPromotionParamCallback
-	OnRspQryRiskSettleInvstPosition           TraderOnRspQryRiskSettleInvstPositionCallback
-	OnRspQryRiskSettleProductStatus           TraderOnRspQryRiskSettleProductStatusCallback
-	OnRspQrySPBMFutureParameter               TraderOnRspQrySPBMFutureParameterCallback
-	OnRspQrySPBMOptionParameter               TraderOnRspQrySPBMOptionParameterCallback
-	OnRspQrySPBMIntraParameter                TraderOnRspQrySPBMIntraParameterCallback
-	OnRspQrySPBMInterParameter                TraderOnRspQrySPBMInterParameterCallback
-	OnRspQrySPBMPortfDefinition               TraderOnRspQrySPBMPortfDefinitionCallback
-	OnRspQrySPBMInvestorPortfDef              TraderOnRspQrySPBMInvestorPortfDefCallback
-	OnRspQryInvestorPortfMarginRatio          TraderOnRspQryInvestorPortfMarginRatioCallback
-	OnRspQryInvestorProdSPBMDetail            TraderOnRspQryInvestorProdSPBMDetailCallback
-	OnRspQryInvestorCommoditySPMMMargin       TraderOnRspQryInvestorCommoditySPMMMarginCallback
-	OnRspQryInvestorCommodityGroupSPMMMargin  TraderOnRspQryInvestorCommodityGroupSPMMMarginCallback
-	OnRspQrySPMMInstParam                     TraderOnRspQrySPMMInstParamCallback
-	OnRspQrySPMMProductParam                  TraderOnRspQrySPMMProductParamCallback
-	OnRspQrySPBMAddOnInterParameter           TraderOnRspQrySPBMAddOnInterParameterCallback
-	OnRspQryRCAMSCombProductInfo              TraderOnRspQryRCAMSCombProductInfoCallback
-	OnRspQryRCAMSInstrParameter               TraderOnRspQryRCAMSInstrParameterCallback
-	OnRspQryRCAMSIntraParameter               TraderOnRspQryRCAMSIntraParameterCallback
-	OnRspQryRCAMSInterParameter               TraderOnRspQryRCAMSInterParameterCallback
-	OnRspQryRCAMSShortOptAdjustParam          TraderOnRspQryRCAMSShortOptAdjustParamCallback
-	OnRspQryRCAMSInvestorCombPosition         TraderOnRspQryRCAMSInvestorCombPositionCallback
-	OnRspQryInvestorProdRCAMSMargin           TraderOnRspQryInvestorProdRCAMSMarginCallback
-	OnRspQryRULEInstrParameter                TraderOnRspQryRULEInstrParameterCallback
-	OnRspQryRULEIntraParameter                TraderOnRspQryRULEIntraParameterCallback
-	OnRspQryRULEInterParameter                TraderOnRspQryRULEInterParameterCallback
-	OnRspQryInvestorProdRULEMargin            TraderOnRspQryInvestorProdRULEMarginCallback
-	OnRspQryInvestorPortfSetting              TraderOnRspQryInvestorPortfSettingCallback
+	OnRtnQueryBankBalanceByFuture TraderOnRtnQueryBankBalanceByFutureCallback
+	OnErrRtnBankToFutureByFuture TraderOnErrRtnBankToFutureByFutureCallback
+	OnErrRtnFutureToBankByFuture TraderOnErrRtnFutureToBankByFutureCallback
+	OnErrRtnRepealBankToFutureByFutureManual TraderOnErrRtnRepealBankToFutureByFutureManualCallback
+	OnErrRtnRepealFutureToBankByFutureManual TraderOnErrRtnRepealFutureToBankByFutureManualCallback
+	OnErrRtnQueryBankBalanceByFuture TraderOnErrRtnQueryBankBalanceByFutureCallback
+	OnRtnRepealFromBankToFutureByFuture TraderOnRtnRepealFromBankToFutureByFutureCallback
+	OnRtnRepealFromFutureToBankByFuture TraderOnRtnRepealFromFutureToBankByFutureCallback
+	OnRspFromBankToFutureByFuture TraderOnRspFromBankToFutureByFutureCallback
+	OnRspFromFutureToBankByFuture TraderOnRspFromFutureToBankByFutureCallback
+	OnRspQueryBankAccountMoneyByFuture TraderOnRspQueryBankAccountMoneyByFutureCallback
+	OnRtnOpenAccountByBank TraderOnRtnOpenAccountByBankCallback
+	OnRtnCancelAccountByBank TraderOnRtnCancelAccountByBankCallback
+	OnRtnChangeAccountByBank TraderOnRtnChangeAccountByBankCallback
+	OnRspQryClassifiedInstrument TraderOnRspQryClassifiedInstrumentCallback
+	OnRspQryCombPromotionParam TraderOnRspQryCombPromotionParamCallback
+	OnRspQryRiskSettleInvstPosition TraderOnRspQryRiskSettleInvstPositionCallback
+	OnRspQryRiskSettleProductStatus TraderOnRspQryRiskSettleProductStatusCallback
+	OnRspQrySPBMFutureParameter TraderOnRspQrySPBMFutureParameterCallback
+	OnRspQrySPBMOptionParameter TraderOnRspQrySPBMOptionParameterCallback
+	OnRspQrySPBMIntraParameter TraderOnRspQrySPBMIntraParameterCallback
+	OnRspQrySPBMInterParameter TraderOnRspQrySPBMInterParameterCallback
+	OnRspQrySPBMPortfDefinition TraderOnRspQrySPBMPortfDefinitionCallback
+	OnRspQrySPBMInvestorPortfDef TraderOnRspQrySPBMInvestorPortfDefCallback
+	OnRspQryInvestorPortfMarginRatio TraderOnRspQryInvestorPortfMarginRatioCallback
+	OnRspQryInvestorProdSPBMDetail TraderOnRspQryInvestorProdSPBMDetailCallback
+	OnRspQryInvestorCommoditySPMMMargin TraderOnRspQryInvestorCommoditySPMMMarginCallback
+	OnRspQryInvestorCommodityGroupSPMMMargin TraderOnRspQryInvestorCommodityGroupSPMMMarginCallback
+	OnRspQrySPMMInstParam TraderOnRspQrySPMMInstParamCallback
+	OnRspQrySPMMProductParam TraderOnRspQrySPMMProductParamCallback
+	OnRspQrySPBMAddOnInterParameter TraderOnRspQrySPBMAddOnInterParameterCallback
+	OnRspQryRCAMSCombProductInfo TraderOnRspQryRCAMSCombProductInfoCallback
+	OnRspQryRCAMSInstrParameter TraderOnRspQryRCAMSInstrParameterCallback
+	OnRspQryRCAMSIntraParameter TraderOnRspQryRCAMSIntraParameterCallback
+	OnRspQryRCAMSInterParameter TraderOnRspQryRCAMSInterParameterCallback
+	OnRspQryRCAMSShortOptAdjustParam TraderOnRspQryRCAMSShortOptAdjustParamCallback
+	OnRspQryRCAMSInvestorCombPosition TraderOnRspQryRCAMSInvestorCombPositionCallback
+	OnRspQryInvestorProdRCAMSMargin TraderOnRspQryInvestorProdRCAMSMarginCallback
+	OnRspQryRULEInstrParameter TraderOnRspQryRULEInstrParameterCallback
+	OnRspQryRULEIntraParameter TraderOnRspQryRULEIntraParameterCallback
+	OnRspQryRULEInterParameter TraderOnRspQryRULEInterParameterCallback
+	OnRspQryInvestorProdRULEMargin TraderOnRspQryInvestorProdRULEMarginCallback
+	OnRspQryInvestorPortfSetting TraderOnRspQryInvestorPortfSettingCallback
 }
 
 // ========== TraderSpi 接口 ==========
 
 // TraderSpi 交易回调接口
 type TraderSpi interface {
-	OnFrontConnected()                                                                                                                                                                             // ========== 回调函数类型（带 userData） ========== 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
-	OnFrontDisconnected(nReason int32)                                                                                                                                                             // 0x2003 收到错误报文
-	OnHeartBeatWarning(nTimeLapse int32)                                                                                                                                                           // 心跳超时警告。当长时间未收到报文时，该方法被调用。
-	OnRspAuthenticate(pRspAuthenticateField *CThostFtdcRspAuthenticateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                     // 客户端认证响应
-	OnRspUserLogin(pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                   // 登录请求响应
-	OnRspUserLogout(pUserLogout *CThostFtdcUserLogoutField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                      // 登出请求响应
-	OnRspUserPasswordUpdate(pUserPasswordUpdate *CThostFtdcUserPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                              // 用户口令更新请求响应
-	OnRspTradingAccountPasswordUpdate(pTradingAccountPasswordUpdate *CThostFtdcTradingAccountPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                // 资金账户口令更新请求响应
-	OnRspUserAuthMethod(pRspUserAuthMethod *CThostFtdcRspUserAuthMethodField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                    // 查询用户当前支持的认证模式的回复
-	OnRspGenUserCaptcha(pRspGenUserCaptcha *CThostFtdcRspGenUserCaptchaField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                    // 获取图形验证码请求的回复
-	OnRspGenUserText(pRspGenUserText *CThostFtdcRspGenUserTextField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                             // 获取短信验证码请求的回复
-	OnRspOrderInsert(pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                     // 报单录入请求响应
-	OnRspParkedOrderInsert(pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                             // 预埋单录入请求响应
-	OnRspParkedOrderAction(pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                 // 预埋撤单录入请求响应
-	OnRspOrderAction(pInputOrderAction *CThostFtdcInputOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                         // 报单操作请求响应
-	OnRspQryMaxOrderVolume(pQryMaxOrderVolume *CThostFtdcQryMaxOrderVolumeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                 // 查询最大报单数量响应
-	OnRspSettlementInfoConfirm(pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                     // 投资者结算结果确认响应
-	OnRspRemoveParkedOrder(pRemoveParkedOrder *CThostFtdcRemoveParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                 // 删除预埋单响应
-	OnRspRemoveParkedOrderAction(pRemoveParkedOrderAction *CThostFtdcRemoveParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                               // 删除预埋撤单响应
-	OnRspExecOrderInsert(pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                         // 执行宣告录入请求响应
-	OnRspExecOrderAction(pInputExecOrderAction *CThostFtdcInputExecOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                             // 执行宣告操作请求响应
-	OnRspForQuoteInsert(pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                            // 询价录入请求响应
-	OnRspQuoteInsert(pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                     // 报价录入请求响应
-	OnRspQuoteAction(pInputQuoteAction *CThostFtdcInputQuoteActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                         // 报价操作请求响应
-	OnRspBatchOrderAction(pInputBatchOrderAction *CThostFtdcInputBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                          // 批量报单操作请求响应
-	OnRspOptionSelfCloseInsert(pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                       // 期权自对冲录入请求响应
-	OnRspOptionSelfCloseAction(pInputOptionSelfCloseAction *CThostFtdcInputOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                           // 期权自对冲操作请求响应
-	OnRspCombActionInsert(pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                      // 申请组合录入请求响应
-	OnRspQryOrder(pOrder *CThostFtdcOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                                  // 请求查询报单响应
-	OnRspQryTrade(pTrade *CThostFtdcTradeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                                  // 请求查询成交响应
-	OnRspQryInvestorPosition(pInvestorPosition *CThostFtdcInvestorPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                 // 请求查询投资者持仓响应
-	OnRspQryTradingAccount(pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                       // 请求查询资金账户响应
-	OnRspQryInvestor(pInvestor *CThostFtdcInvestorField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                         // 请求查询投资者响应
-	OnRspQryTradingCode(pTradingCode *CThostFtdcTradingCodeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                // 请求查询交易编码响应
-	OnRspQryInstrumentMarginRate(pInstrumentMarginRate *CThostFtdcInstrumentMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                     // 请求查询合约保证金率响应
-	OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *CThostFtdcInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                         // 请求查询合约手续费率响应
-	OnRspQryExchange(pExchange *CThostFtdcExchangeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                         // 请求查询交易所响应
-	OnRspQryProduct(pProduct *CThostFtdcProductField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                            // 请求查询产品响应
-	OnRspQryInstrument(pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                   // 请求查询合约响应
-	OnRspQryDepthMarketData(pDepthMarketData *CThostFtdcDepthMarketDataField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                    // 请求查询行情响应
-	OnRspQryTraderOffer(pTraderOffer *CThostFtdcTraderOfferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                // 请求查询交易员报盘机响应
-	OnRspQrySettlementInfo(pSettlementInfo *CThostFtdcSettlementInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                       // 请求查询投资者结算结果响应
-	OnRspQryTransferBank(pTransferBank *CThostFtdcTransferBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                             // 请求查询转帐银行响应
-	OnRspQryInvestorPositionDetail(pInvestorPositionDetail *CThostFtdcInvestorPositionDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                               // 请求查询投资者持仓明细响应
-	OnRspQryNotice(pNotice *CThostFtdcNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                               // 请求查询客户通知响应
-	OnRspQrySettlementInfoConfirm(pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                  // 请求查询结算信息确认响应
-	OnRspQryInvestorPositionCombineDetail(pInvestorPositionCombineDetail *CThostFtdcInvestorPositionCombineDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)          // 请求查询投资者持仓明细响应
-	OnRspQryCFMMCTradingAccountKey(pCFMMCTradingAccountKey *CThostFtdcCFMMCTradingAccountKeyField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                               // 查询保证金监管系统经纪公司资金账户密钥响应
-	OnRspQryEWarrantOffset(pEWarrantOffset *CThostFtdcEWarrantOffsetField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                       // 请求查询仓单折抵信息响应
-	OnRspQryInvestorProductGroupMargin(pInvestorProductGroupMargin *CThostFtdcInvestorProductGroupMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                   // 请求查询投资者品种/跨品种保证金响应
-	OnRspQryExchangeMarginRate(pExchangeMarginRate *CThostFtdcExchangeMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // 请求查询交易所保证金率响应
-	OnRspQryExchangeMarginRateAdjust(pExchangeMarginRateAdjust *CThostFtdcExchangeMarginRateAdjustField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                         // 请求查询交易所调整保证金率响应
-	OnRspQryExchangeRate(pExchangeRate *CThostFtdcExchangeRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                             // 请求查询汇率响应
-	OnRspQrySecAgentACIDMap(pSecAgentACIDMap *CThostFtdcSecAgentACIDMapField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                    // 请求查询二级代理操作员银期权限响应
-	OnRspQryProductExchRate(pProductExchRate *CThostFtdcProductExchRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                    // 请求查询产品报价汇率
-	OnRspQryProductGroup(pProductGroup *CThostFtdcProductGroupField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                             // 请求查询产品组
-	OnRspQryMMInstrumentCommissionRate(pMMInstrumentCommissionRate *CThostFtdcMMInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                   // 请求查询做市商合约手续费率响应
-	OnRspQryMMOptionInstrCommRate(pMMOptionInstrCommRate *CThostFtdcMMOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                  // 请求查询做市商期权合约手续费响应
-	OnRspQryInstrumentOrderCommRate(pInstrumentOrderCommRate *CThostFtdcInstrumentOrderCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                            // 请求查询报单手续费响应
-	OnRspQrySecAgentTradingAccount(pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                               // 请求查询资金账户响应
-	OnRspQrySecAgentCheckMode(pSecAgentCheckMode *CThostFtdcSecAgentCheckModeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                              // 请求查询二级代理商资金校验模式响应
-	OnRspQrySecAgentTradeInfo(pSecAgentTradeInfo *CThostFtdcSecAgentTradeInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                              // 请求查询二级代理商信息响应
-	OnRspQryOptionInstrTradeCost(pOptionInstrTradeCost *CThostFtdcOptionInstrTradeCostField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                     // 请求查询期权交易成本响应
-	OnRspQryOptionInstrCommRate(pOptionInstrCommRate *CThostFtdcOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // 请求查询期权合约手续费响应
-	OnRspQryExecOrder(pExecOrder *CThostFtdcExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                      // 请求查询执行宣告响应
-	OnRspQryForQuote(pForQuote *CThostFtdcForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                         // 请求查询询价响应
-	OnRspQryQuote(pQuote *CThostFtdcQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                                  // 请求查询报价响应
-	OnRspQryOptionSelfClose(pOptionSelfClose *CThostFtdcOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                    // 请求查询期权自对冲响应
-	OnRspQryInvestUnit(pInvestUnit *CThostFtdcInvestUnitField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                   // 请求查询投资单元响应
-	OnRspQryCombInstrumentGuard(pCombInstrumentGuard *CThostFtdcCombInstrumentGuardField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // 请求查询组合合约安全系数响应
-	OnRspQryCombAction(pCombAction *CThostFtdcCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                   // 请求查询申请组合响应
-	OnRspQryTransferSerial(pTransferSerial *CThostFtdcTransferSerialField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                       // 请求查询转帐流水响应
-	OnRspQryAccountregister(pAccountregister *CThostFtdcAccountregisterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                    // 请求查询银期签约关系响应
-	OnRspError(pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                                                                   // 错误应答
-	OnRtnOrder(pOrder *CThostFtdcOrderField)                                                                                                                                                       // 报单通知
-	OnRtnTrade(pTrade *CThostFtdcTradeField)                                                                                                                                                       // 成交通知
-	OnErrRtnOrderInsert(pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField)                                                                                                  // 报单录入错误回报
-	OnErrRtnOrderAction(pOrderAction *CThostFtdcOrderActionField, pRspInfo *CThostFtdcRspInfoField)                                                                                                // 报单操作错误回报
-	OnRtnInstrumentStatus(pInstrumentStatus *CThostFtdcInstrumentStatusField)                                                                                                                      // 合约交易状态通知
-	OnRtnBulletin(pBulletin *CThostFtdcBulletinField)                                                                                                                                              // 交易所公告通知
-	OnRtnTradingNotice(pTradingNoticeInfo *CThostFtdcTradingNoticeInfoField)                                                                                                                       // 交易通知
-	OnRtnErrorConditionalOrder(pErrorConditionalOrder *CThostFtdcErrorConditionalOrderField)                                                                                                       // 提示条件单校验错误
-	OnRtnExecOrder(pExecOrder *CThostFtdcExecOrderField)                                                                                                                                           // 执行宣告通知
-	OnErrRtnExecOrderInsert(pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField)                                                                                      // 执行宣告录入错误回报
-	OnErrRtnExecOrderAction(pExecOrderAction *CThostFtdcExecOrderActionField, pRspInfo *CThostFtdcRspInfoField)                                                                                    // 执行宣告操作错误回报
-	OnErrRtnForQuoteInsert(pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField)                                                                                         // 询价录入错误回报
-	OnRtnQuote(pQuote *CThostFtdcQuoteField)                                                                                                                                                       // 报价通知
-	OnErrRtnQuoteInsert(pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField)                                                                                                  // 报价录入错误回报
-	OnErrRtnQuoteAction(pQuoteAction *CThostFtdcQuoteActionField, pRspInfo *CThostFtdcRspInfoField)                                                                                                // 报价操作错误回报
-	OnRtnForQuoteRsp(pForQuoteRsp *CThostFtdcForQuoteRspField)                                                                                                                                     // 询价通知
-	OnRtnCFMMCTradingAccountToken(pCFMMCTradingAccountToken *CThostFtdcCFMMCTradingAccountTokenField)                                                                                              // 保证金监控中心用户令牌
-	OnErrRtnBatchOrderAction(pBatchOrderAction *CThostFtdcBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField)                                                                                 // 批量报单操作错误回报
-	OnRtnOptionSelfClose(pOptionSelfClose *CThostFtdcOptionSelfCloseField)                                                                                                                         // 期权自对冲通知
-	OnErrRtnOptionSelfCloseInsert(pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField)                                                                    // 期权自对冲录入错误回报
-	OnErrRtnOptionSelfCloseAction(pOptionSelfCloseAction *CThostFtdcOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField)                                                                  // 期权自对冲操作错误回报
-	OnRtnCombAction(pCombAction *CThostFtdcCombActionField)                                                                                                                                        // 申请组合通知
-	OnErrRtnCombActionInsert(pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField)                                                                                   // 申请组合录入错误回报
-	OnRspQryContractBank(pContractBank *CThostFtdcContractBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                             // 请求查询签约银行响应
-	OnRspQryParkedOrder(pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                // 请求查询预埋单响应
-	OnRspQryParkedOrderAction(pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                              // 请求查询预埋撤单响应
-	OnRspQryTradingNotice(pTradingNotice *CThostFtdcTradingNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                          // 请求查询交易通知响应
-	OnRspQryBrokerTradingParams(pBrokerTradingParams *CThostFtdcBrokerTradingParamsField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // 请求查询经纪公司交易参数响应
-	OnRspQryBrokerTradingAlgos(pBrokerTradingAlgos *CThostFtdcBrokerTradingAlgosField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // 请求查询经纪公司交易算法响应
-	OnRspQueryCFMMCTradingAccountToken(pQueryCFMMCTradingAccountToken *CThostFtdcQueryCFMMCTradingAccountTokenField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)             // 请求查询监控中心用户令牌
-	OnRtnFromBankToFutureByBank(pRspTransfer *CThostFtdcRspTransferField)                                                                                                                          // 银行发起银行资金转期货通知
-	OnRtnFromFutureToBankByBank(pRspTransfer *CThostFtdcRspTransferField)                                                                                                                          // 银行发起期货资金转银行通知
-	OnRtnRepealFromBankToFutureByBank(pRspRepeal *CThostFtdcRspRepealField)                                                                                                                        // 银行发起冲正银行转期货通知
-	OnRtnRepealFromFutureToBankByBank(pRspRepeal *CThostFtdcRspRepealField)                                                                                                                        // 银行发起冲正期货转银行通知
-	OnRtnFromBankToFutureByFuture(pRspTransfer *CThostFtdcRspTransferField)                                                                                                                        // 期货发起银行资金转期货通知
-	OnRtnFromFutureToBankByFuture(pRspTransfer *CThostFtdcRspTransferField)                                                                                                                        // 期货发起期货资金转银行通知
-	OnRtnRepealFromBankToFutureByFutureManual(pRspRepeal *CThostFtdcRspRepealField)                                                                                                                // 系统运行时期货端手工发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
-	OnRtnRepealFromFutureToBankByFutureManual(pRspRepeal *CThostFtdcRspRepealField)                                                                                                                // 系统运行时期货端手工发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
-	OnRtnQueryBankBalanceByFuture(pNotifyQueryAccount *CThostFtdcNotifyQueryAccountField)                                                                                                          // 期货发起查询银行余额通知
-	OnErrRtnBankToFutureByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField)                                                                                       // 期货发起银行资金转期货错误回报
-	OnErrRtnFutureToBankByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField)                                                                                       // 期货发起期货资金转银行错误回报
-	OnErrRtnRepealBankToFutureByFutureManual(pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField)                                                                               // 系统运行时期货端手工发起冲正银行转期货错误回报
-	OnErrRtnRepealFutureToBankByFutureManual(pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField)                                                                               // 系统运行时期货端手工发起冲正期货转银行错误回报
-	OnErrRtnQueryBankBalanceByFuture(pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField)                                                                           // 期货发起查询银行余额错误回报
-	OnRtnRepealFromBankToFutureByFuture(pRspRepeal *CThostFtdcRspRepealField)                                                                                                                      // 期货发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
-	OnRtnRepealFromFutureToBankByFuture(pRspRepeal *CThostFtdcRspRepealField)                                                                                                                      // 期货发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
-	OnRspFromBankToFutureByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                      // 期货发起银行资金转期货应答
-	OnRspFromFutureToBankByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                      // 期货发起期货资金转银行应答
-	OnRspQueryBankAccountMoneyByFuture(pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                         // 期货发起查询银行余额应答
-	OnRtnOpenAccountByBank(pOpenAccount *CThostFtdcOpenAccountField)                                                                                                                               // 银行发起银期开户通知
-	OnRtnCancelAccountByBank(pCancelAccount *CThostFtdcCancelAccountField)                                                                                                                         // 银行发起银期销户通知
-	OnRtnChangeAccountByBank(pChangeAccount *CThostFtdcChangeAccountField)                                                                                                                         // 银行发起变更银行账号通知
-	OnRspQryClassifiedInstrument(pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                         // 请求查询分类合约响应
-	OnRspQryCombPromotionParam(pCombPromotionParam *CThostFtdcCombPromotionParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // 请求组合优惠比例响应
-	OnRspQryRiskSettleInvstPosition(pRiskSettleInvstPosition *CThostFtdcRiskSettleInvstPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                            // 投资者风险结算持仓查询响应
-	OnRspQryRiskSettleProductStatus(pRiskSettleProductStatus *CThostFtdcRiskSettleProductStatusField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                            // 风险结算产品查询响应
-	OnRspQrySPBMFutureParameter(pSPBMFutureParameter *CThostFtdcSPBMFutureParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // SPBM期货合约参数查询响应
-	OnRspQrySPBMOptionParameter(pSPBMOptionParameter *CThostFtdcSPBMOptionParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // SPBM期权合约参数查询响应
-	OnRspQrySPBMIntraParameter(pSPBMIntraParameter *CThostFtdcSPBMIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // SPBM品种内对锁仓折扣参数查询响应
-	OnRspQrySPBMInterParameter(pSPBMInterParameter *CThostFtdcSPBMInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // SPBM跨品种抵扣参数查询响应
-	OnRspQrySPBMPortfDefinition(pSPBMPortfDefinition *CThostFtdcSPBMPortfDefinitionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // SPBM组合保证金套餐查询响应
-	OnRspQrySPBMInvestorPortfDef(pSPBMInvestorPortfDef *CThostFtdcSPBMInvestorPortfDefField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                     // 投资者SPBM套餐选择查询响应
-	OnRspQryInvestorPortfMarginRatio(pInvestorPortfMarginRatio *CThostFtdcInvestorPortfMarginRatioField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                         // 投资者新型组合保证金系数查询响应
-	OnRspQryInvestorProdSPBMDetail(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                               // 投资者产品SPBM明细查询响应
-	OnRspQryInvestorCommoditySPMMMargin(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                // 投资者商品组SPMM记录查询响应
+	OnFrontConnected() // ========== 回调函数类型（带 userData） ========== 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
+	OnFrontDisconnected(nReason int32) // 0x2003 收到错误报文
+	OnHeartBeatWarning(nTimeLapse int32) // 心跳超时警告。当长时间未收到报文时，该方法被调用。
+	OnRspAuthenticate(pRspAuthenticateField *CThostFtdcRspAuthenticateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 客户端认证响应
+	OnRspUserLogin(pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 登录请求响应
+	OnRspUserLogout(pUserLogout *CThostFtdcUserLogoutField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 登出请求响应
+	OnRspUserPasswordUpdate(pUserPasswordUpdate *CThostFtdcUserPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 用户口令更新请求响应
+	OnRspTradingAccountPasswordUpdate(pTradingAccountPasswordUpdate *CThostFtdcTradingAccountPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 资金账户口令更新请求响应
+	OnRspUserAuthMethod(pRspUserAuthMethod *CThostFtdcRspUserAuthMethodField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 查询用户当前支持的认证模式的回复
+	OnRspGenUserCaptcha(pRspGenUserCaptcha *CThostFtdcRspGenUserCaptchaField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 获取图形验证码请求的回复
+	OnRspGenUserText(pRspGenUserText *CThostFtdcRspGenUserTextField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 获取短信验证码请求的回复
+	OnRspOrderInsert(pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 报单录入请求响应
+	OnRspParkedOrderInsert(pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 预埋单录入请求响应
+	OnRspParkedOrderAction(pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 预埋撤单录入请求响应
+	OnRspOrderAction(pInputOrderAction *CThostFtdcInputOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 报单操作请求响应
+	OnRspQryMaxOrderVolume(pQryMaxOrderVolume *CThostFtdcQryMaxOrderVolumeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 查询最大报单数量响应
+	OnRspSettlementInfoConfirm(pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者结算结果确认响应
+	OnRspRemoveParkedOrder(pRemoveParkedOrder *CThostFtdcRemoveParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 删除预埋单响应
+	OnRspRemoveParkedOrderAction(pRemoveParkedOrderAction *CThostFtdcRemoveParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 删除预埋撤单响应
+	OnRspExecOrderInsert(pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 执行宣告录入请求响应
+	OnRspExecOrderAction(pInputExecOrderAction *CThostFtdcInputExecOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 执行宣告操作请求响应
+	OnRspForQuoteInsert(pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 询价录入请求响应
+	OnRspQuoteInsert(pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 报价录入请求响应
+	OnRspQuoteAction(pInputQuoteAction *CThostFtdcInputQuoteActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 报价操作请求响应
+	OnRspBatchOrderAction(pInputBatchOrderAction *CThostFtdcInputBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 批量报单操作请求响应
+	OnRspOptionSelfCloseInsert(pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 期权自对冲录入请求响应
+	OnRspOptionSelfCloseAction(pInputOptionSelfCloseAction *CThostFtdcInputOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 期权自对冲操作请求响应
+	OnRspCombActionInsert(pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 申请组合录入请求响应
+	OnRspQryOrder(pOrder *CThostFtdcOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询报单响应
+	OnRspQryTrade(pTrade *CThostFtdcTradeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询成交响应
+	OnRspQryInvestorPosition(pInvestorPosition *CThostFtdcInvestorPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询投资者持仓响应
+	OnRspQryTradingAccount(pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询资金账户响应
+	OnRspQryInvestor(pInvestor *CThostFtdcInvestorField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询投资者响应
+	OnRspQryTradingCode(pTradingCode *CThostFtdcTradingCodeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询交易编码响应
+	OnRspQryInstrumentMarginRate(pInstrumentMarginRate *CThostFtdcInstrumentMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询合约保证金率响应
+	OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *CThostFtdcInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询合约手续费率响应
+	OnRspQryExchange(pExchange *CThostFtdcExchangeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询交易所响应
+	OnRspQryProduct(pProduct *CThostFtdcProductField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询产品响应
+	OnRspQryInstrument(pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询合约响应
+	OnRspQryDepthMarketData(pDepthMarketData *CThostFtdcDepthMarketDataField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询行情响应
+	OnRspQryTraderOffer(pTraderOffer *CThostFtdcTraderOfferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询交易员报盘机响应
+	OnRspQrySettlementInfo(pSettlementInfo *CThostFtdcSettlementInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询投资者结算结果响应
+	OnRspQryTransferBank(pTransferBank *CThostFtdcTransferBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询转帐银行响应
+	OnRspQryInvestorPositionDetail(pInvestorPositionDetail *CThostFtdcInvestorPositionDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询投资者持仓明细响应
+	OnRspQryNotice(pNotice *CThostFtdcNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询客户通知响应
+	OnRspQrySettlementInfoConfirm(pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询结算信息确认响应
+	OnRspQryInvestorPositionCombineDetail(pInvestorPositionCombineDetail *CThostFtdcInvestorPositionCombineDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询投资者持仓明细响应
+	OnRspQryCFMMCTradingAccountKey(pCFMMCTradingAccountKey *CThostFtdcCFMMCTradingAccountKeyField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 查询保证金监管系统经纪公司资金账户密钥响应
+	OnRspQryEWarrantOffset(pEWarrantOffset *CThostFtdcEWarrantOffsetField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询仓单折抵信息响应
+	OnRspQryInvestorProductGroupMargin(pInvestorProductGroupMargin *CThostFtdcInvestorProductGroupMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询投资者品种/跨品种保证金响应
+	OnRspQryExchangeMarginRate(pExchangeMarginRate *CThostFtdcExchangeMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询交易所保证金率响应
+	OnRspQryExchangeMarginRateAdjust(pExchangeMarginRateAdjust *CThostFtdcExchangeMarginRateAdjustField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询交易所调整保证金率响应
+	OnRspQryExchangeRate(pExchangeRate *CThostFtdcExchangeRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询汇率响应
+	OnRspQrySecAgentACIDMap(pSecAgentACIDMap *CThostFtdcSecAgentACIDMapField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询二级代理操作员银期权限响应
+	OnRspQryProductExchRate(pProductExchRate *CThostFtdcProductExchRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询产品报价汇率
+	OnRspQryProductGroup(pProductGroup *CThostFtdcProductGroupField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询产品组
+	OnRspQryMMInstrumentCommissionRate(pMMInstrumentCommissionRate *CThostFtdcMMInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询做市商合约手续费率响应
+	OnRspQryMMOptionInstrCommRate(pMMOptionInstrCommRate *CThostFtdcMMOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询做市商期权合约手续费响应
+	OnRspQryInstrumentOrderCommRate(pInstrumentOrderCommRate *CThostFtdcInstrumentOrderCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询报单手续费响应
+	OnRspQrySecAgentTradingAccount(pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询资金账户响应
+	OnRspQrySecAgentCheckMode(pSecAgentCheckMode *CThostFtdcSecAgentCheckModeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询二级代理商资金校验模式响应
+	OnRspQrySecAgentTradeInfo(pSecAgentTradeInfo *CThostFtdcSecAgentTradeInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询二级代理商信息响应
+	OnRspQryOptionInstrTradeCost(pOptionInstrTradeCost *CThostFtdcOptionInstrTradeCostField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询期权交易成本响应
+	OnRspQryOptionInstrCommRate(pOptionInstrCommRate *CThostFtdcOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询期权合约手续费响应
+	OnRspQryExecOrder(pExecOrder *CThostFtdcExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询执行宣告响应
+	OnRspQryForQuote(pForQuote *CThostFtdcForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询询价响应
+	OnRspQryQuote(pQuote *CThostFtdcQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询报价响应
+	OnRspQryOptionSelfClose(pOptionSelfClose *CThostFtdcOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询期权自对冲响应
+	OnRspQryInvestUnit(pInvestUnit *CThostFtdcInvestUnitField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询投资单元响应
+	OnRspQryCombInstrumentGuard(pCombInstrumentGuard *CThostFtdcCombInstrumentGuardField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询组合合约安全系数响应
+	OnRspQryCombAction(pCombAction *CThostFtdcCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询申请组合响应
+	OnRspQryTransferSerial(pTransferSerial *CThostFtdcTransferSerialField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询转帐流水响应
+	OnRspQryAccountregister(pAccountregister *CThostFtdcAccountregisterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询银期签约关系响应
+	OnRspError(pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 错误应答
+	OnRtnOrder(pOrder *CThostFtdcOrderField) // 报单通知
+	OnRtnTrade(pTrade *CThostFtdcTradeField) // 成交通知
+	OnErrRtnOrderInsert(pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField) // 报单录入错误回报
+	OnErrRtnOrderAction(pOrderAction *CThostFtdcOrderActionField, pRspInfo *CThostFtdcRspInfoField) // 报单操作错误回报
+	OnRtnInstrumentStatus(pInstrumentStatus *CThostFtdcInstrumentStatusField) // 合约交易状态通知
+	OnRtnBulletin(pBulletin *CThostFtdcBulletinField) // 交易所公告通知
+	OnRtnTradingNotice(pTradingNoticeInfo *CThostFtdcTradingNoticeInfoField) // 交易通知
+	OnRtnErrorConditionalOrder(pErrorConditionalOrder *CThostFtdcErrorConditionalOrderField) // 提示条件单校验错误
+	OnRtnExecOrder(pExecOrder *CThostFtdcExecOrderField) // 执行宣告通知
+	OnErrRtnExecOrderInsert(pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField) // 执行宣告录入错误回报
+	OnErrRtnExecOrderAction(pExecOrderAction *CThostFtdcExecOrderActionField, pRspInfo *CThostFtdcRspInfoField) // 执行宣告操作错误回报
+	OnErrRtnForQuoteInsert(pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField) // 询价录入错误回报
+	OnRtnQuote(pQuote *CThostFtdcQuoteField) // 报价通知
+	OnErrRtnQuoteInsert(pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField) // 报价录入错误回报
+	OnErrRtnQuoteAction(pQuoteAction *CThostFtdcQuoteActionField, pRspInfo *CThostFtdcRspInfoField) // 报价操作错误回报
+	OnRtnForQuoteRsp(pForQuoteRsp *CThostFtdcForQuoteRspField) // 询价通知
+	OnRtnCFMMCTradingAccountToken(pCFMMCTradingAccountToken *CThostFtdcCFMMCTradingAccountTokenField) // 保证金监控中心用户令牌
+	OnErrRtnBatchOrderAction(pBatchOrderAction *CThostFtdcBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField) // 批量报单操作错误回报
+	OnRtnOptionSelfClose(pOptionSelfClose *CThostFtdcOptionSelfCloseField) // 期权自对冲通知
+	OnErrRtnOptionSelfCloseInsert(pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField) // 期权自对冲录入错误回报
+	OnErrRtnOptionSelfCloseAction(pOptionSelfCloseAction *CThostFtdcOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField) // 期权自对冲操作错误回报
+	OnRtnCombAction(pCombAction *CThostFtdcCombActionField) // 申请组合通知
+	OnErrRtnCombActionInsert(pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField) // 申请组合录入错误回报
+	OnRspQryContractBank(pContractBank *CThostFtdcContractBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询签约银行响应
+	OnRspQryParkedOrder(pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询预埋单响应
+	OnRspQryParkedOrderAction(pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询预埋撤单响应
+	OnRspQryTradingNotice(pTradingNotice *CThostFtdcTradingNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询交易通知响应
+	OnRspQryBrokerTradingParams(pBrokerTradingParams *CThostFtdcBrokerTradingParamsField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询经纪公司交易参数响应
+	OnRspQryBrokerTradingAlgos(pBrokerTradingAlgos *CThostFtdcBrokerTradingAlgosField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询经纪公司交易算法响应
+	OnRspQueryCFMMCTradingAccountToken(pQueryCFMMCTradingAccountToken *CThostFtdcQueryCFMMCTradingAccountTokenField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询监控中心用户令牌
+	OnRtnFromBankToFutureByBank(pRspTransfer *CThostFtdcRspTransferField) // 银行发起银行资金转期货通知
+	OnRtnFromFutureToBankByBank(pRspTransfer *CThostFtdcRspTransferField) // 银行发起期货资金转银行通知
+	OnRtnRepealFromBankToFutureByBank(pRspRepeal *CThostFtdcRspRepealField) // 银行发起冲正银行转期货通知
+	OnRtnRepealFromFutureToBankByBank(pRspRepeal *CThostFtdcRspRepealField) // 银行发起冲正期货转银行通知
+	OnRtnFromBankToFutureByFuture(pRspTransfer *CThostFtdcRspTransferField) // 期货发起银行资金转期货通知
+	OnRtnFromFutureToBankByFuture(pRspTransfer *CThostFtdcRspTransferField) // 期货发起期货资金转银行通知
+	OnRtnRepealFromBankToFutureByFutureManual(pRspRepeal *CThostFtdcRspRepealField) // 系统运行时期货端手工发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
+	OnRtnRepealFromFutureToBankByFutureManual(pRspRepeal *CThostFtdcRspRepealField) // 系统运行时期货端手工发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
+	OnRtnQueryBankBalanceByFuture(pNotifyQueryAccount *CThostFtdcNotifyQueryAccountField) // 期货发起查询银行余额通知
+	OnErrRtnBankToFutureByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField) // 期货发起银行资金转期货错误回报
+	OnErrRtnFutureToBankByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField) // 期货发起期货资金转银行错误回报
+	OnErrRtnRepealBankToFutureByFutureManual(pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField) // 系统运行时期货端手工发起冲正银行转期货错误回报
+	OnErrRtnRepealFutureToBankByFutureManual(pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField) // 系统运行时期货端手工发起冲正期货转银行错误回报
+	OnErrRtnQueryBankBalanceByFuture(pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField) // 期货发起查询银行余额错误回报
+	OnRtnRepealFromBankToFutureByFuture(pRspRepeal *CThostFtdcRspRepealField) // 期货发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
+	OnRtnRepealFromFutureToBankByFuture(pRspRepeal *CThostFtdcRspRepealField) // 期货发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
+	OnRspFromBankToFutureByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 期货发起银行资金转期货应答
+	OnRspFromFutureToBankByFuture(pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 期货发起期货资金转银行应答
+	OnRspQueryBankAccountMoneyByFuture(pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 期货发起查询银行余额应答
+	OnRtnOpenAccountByBank(pOpenAccount *CThostFtdcOpenAccountField) // 银行发起银期开户通知
+	OnRtnCancelAccountByBank(pCancelAccount *CThostFtdcCancelAccountField) // 银行发起银期销户通知
+	OnRtnChangeAccountByBank(pChangeAccount *CThostFtdcChangeAccountField) // 银行发起变更银行账号通知
+	OnRspQryClassifiedInstrument(pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询分类合约响应
+	OnRspQryCombPromotionParam(pCombPromotionParam *CThostFtdcCombPromotionParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求组合优惠比例响应
+	OnRspQryRiskSettleInvstPosition(pRiskSettleInvstPosition *CThostFtdcRiskSettleInvstPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者风险结算持仓查询响应
+	OnRspQryRiskSettleProductStatus(pRiskSettleProductStatus *CThostFtdcRiskSettleProductStatusField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 风险结算产品查询响应
+	OnRspQrySPBMFutureParameter(pSPBMFutureParameter *CThostFtdcSPBMFutureParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPBM期货合约参数查询响应
+	OnRspQrySPBMOptionParameter(pSPBMOptionParameter *CThostFtdcSPBMOptionParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPBM期权合约参数查询响应
+	OnRspQrySPBMIntraParameter(pSPBMIntraParameter *CThostFtdcSPBMIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPBM品种内对锁仓折扣参数查询响应
+	OnRspQrySPBMInterParameter(pSPBMInterParameter *CThostFtdcSPBMInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPBM跨品种抵扣参数查询响应
+	OnRspQrySPBMPortfDefinition(pSPBMPortfDefinition *CThostFtdcSPBMPortfDefinitionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPBM组合保证金套餐查询响应
+	OnRspQrySPBMInvestorPortfDef(pSPBMInvestorPortfDef *CThostFtdcSPBMInvestorPortfDefField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者SPBM套餐选择查询响应
+	OnRspQryInvestorPortfMarginRatio(pInvestorPortfMarginRatio *CThostFtdcInvestorPortfMarginRatioField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者新型组合保证金系数查询响应
+	OnRspQryInvestorProdSPBMDetail(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者产品SPBM明细查询响应
+	OnRspQryInvestorCommoditySPMMMargin(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者商品组SPMM记录查询响应
 	OnRspQryInvestorCommodityGroupSPMMMargin(pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者商品群SPMM记录查询响应
-	OnRspQrySPMMInstParam(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                          // SPMM合约参数查询响应
-	OnRspQrySPMMProductParam(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                 // SPMM产品参数查询响应
-	OnRspQrySPBMAddOnInterParameter(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                            // SPBM附加跨品种抵扣参数查询响应
-	OnRspQryRCAMSCombProductInfo(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                     // RCAMS产品组合信息查询响应
-	OnRspQryRCAMSInstrParameter(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // RCAMS同合约风险对冲参数查询响应
-	OnRspQryRCAMSIntraParameter(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // RCAMS品种内风险对冲参数查询响应
-	OnRspQryRCAMSInterParameter(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                        // RCAMS跨品种风险折抵参数查询响应
-	OnRspQryRCAMSShortOptAdjustParam(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                         // RCAMS空头期权风险调整参数查询响应
-	OnRspQryRCAMSInvestorCombPosition(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                      // RCAMS策略组合持仓查询响应
-	OnRspQryInvestorProdRCAMSMargin(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                            // 投资者品种RCAMS保证金查询响应
-	OnRspQryRULEInstrParameter(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // RULE合约保证金参数查询响应
-	OnRspQryRULEIntraParameter(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // RULE品种内对锁仓折扣参数查询响应
-	OnRspQryRULEInterParameter(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                           // RULE跨品种抵扣参数查询响应
-	OnRspQryInvestorProdRULEMargin(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                               // 投资者产品RULE保证金查询响应
-	OnRspQryInvestorPortfSetting(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                     // 投资者投资者新组保设置查询响应
+	OnRspQrySPMMInstParam(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPMM合约参数查询响应
+	OnRspQrySPMMProductParam(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPMM产品参数查询响应
+	OnRspQrySPBMAddOnInterParameter(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // SPBM附加跨品种抵扣参数查询响应
+	OnRspQryRCAMSCombProductInfo(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RCAMS产品组合信息查询响应
+	OnRspQryRCAMSInstrParameter(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RCAMS同合约风险对冲参数查询响应
+	OnRspQryRCAMSIntraParameter(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RCAMS品种内风险对冲参数查询响应
+	OnRspQryRCAMSInterParameter(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RCAMS跨品种风险折抵参数查询响应
+	OnRspQryRCAMSShortOptAdjustParam(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RCAMS空头期权风险调整参数查询响应
+	OnRspQryRCAMSInvestorCombPosition(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RCAMS策略组合持仓查询响应
+	OnRspQryInvestorProdRCAMSMargin(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者品种RCAMS保证金查询响应
+	OnRspQryRULEInstrParameter(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RULE合约保证金参数查询响应
+	OnRspQryRULEIntraParameter(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RULE品种内对锁仓折扣参数查询响应
+	OnRspQryRULEInterParameter(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // RULE跨品种抵扣参数查询响应
+	OnRspQryInvestorProdRULEMargin(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者产品RULE保证金查询响应
+	OnRspQryInvestorPortfSetting(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 投资者投资者新组保设置查询响应
 }
 
 // ========== TraderApi 结构体 ==========
@@ -816,292 +817,292 @@ type TraderApi struct {
 var (
 	traderOnce sync.Once
 
-	_TraderCreateFtdcTraderApi                             func(*byte) uintptr
-	_TraderGetApiVersion                                   func() *byte
-	_TraderRelease                                         func(uintptr)
-	_TraderInit                                            func(uintptr)
-	_TraderJoin                                            func(uintptr) int32
-	_TraderGetTradingDay                                   func(uintptr) *byte
-	_TraderGetFrontInfo                                    func(uintptr, *CThostFtdcFrontInfoField)
-	_TraderRegisterFront                                   func(uintptr, *byte)
-	_TraderRegisterNameServer                              func(uintptr, *byte)
-	_TraderRegisterFensUserInfo                            func(uintptr, *CThostFtdcFensUserInfoField)
-	_TraderSubscribePrivateTopic                           func(uintptr, THOST_TE_RESUME_TYPE)
-	_TraderSubscribePublicTopic                            func(uintptr, THOST_TE_RESUME_TYPE)
-	_TraderReqAuthenticate                                 func(uintptr, *CThostFtdcReqAuthenticateField, int32) int32
-	_TraderRegisterUserSystemInfo                          func(uintptr, *CThostFtdcUserSystemInfoField) int32
-	_TraderSubmitUserSystemInfo                            func(uintptr, *CThostFtdcUserSystemInfoField) int32
-	_TraderReqUserLogin                                    func(uintptr, *CThostFtdcReqUserLoginField, int32) int32
-	_TraderReqUserLogout                                   func(uintptr, *CThostFtdcUserLogoutField, int32) int32
-	_TraderReqUserPasswordUpdate                           func(uintptr, *CThostFtdcUserPasswordUpdateField, int32) int32
-	_TraderReqTradingAccountPasswordUpdate                 func(uintptr, *CThostFtdcTradingAccountPasswordUpdateField, int32) int32
-	_TraderReqUserAuthMethod                               func(uintptr, *CThostFtdcReqUserAuthMethodField, int32) int32
-	_TraderReqGenUserCaptcha                               func(uintptr, *CThostFtdcReqGenUserCaptchaField, int32) int32
-	_TraderReqGenUserText                                  func(uintptr, *CThostFtdcReqGenUserTextField, int32) int32
-	_TraderReqUserLoginWithCaptcha                         func(uintptr, *CThostFtdcReqUserLoginWithCaptchaField, int32) int32
-	_TraderReqUserLoginWithText                            func(uintptr, *CThostFtdcReqUserLoginWithTextField, int32) int32
-	_TraderReqUserLoginWithOTP                             func(uintptr, *CThostFtdcReqUserLoginWithOTPField, int32) int32
-	_TraderReqOrderInsert                                  func(uintptr, *CThostFtdcInputOrderField, int32) int32
-	_TraderReqParkedOrderInsert                            func(uintptr, *CThostFtdcParkedOrderField, int32) int32
-	_TraderReqParkedOrderAction                            func(uintptr, *CThostFtdcParkedOrderActionField, int32) int32
-	_TraderReqOrderAction                                  func(uintptr, *CThostFtdcInputOrderActionField, int32) int32
-	_TraderReqQryMaxOrderVolume                            func(uintptr, *CThostFtdcQryMaxOrderVolumeField, int32) int32
-	_TraderReqSettlementInfoConfirm                        func(uintptr, *CThostFtdcSettlementInfoConfirmField, int32) int32
-	_TraderReqRemoveParkedOrder                            func(uintptr, *CThostFtdcRemoveParkedOrderField, int32) int32
-	_TraderReqRemoveParkedOrderAction                      func(uintptr, *CThostFtdcRemoveParkedOrderActionField, int32) int32
-	_TraderReqExecOrderInsert                              func(uintptr, *CThostFtdcInputExecOrderField, int32) int32
-	_TraderReqExecOrderAction                              func(uintptr, *CThostFtdcInputExecOrderActionField, int32) int32
-	_TraderReqForQuoteInsert                               func(uintptr, *CThostFtdcInputForQuoteField, int32) int32
-	_TraderReqQuoteInsert                                  func(uintptr, *CThostFtdcInputQuoteField, int32) int32
-	_TraderReqQuoteAction                                  func(uintptr, *CThostFtdcInputQuoteActionField, int32) int32
-	_TraderReqBatchOrderAction                             func(uintptr, *CThostFtdcInputBatchOrderActionField, int32) int32
-	_TraderReqOptionSelfCloseInsert                        func(uintptr, *CThostFtdcInputOptionSelfCloseField, int32) int32
-	_TraderReqOptionSelfCloseAction                        func(uintptr, *CThostFtdcInputOptionSelfCloseActionField, int32) int32
-	_TraderReqCombActionInsert                             func(uintptr, *CThostFtdcInputCombActionField, int32) int32
-	_TraderReqQryOrder                                     func(uintptr, *CThostFtdcQryOrderField, int32) int32
-	_TraderReqQryTrade                                     func(uintptr, *CThostFtdcQryTradeField, int32) int32
-	_TraderReqQryInvestorPosition                          func(uintptr, *CThostFtdcQryInvestorPositionField, int32) int32
-	_TraderReqQryTradingAccount                            func(uintptr, *CThostFtdcQryTradingAccountField, int32) int32
-	_TraderReqQryInvestor                                  func(uintptr, *CThostFtdcQryInvestorField, int32) int32
-	_TraderReqQryTradingCode                               func(uintptr, *CThostFtdcQryTradingCodeField, int32) int32
-	_TraderReqQryInstrumentMarginRate                      func(uintptr, *CThostFtdcQryInstrumentMarginRateField, int32) int32
-	_TraderReqQryInstrumentCommissionRate                  func(uintptr, *CThostFtdcQryInstrumentCommissionRateField, int32) int32
-	_TraderReqQryExchange                                  func(uintptr, *CThostFtdcQryExchangeField, int32) int32
-	_TraderReqQryProduct                                   func(uintptr, *CThostFtdcQryProductField, int32) int32
-	_TraderReqQryInstrument                                func(uintptr, *CThostFtdcQryInstrumentField, int32) int32
-	_TraderReqQryDepthMarketData                           func(uintptr, *CThostFtdcQryDepthMarketDataField, int32) int32
-	_TraderReqQryTraderOffer                               func(uintptr, *CThostFtdcQryTraderOfferField, int32) int32
-	_TraderReqQrySettlementInfo                            func(uintptr, *CThostFtdcQrySettlementInfoField, int32) int32
-	_TraderReqQryTransferBank                              func(uintptr, *CThostFtdcQryTransferBankField, int32) int32
-	_TraderReqQryInvestorPositionDetail                    func(uintptr, *CThostFtdcQryInvestorPositionDetailField, int32) int32
-	_TraderReqQryNotice                                    func(uintptr, *CThostFtdcQryNoticeField, int32) int32
-	_TraderReqQrySettlementInfoConfirm                     func(uintptr, *CThostFtdcQrySettlementInfoConfirmField, int32) int32
-	_TraderReqQryInvestorPositionCombineDetail             func(uintptr, *CThostFtdcQryInvestorPositionCombineDetailField, int32) int32
-	_TraderReqQryCFMMCTradingAccountKey                    func(uintptr, *CThostFtdcQryCFMMCTradingAccountKeyField, int32) int32
-	_TraderReqQryEWarrantOffset                            func(uintptr, *CThostFtdcQryEWarrantOffsetField, int32) int32
-	_TraderReqQryInvestorProductGroupMargin                func(uintptr, *CThostFtdcQryInvestorProductGroupMarginField, int32) int32
-	_TraderReqQryExchangeMarginRate                        func(uintptr, *CThostFtdcQryExchangeMarginRateField, int32) int32
-	_TraderReqQryExchangeMarginRateAdjust                  func(uintptr, *CThostFtdcQryExchangeMarginRateAdjustField, int32) int32
-	_TraderReqQryExchangeRate                              func(uintptr, *CThostFtdcQryExchangeRateField, int32) int32
-	_TraderReqQrySecAgentACIDMap                           func(uintptr, *CThostFtdcQrySecAgentACIDMapField, int32) int32
-	_TraderReqQryProductExchRate                           func(uintptr, *CThostFtdcQryProductExchRateField, int32) int32
-	_TraderReqQryProductGroup                              func(uintptr, *CThostFtdcQryProductGroupField, int32) int32
-	_TraderReqQryMMInstrumentCommissionRate                func(uintptr, *CThostFtdcQryMMInstrumentCommissionRateField, int32) int32
-	_TraderReqQryMMOptionInstrCommRate                     func(uintptr, *CThostFtdcQryMMOptionInstrCommRateField, int32) int32
-	_TraderReqQryInstrumentOrderCommRate                   func(uintptr, *CThostFtdcQryInstrumentOrderCommRateField, int32) int32
-	_TraderReqQrySecAgentTradingAccount                    func(uintptr, *CThostFtdcQryTradingAccountField, int32) int32
-	_TraderReqQrySecAgentCheckMode                         func(uintptr, *CThostFtdcQrySecAgentCheckModeField, int32) int32
-	_TraderReqQrySecAgentTradeInfo                         func(uintptr, *CThostFtdcQrySecAgentTradeInfoField, int32) int32
-	_TraderReqQryOptionInstrTradeCost                      func(uintptr, *CThostFtdcQryOptionInstrTradeCostField, int32) int32
-	_TraderReqQryOptionInstrCommRate                       func(uintptr, *CThostFtdcQryOptionInstrCommRateField, int32) int32
-	_TraderReqQryExecOrder                                 func(uintptr, *CThostFtdcQryExecOrderField, int32) int32
-	_TraderReqQryForQuote                                  func(uintptr, *CThostFtdcQryForQuoteField, int32) int32
-	_TraderReqQryQuote                                     func(uintptr, *CThostFtdcQryQuoteField, int32) int32
-	_TraderReqQryOptionSelfClose                           func(uintptr, *CThostFtdcQryOptionSelfCloseField, int32) int32
-	_TraderReqQryInvestUnit                                func(uintptr, *CThostFtdcQryInvestUnitField, int32) int32
-	_TraderReqQryCombInstrumentGuard                       func(uintptr, *CThostFtdcQryCombInstrumentGuardField, int32) int32
-	_TraderReqQryCombAction                                func(uintptr, *CThostFtdcQryCombActionField, int32) int32
-	_TraderReqQryTransferSerial                            func(uintptr, *CThostFtdcQryTransferSerialField, int32) int32
-	_TraderReqQryAccountregister                           func(uintptr, *CThostFtdcQryAccountregisterField, int32) int32
-	_TraderReqQryContractBank                              func(uintptr, *CThostFtdcQryContractBankField, int32) int32
-	_TraderReqQryParkedOrder                               func(uintptr, *CThostFtdcQryParkedOrderField, int32) int32
-	_TraderReqQryParkedOrderAction                         func(uintptr, *CThostFtdcQryParkedOrderActionField, int32) int32
-	_TraderReqQryTradingNotice                             func(uintptr, *CThostFtdcQryTradingNoticeField, int32) int32
-	_TraderReqQryBrokerTradingParams                       func(uintptr, *CThostFtdcQryBrokerTradingParamsField, int32) int32
-	_TraderReqQryBrokerTradingAlgos                        func(uintptr, *CThostFtdcQryBrokerTradingAlgosField, int32) int32
-	_TraderReqQueryCFMMCTradingAccountToken                func(uintptr, *CThostFtdcQueryCFMMCTradingAccountTokenField, int32) int32
-	_TraderReqFromBankToFutureByFuture                     func(uintptr, *CThostFtdcReqTransferField, int32) int32
-	_TraderReqFromFutureToBankByFuture                     func(uintptr, *CThostFtdcReqTransferField, int32) int32
-	_TraderReqQueryBankAccountMoneyByFuture                func(uintptr, *CThostFtdcReqQueryAccountField, int32) int32
-	_TraderReqQryClassifiedInstrument                      func(uintptr, *CThostFtdcQryClassifiedInstrumentField, int32) int32
-	_TraderReqQryCombPromotionParam                        func(uintptr, *CThostFtdcQryCombPromotionParamField, int32) int32
-	_TraderReqQryRiskSettleInvstPosition                   func(uintptr, *CThostFtdcQryRiskSettleInvstPositionField, int32) int32
-	_TraderReqQryRiskSettleProductStatus                   func(uintptr, *CThostFtdcQryRiskSettleProductStatusField, int32) int32
-	_TraderReqQrySPBMFutureParameter                       func(uintptr, *CThostFtdcQrySPBMFutureParameterField, int32) int32
-	_TraderReqQrySPBMOptionParameter                       func(uintptr, *CThostFtdcQrySPBMOptionParameterField, int32) int32
-	_TraderReqQrySPBMIntraParameter                        func(uintptr, *CThostFtdcQrySPBMIntraParameterField, int32) int32
-	_TraderReqQrySPBMInterParameter                        func(uintptr, *CThostFtdcQrySPBMInterParameterField, int32) int32
-	_TraderReqQrySPBMPortfDefinition                       func(uintptr, *CThostFtdcQrySPBMPortfDefinitionField, int32) int32
-	_TraderReqQrySPBMInvestorPortfDef                      func(uintptr, *CThostFtdcQrySPBMInvestorPortfDefField, int32) int32
-	_TraderReqQryInvestorPortfMarginRatio                  func(uintptr, *CThostFtdcQryInvestorPortfMarginRatioField, int32) int32
-	_TraderReqQryInvestorProdSPBMDetail                    func(uintptr, *CThostFtdcQryInvestorProdSPBMDetailField, int32) int32
-	_TraderReqQryInvestorCommoditySPMMMargin               func(uintptr, *CThostFtdcQryInvestorCommoditySPMMMarginField, int32) int32
-	_TraderReqQryInvestorCommodityGroupSPMMMargin          func(uintptr, *CThostFtdcQryInvestorCommodityGroupSPMMMarginField, int32) int32
-	_TraderReqQrySPMMInstParam                             func(uintptr, *CThostFtdcQrySPMMInstParamField, int32) int32
-	_TraderReqQrySPMMProductParam                          func(uintptr, *CThostFtdcQrySPMMProductParamField, int32) int32
-	_TraderReqQrySPBMAddOnInterParameter                   func(uintptr, *CThostFtdcQrySPBMAddOnInterParameterField, int32) int32
-	_TraderReqQryRCAMSCombProductInfo                      func(uintptr, *CThostFtdcQryRCAMSCombProductInfoField, int32) int32
-	_TraderReqQryRCAMSInstrParameter                       func(uintptr, *CThostFtdcQryRCAMSInstrParameterField, int32) int32
-	_TraderReqQryRCAMSIntraParameter                       func(uintptr, *CThostFtdcQryRCAMSIntraParameterField, int32) int32
-	_TraderReqQryRCAMSInterParameter                       func(uintptr, *CThostFtdcQryRCAMSInterParameterField, int32) int32
-	_TraderReqQryRCAMSShortOptAdjustParam                  func(uintptr, *CThostFtdcQryRCAMSShortOptAdjustParamField, int32) int32
-	_TraderReqQryRCAMSInvestorCombPosition                 func(uintptr, *CThostFtdcQryRCAMSInvestorCombPositionField, int32) int32
-	_TraderReqQryInvestorProdRCAMSMargin                   func(uintptr, *CThostFtdcQryInvestorProdRCAMSMarginField, int32) int32
-	_TraderReqQryRULEInstrParameter                        func(uintptr, *CThostFtdcQryRULEInstrParameterField, int32) int32
-	_TraderReqQryRULEIntraParameter                        func(uintptr, *CThostFtdcQryRULEIntraParameterField, int32) int32
-	_TraderReqQryRULEInterParameter                        func(uintptr, *CThostFtdcQryRULEInterParameterField, int32) int32
-	_TraderReqQryInvestorProdRULEMargin                    func(uintptr, *CThostFtdcQryInvestorProdRULEMarginField, int32) int32
-	_TraderReqQryInvestorPortfSetting                      func(uintptr, *CThostFtdcQryInvestorPortfSettingField, int32) int32
-	_TraderSpiCreate                                       func(uintptr) uintptr
-	_TraderSpiDestroy                                      func(uintptr)
-	_TraderRegisterSpi                                     func(uintptr, uintptr)
-	_TraderSpiSetCallbacks                                 func(uintptr, *TraderSpiCallbacks)
-	_TraderSpiSetOnFrontConnected                          func(uintptr, TraderOnFrontConnectedCallback)
-	_TraderSpiSetOnFrontDisconnected                       func(uintptr, TraderOnFrontDisconnectedCallback)
-	_TraderSpiSetOnHeartBeatWarning                        func(uintptr, TraderOnHeartBeatWarningCallback)
-	_TraderSpiSetOnRspAuthenticate                         func(uintptr, TraderOnRspAuthenticateCallback)
-	_TraderSpiSetOnRspUserLogin                            func(uintptr, TraderOnRspUserLoginCallback)
-	_TraderSpiSetOnRspUserLogout                           func(uintptr, TraderOnRspUserLogoutCallback)
-	_TraderSpiSetOnRspUserPasswordUpdate                   func(uintptr, TraderOnRspUserPasswordUpdateCallback)
-	_TraderSpiSetOnRspTradingAccountPasswordUpdate         func(uintptr, TraderOnRspTradingAccountPasswordUpdateCallback)
-	_TraderSpiSetOnRspUserAuthMethod                       func(uintptr, TraderOnRspUserAuthMethodCallback)
-	_TraderSpiSetOnRspGenUserCaptcha                       func(uintptr, TraderOnRspGenUserCaptchaCallback)
-	_TraderSpiSetOnRspGenUserText                          func(uintptr, TraderOnRspGenUserTextCallback)
-	_TraderSpiSetOnRspOrderInsert                          func(uintptr, TraderOnRspOrderInsertCallback)
-	_TraderSpiSetOnRspParkedOrderInsert                    func(uintptr, TraderOnRspParkedOrderInsertCallback)
-	_TraderSpiSetOnRspParkedOrderAction                    func(uintptr, TraderOnRspParkedOrderActionCallback)
-	_TraderSpiSetOnRspOrderAction                          func(uintptr, TraderOnRspOrderActionCallback)
-	_TraderSpiSetOnRspQryMaxOrderVolume                    func(uintptr, TraderOnRspQryMaxOrderVolumeCallback)
-	_TraderSpiSetOnRspSettlementInfoConfirm                func(uintptr, TraderOnRspSettlementInfoConfirmCallback)
-	_TraderSpiSetOnRspRemoveParkedOrder                    func(uintptr, TraderOnRspRemoveParkedOrderCallback)
-	_TraderSpiSetOnRspRemoveParkedOrderAction              func(uintptr, TraderOnRspRemoveParkedOrderActionCallback)
-	_TraderSpiSetOnRspExecOrderInsert                      func(uintptr, TraderOnRspExecOrderInsertCallback)
-	_TraderSpiSetOnRspExecOrderAction                      func(uintptr, TraderOnRspExecOrderActionCallback)
-	_TraderSpiSetOnRspForQuoteInsert                       func(uintptr, TraderOnRspForQuoteInsertCallback)
-	_TraderSpiSetOnRspQuoteInsert                          func(uintptr, TraderOnRspQuoteInsertCallback)
-	_TraderSpiSetOnRspQuoteAction                          func(uintptr, TraderOnRspQuoteActionCallback)
-	_TraderSpiSetOnRspBatchOrderAction                     func(uintptr, TraderOnRspBatchOrderActionCallback)
-	_TraderSpiSetOnRspOptionSelfCloseInsert                func(uintptr, TraderOnRspOptionSelfCloseInsertCallback)
-	_TraderSpiSetOnRspOptionSelfCloseAction                func(uintptr, TraderOnRspOptionSelfCloseActionCallback)
-	_TraderSpiSetOnRspCombActionInsert                     func(uintptr, TraderOnRspCombActionInsertCallback)
-	_TraderSpiSetOnRspQryOrder                             func(uintptr, TraderOnRspQryOrderCallback)
-	_TraderSpiSetOnRspQryTrade                             func(uintptr, TraderOnRspQryTradeCallback)
-	_TraderSpiSetOnRspQryInvestorPosition                  func(uintptr, TraderOnRspQryInvestorPositionCallback)
-	_TraderSpiSetOnRspQryTradingAccount                    func(uintptr, TraderOnRspQryTradingAccountCallback)
-	_TraderSpiSetOnRspQryInvestor                          func(uintptr, TraderOnRspQryInvestorCallback)
-	_TraderSpiSetOnRspQryTradingCode                       func(uintptr, TraderOnRspQryTradingCodeCallback)
-	_TraderSpiSetOnRspQryInstrumentMarginRate              func(uintptr, TraderOnRspQryInstrumentMarginRateCallback)
-	_TraderSpiSetOnRspQryInstrumentCommissionRate          func(uintptr, TraderOnRspQryInstrumentCommissionRateCallback)
-	_TraderSpiSetOnRspQryExchange                          func(uintptr, TraderOnRspQryExchangeCallback)
-	_TraderSpiSetOnRspQryProduct                           func(uintptr, TraderOnRspQryProductCallback)
-	_TraderSpiSetOnRspQryInstrument                        func(uintptr, TraderOnRspQryInstrumentCallback)
-	_TraderSpiSetOnRspQryDepthMarketData                   func(uintptr, TraderOnRspQryDepthMarketDataCallback)
-	_TraderSpiSetOnRspQryTraderOffer                       func(uintptr, TraderOnRspQryTraderOfferCallback)
-	_TraderSpiSetOnRspQrySettlementInfo                    func(uintptr, TraderOnRspQrySettlementInfoCallback)
-	_TraderSpiSetOnRspQryTransferBank                      func(uintptr, TraderOnRspQryTransferBankCallback)
-	_TraderSpiSetOnRspQryInvestorPositionDetail            func(uintptr, TraderOnRspQryInvestorPositionDetailCallback)
-	_TraderSpiSetOnRspQryNotice                            func(uintptr, TraderOnRspQryNoticeCallback)
-	_TraderSpiSetOnRspQrySettlementInfoConfirm             func(uintptr, TraderOnRspQrySettlementInfoConfirmCallback)
-	_TraderSpiSetOnRspQryInvestorPositionCombineDetail     func(uintptr, TraderOnRspQryInvestorPositionCombineDetailCallback)
-	_TraderSpiSetOnRspQryCFMMCTradingAccountKey            func(uintptr, TraderOnRspQryCFMMCTradingAccountKeyCallback)
-	_TraderSpiSetOnRspQryEWarrantOffset                    func(uintptr, TraderOnRspQryEWarrantOffsetCallback)
-	_TraderSpiSetOnRspQryInvestorProductGroupMargin        func(uintptr, TraderOnRspQryInvestorProductGroupMarginCallback)
-	_TraderSpiSetOnRspQryExchangeMarginRate                func(uintptr, TraderOnRspQryExchangeMarginRateCallback)
-	_TraderSpiSetOnRspQryExchangeMarginRateAdjust          func(uintptr, TraderOnRspQryExchangeMarginRateAdjustCallback)
-	_TraderSpiSetOnRspQryExchangeRate                      func(uintptr, TraderOnRspQryExchangeRateCallback)
-	_TraderSpiSetOnRspQrySecAgentACIDMap                   func(uintptr, TraderOnRspQrySecAgentACIDMapCallback)
-	_TraderSpiSetOnRspQryProductExchRate                   func(uintptr, TraderOnRspQryProductExchRateCallback)
-	_TraderSpiSetOnRspQryProductGroup                      func(uintptr, TraderOnRspQryProductGroupCallback)
-	_TraderSpiSetOnRspQryMMInstrumentCommissionRate        func(uintptr, TraderOnRspQryMMInstrumentCommissionRateCallback)
-	_TraderSpiSetOnRspQryMMOptionInstrCommRate             func(uintptr, TraderOnRspQryMMOptionInstrCommRateCallback)
-	_TraderSpiSetOnRspQryInstrumentOrderCommRate           func(uintptr, TraderOnRspQryInstrumentOrderCommRateCallback)
-	_TraderSpiSetOnRspQrySecAgentTradingAccount            func(uintptr, TraderOnRspQrySecAgentTradingAccountCallback)
-	_TraderSpiSetOnRspQrySecAgentCheckMode                 func(uintptr, TraderOnRspQrySecAgentCheckModeCallback)
-	_TraderSpiSetOnRspQrySecAgentTradeInfo                 func(uintptr, TraderOnRspQrySecAgentTradeInfoCallback)
-	_TraderSpiSetOnRspQryOptionInstrTradeCost              func(uintptr, TraderOnRspQryOptionInstrTradeCostCallback)
-	_TraderSpiSetOnRspQryOptionInstrCommRate               func(uintptr, TraderOnRspQryOptionInstrCommRateCallback)
-	_TraderSpiSetOnRspQryExecOrder                         func(uintptr, TraderOnRspQryExecOrderCallback)
-	_TraderSpiSetOnRspQryForQuote                          func(uintptr, TraderOnRspQryForQuoteCallback)
-	_TraderSpiSetOnRspQryQuote                             func(uintptr, TraderOnRspQryQuoteCallback)
-	_TraderSpiSetOnRspQryOptionSelfClose                   func(uintptr, TraderOnRspQryOptionSelfCloseCallback)
-	_TraderSpiSetOnRspQryInvestUnit                        func(uintptr, TraderOnRspQryInvestUnitCallback)
-	_TraderSpiSetOnRspQryCombInstrumentGuard               func(uintptr, TraderOnRspQryCombInstrumentGuardCallback)
-	_TraderSpiSetOnRspQryCombAction                        func(uintptr, TraderOnRspQryCombActionCallback)
-	_TraderSpiSetOnRspQryTransferSerial                    func(uintptr, TraderOnRspQryTransferSerialCallback)
-	_TraderSpiSetOnRspQryAccountregister                   func(uintptr, TraderOnRspQryAccountregisterCallback)
-	_TraderSpiSetOnRspError                                func(uintptr, TraderOnRspErrorCallback)
-	_TraderSpiSetOnRtnOrder                                func(uintptr, TraderOnRtnOrderCallback)
-	_TraderSpiSetOnRtnTrade                                func(uintptr, TraderOnRtnTradeCallback)
-	_TraderSpiSetOnErrRtnOrderInsert                       func(uintptr, TraderOnErrRtnOrderInsertCallback)
-	_TraderSpiSetOnErrRtnOrderAction                       func(uintptr, TraderOnErrRtnOrderActionCallback)
-	_TraderSpiSetOnRtnInstrumentStatus                     func(uintptr, TraderOnRtnInstrumentStatusCallback)
-	_TraderSpiSetOnRtnBulletin                             func(uintptr, TraderOnRtnBulletinCallback)
-	_TraderSpiSetOnRtnTradingNotice                        func(uintptr, TraderOnRtnTradingNoticeCallback)
-	_TraderSpiSetOnRtnErrorConditionalOrder                func(uintptr, TraderOnRtnErrorConditionalOrderCallback)
-	_TraderSpiSetOnRtnExecOrder                            func(uintptr, TraderOnRtnExecOrderCallback)
-	_TraderSpiSetOnErrRtnExecOrderInsert                   func(uintptr, TraderOnErrRtnExecOrderInsertCallback)
-	_TraderSpiSetOnErrRtnExecOrderAction                   func(uintptr, TraderOnErrRtnExecOrderActionCallback)
-	_TraderSpiSetOnErrRtnForQuoteInsert                    func(uintptr, TraderOnErrRtnForQuoteInsertCallback)
-	_TraderSpiSetOnRtnQuote                                func(uintptr, TraderOnRtnQuoteCallback)
-	_TraderSpiSetOnErrRtnQuoteInsert                       func(uintptr, TraderOnErrRtnQuoteInsertCallback)
-	_TraderSpiSetOnErrRtnQuoteAction                       func(uintptr, TraderOnErrRtnQuoteActionCallback)
-	_TraderSpiSetOnRtnForQuoteRsp                          func(uintptr, TraderOnRtnForQuoteRspCallback)
-	_TraderSpiSetOnRtnCFMMCTradingAccountToken             func(uintptr, TraderOnRtnCFMMCTradingAccountTokenCallback)
-	_TraderSpiSetOnErrRtnBatchOrderAction                  func(uintptr, TraderOnErrRtnBatchOrderActionCallback)
-	_TraderSpiSetOnRtnOptionSelfClose                      func(uintptr, TraderOnRtnOptionSelfCloseCallback)
-	_TraderSpiSetOnErrRtnOptionSelfCloseInsert             func(uintptr, TraderOnErrRtnOptionSelfCloseInsertCallback)
-	_TraderSpiSetOnErrRtnOptionSelfCloseAction             func(uintptr, TraderOnErrRtnOptionSelfCloseActionCallback)
-	_TraderSpiSetOnRtnCombAction                           func(uintptr, TraderOnRtnCombActionCallback)
-	_TraderSpiSetOnErrRtnCombActionInsert                  func(uintptr, TraderOnErrRtnCombActionInsertCallback)
-	_TraderSpiSetOnRspQryContractBank                      func(uintptr, TraderOnRspQryContractBankCallback)
-	_TraderSpiSetOnRspQryParkedOrder                       func(uintptr, TraderOnRspQryParkedOrderCallback)
-	_TraderSpiSetOnRspQryParkedOrderAction                 func(uintptr, TraderOnRspQryParkedOrderActionCallback)
-	_TraderSpiSetOnRspQryTradingNotice                     func(uintptr, TraderOnRspQryTradingNoticeCallback)
-	_TraderSpiSetOnRspQryBrokerTradingParams               func(uintptr, TraderOnRspQryBrokerTradingParamsCallback)
-	_TraderSpiSetOnRspQryBrokerTradingAlgos                func(uintptr, TraderOnRspQryBrokerTradingAlgosCallback)
-	_TraderSpiSetOnRspQueryCFMMCTradingAccountToken        func(uintptr, TraderOnRspQueryCFMMCTradingAccountTokenCallback)
-	_TraderSpiSetOnRtnFromBankToFutureByBank               func(uintptr, TraderOnRtnFromBankToFutureByBankCallback)
-	_TraderSpiSetOnRtnFromFutureToBankByBank               func(uintptr, TraderOnRtnFromFutureToBankByBankCallback)
-	_TraderSpiSetOnRtnRepealFromBankToFutureByBank         func(uintptr, TraderOnRtnRepealFromBankToFutureByBankCallback)
-	_TraderSpiSetOnRtnRepealFromFutureToBankByBank         func(uintptr, TraderOnRtnRepealFromFutureToBankByBankCallback)
-	_TraderSpiSetOnRtnFromBankToFutureByFuture             func(uintptr, TraderOnRtnFromBankToFutureByFutureCallback)
-	_TraderSpiSetOnRtnFromFutureToBankByFuture             func(uintptr, TraderOnRtnFromFutureToBankByFutureCallback)
-	_TraderSpiSetOnRtnRepealFromBankToFutureByFutureManual func(uintptr, TraderOnRtnRepealFromBankToFutureByFutureManualCallback)
-	_TraderSpiSetOnRtnRepealFromFutureToBankByFutureManual func(uintptr, TraderOnRtnRepealFromFutureToBankByFutureManualCallback)
-	_TraderSpiSetOnRtnQueryBankBalanceByFuture             func(uintptr, TraderOnRtnQueryBankBalanceByFutureCallback)
-	_TraderSpiSetOnErrRtnBankToFutureByFuture              func(uintptr, TraderOnErrRtnBankToFutureByFutureCallback)
-	_TraderSpiSetOnErrRtnFutureToBankByFuture              func(uintptr, TraderOnErrRtnFutureToBankByFutureCallback)
-	_TraderSpiSetOnErrRtnRepealBankToFutureByFutureManual  func(uintptr, TraderOnErrRtnRepealBankToFutureByFutureManualCallback)
-	_TraderSpiSetOnErrRtnRepealFutureToBankByFutureManual  func(uintptr, TraderOnErrRtnRepealFutureToBankByFutureManualCallback)
-	_TraderSpiSetOnErrRtnQueryBankBalanceByFuture          func(uintptr, TraderOnErrRtnQueryBankBalanceByFutureCallback)
-	_TraderSpiSetOnRtnRepealFromBankToFutureByFuture       func(uintptr, TraderOnRtnRepealFromBankToFutureByFutureCallback)
-	_TraderSpiSetOnRtnRepealFromFutureToBankByFuture       func(uintptr, TraderOnRtnRepealFromFutureToBankByFutureCallback)
-	_TraderSpiSetOnRspFromBankToFutureByFuture             func(uintptr, TraderOnRspFromBankToFutureByFutureCallback)
-	_TraderSpiSetOnRspFromFutureToBankByFuture             func(uintptr, TraderOnRspFromFutureToBankByFutureCallback)
-	_TraderSpiSetOnRspQueryBankAccountMoneyByFuture        func(uintptr, TraderOnRspQueryBankAccountMoneyByFutureCallback)
-	_TraderSpiSetOnRtnOpenAccountByBank                    func(uintptr, TraderOnRtnOpenAccountByBankCallback)
-	_TraderSpiSetOnRtnCancelAccountByBank                  func(uintptr, TraderOnRtnCancelAccountByBankCallback)
-	_TraderSpiSetOnRtnChangeAccountByBank                  func(uintptr, TraderOnRtnChangeAccountByBankCallback)
-	_TraderSpiSetOnRspQryClassifiedInstrument              func(uintptr, TraderOnRspQryClassifiedInstrumentCallback)
-	_TraderSpiSetOnRspQryCombPromotionParam                func(uintptr, TraderOnRspQryCombPromotionParamCallback)
-	_TraderSpiSetOnRspQryRiskSettleInvstPosition           func(uintptr, TraderOnRspQryRiskSettleInvstPositionCallback)
-	_TraderSpiSetOnRspQryRiskSettleProductStatus           func(uintptr, TraderOnRspQryRiskSettleProductStatusCallback)
-	_TraderSpiSetOnRspQrySPBMFutureParameter               func(uintptr, TraderOnRspQrySPBMFutureParameterCallback)
-	_TraderSpiSetOnRspQrySPBMOptionParameter               func(uintptr, TraderOnRspQrySPBMOptionParameterCallback)
-	_TraderSpiSetOnRspQrySPBMIntraParameter                func(uintptr, TraderOnRspQrySPBMIntraParameterCallback)
-	_TraderSpiSetOnRspQrySPBMInterParameter                func(uintptr, TraderOnRspQrySPBMInterParameterCallback)
-	_TraderSpiSetOnRspQrySPBMPortfDefinition               func(uintptr, TraderOnRspQrySPBMPortfDefinitionCallback)
-	_TraderSpiSetOnRspQrySPBMInvestorPortfDef              func(uintptr, TraderOnRspQrySPBMInvestorPortfDefCallback)
-	_TraderSpiSetOnRspQryInvestorPortfMarginRatio          func(uintptr, TraderOnRspQryInvestorPortfMarginRatioCallback)
-	_TraderSpiSetOnRspQryInvestorProdSPBMDetail            func(uintptr, TraderOnRspQryInvestorProdSPBMDetailCallback)
-	_TraderSpiSetOnRspQryInvestorCommoditySPMMMargin       func(uintptr, TraderOnRspQryInvestorCommoditySPMMMarginCallback)
-	_TraderSpiSetOnRspQryInvestorCommodityGroupSPMMMargin  func(uintptr, TraderOnRspQryInvestorCommodityGroupSPMMMarginCallback)
-	_TraderSpiSetOnRspQrySPMMInstParam                     func(uintptr, TraderOnRspQrySPMMInstParamCallback)
-	_TraderSpiSetOnRspQrySPMMProductParam                  func(uintptr, TraderOnRspQrySPMMProductParamCallback)
-	_TraderSpiSetOnRspQrySPBMAddOnInterParameter           func(uintptr, TraderOnRspQrySPBMAddOnInterParameterCallback)
-	_TraderSpiSetOnRspQryRCAMSCombProductInfo              func(uintptr, TraderOnRspQryRCAMSCombProductInfoCallback)
-	_TraderSpiSetOnRspQryRCAMSInstrParameter               func(uintptr, TraderOnRspQryRCAMSInstrParameterCallback)
-	_TraderSpiSetOnRspQryRCAMSIntraParameter               func(uintptr, TraderOnRspQryRCAMSIntraParameterCallback)
-	_TraderSpiSetOnRspQryRCAMSInterParameter               func(uintptr, TraderOnRspQryRCAMSInterParameterCallback)
-	_TraderSpiSetOnRspQryRCAMSShortOptAdjustParam          func(uintptr, TraderOnRspQryRCAMSShortOptAdjustParamCallback)
-	_TraderSpiSetOnRspQryRCAMSInvestorCombPosition         func(uintptr, TraderOnRspQryRCAMSInvestorCombPositionCallback)
-	_TraderSpiSetOnRspQryInvestorProdRCAMSMargin           func(uintptr, TraderOnRspQryInvestorProdRCAMSMarginCallback)
-	_TraderSpiSetOnRspQryRULEInstrParameter                func(uintptr, TraderOnRspQryRULEInstrParameterCallback)
-	_TraderSpiSetOnRspQryRULEIntraParameter                func(uintptr, TraderOnRspQryRULEIntraParameterCallback)
-	_TraderSpiSetOnRspQryRULEInterParameter                func(uintptr, TraderOnRspQryRULEInterParameterCallback)
-	_TraderSpiSetOnRspQryInvestorProdRULEMargin            func(uintptr, TraderOnRspQryInvestorProdRULEMarginCallback)
-	_TraderSpiSetOnRspQryInvestorPortfSetting              func(uintptr, TraderOnRspQryInvestorPortfSettingCallback)
-	_TraderReqUserLoginWithSystemInfo                      func(uintptr, *CThostFtdcReqUserLoginField, int32, int32, *byte) int32
+	_TraderCreateFtdcTraderApi func(*byte) uintptr
+	_TraderGetApiVersion func() *byte
+	_TraderRelease func(uintptr)
+	_TraderInit func(uintptr)
+	_TraderJoin func(uintptr) int32
+	_TraderGetTradingDay func(uintptr) *byte
+	_TraderGetFrontInfo func(uintptr, *CThostFtdcFrontInfoField)
+	_TraderRegisterFront func(uintptr, *byte)
+	_TraderRegisterNameServer func(uintptr, *byte)
+	_TraderRegisterFensUserInfo func(uintptr, *CThostFtdcFensUserInfoField)
+	_TraderSubscribePrivateTopic func(uintptr, THOST_TE_RESUME_TYPE)
+	_TraderSubscribePublicTopic func(uintptr, THOST_TE_RESUME_TYPE)
+	_TraderReqAuthenticate func(uintptr, *CThostFtdcReqAuthenticateField, int32) int32
+	_TraderRegisterUserSystemInfo func(uintptr, *CThostFtdcUserSystemInfoField) int32
+	_TraderSubmitUserSystemInfo func(uintptr, *CThostFtdcUserSystemInfoField) int32
+	_TraderReqUserLogin func(uintptr, *CThostFtdcReqUserLoginField, int32) int32
+	_TraderReqUserLogout func(uintptr, *CThostFtdcUserLogoutField, int32) int32
+	_TraderReqUserPasswordUpdate func(uintptr, *CThostFtdcUserPasswordUpdateField, int32) int32
+	_TraderReqTradingAccountPasswordUpdate func(uintptr, *CThostFtdcTradingAccountPasswordUpdateField, int32) int32
+	_TraderReqUserAuthMethod func(uintptr, *CThostFtdcReqUserAuthMethodField, int32) int32
+	_TraderReqGenUserCaptcha func(uintptr, *CThostFtdcReqGenUserCaptchaField, int32) int32
+	_TraderReqGenUserText func(uintptr, *CThostFtdcReqGenUserTextField, int32) int32
+	_TraderReqUserLoginWithCaptcha func(uintptr, *CThostFtdcReqUserLoginWithCaptchaField, int32) int32
+	_TraderReqUserLoginWithText func(uintptr, *CThostFtdcReqUserLoginWithTextField, int32) int32
+	_TraderReqUserLoginWithOTP func(uintptr, *CThostFtdcReqUserLoginWithOTPField, int32) int32
+	_TraderReqOrderInsert func(uintptr, *CThostFtdcInputOrderField, int32) int32
+	_TraderReqParkedOrderInsert func(uintptr, *CThostFtdcParkedOrderField, int32) int32
+	_TraderReqParkedOrderAction func(uintptr, *CThostFtdcParkedOrderActionField, int32) int32
+	_TraderReqOrderAction func(uintptr, *CThostFtdcInputOrderActionField, int32) int32
+	_TraderReqQryMaxOrderVolume func(uintptr, *CThostFtdcQryMaxOrderVolumeField, int32) int32
+	_TraderReqSettlementInfoConfirm func(uintptr, *CThostFtdcSettlementInfoConfirmField, int32) int32
+	_TraderReqRemoveParkedOrder func(uintptr, *CThostFtdcRemoveParkedOrderField, int32) int32
+	_TraderReqRemoveParkedOrderAction func(uintptr, *CThostFtdcRemoveParkedOrderActionField, int32) int32
+	_TraderReqExecOrderInsert func(uintptr, *CThostFtdcInputExecOrderField, int32) int32
+	_TraderReqExecOrderAction func(uintptr, *CThostFtdcInputExecOrderActionField, int32) int32
+	_TraderReqForQuoteInsert func(uintptr, *CThostFtdcInputForQuoteField, int32) int32
+	_TraderReqQuoteInsert func(uintptr, *CThostFtdcInputQuoteField, int32) int32
+	_TraderReqQuoteAction func(uintptr, *CThostFtdcInputQuoteActionField, int32) int32
+	_TraderReqBatchOrderAction func(uintptr, *CThostFtdcInputBatchOrderActionField, int32) int32
+	_TraderReqOptionSelfCloseInsert func(uintptr, *CThostFtdcInputOptionSelfCloseField, int32) int32
+	_TraderReqOptionSelfCloseAction func(uintptr, *CThostFtdcInputOptionSelfCloseActionField, int32) int32
+	_TraderReqCombActionInsert func(uintptr, *CThostFtdcInputCombActionField, int32) int32
+	_TraderReqQryOrder func(uintptr, *CThostFtdcQryOrderField, int32) int32
+	_TraderReqQryTrade func(uintptr, *CThostFtdcQryTradeField, int32) int32
+	_TraderReqQryInvestorPosition func(uintptr, *CThostFtdcQryInvestorPositionField, int32) int32
+	_TraderReqQryTradingAccount func(uintptr, *CThostFtdcQryTradingAccountField, int32) int32
+	_TraderReqQryInvestor func(uintptr, *CThostFtdcQryInvestorField, int32) int32
+	_TraderReqQryTradingCode func(uintptr, *CThostFtdcQryTradingCodeField, int32) int32
+	_TraderReqQryInstrumentMarginRate func(uintptr, *CThostFtdcQryInstrumentMarginRateField, int32) int32
+	_TraderReqQryInstrumentCommissionRate func(uintptr, *CThostFtdcQryInstrumentCommissionRateField, int32) int32
+	_TraderReqQryExchange func(uintptr, *CThostFtdcQryExchangeField, int32) int32
+	_TraderReqQryProduct func(uintptr, *CThostFtdcQryProductField, int32) int32
+	_TraderReqQryInstrument func(uintptr, *CThostFtdcQryInstrumentField, int32) int32
+	_TraderReqQryDepthMarketData func(uintptr, *CThostFtdcQryDepthMarketDataField, int32) int32
+	_TraderReqQryTraderOffer func(uintptr, *CThostFtdcQryTraderOfferField, int32) int32
+	_TraderReqQrySettlementInfo func(uintptr, *CThostFtdcQrySettlementInfoField, int32) int32
+	_TraderReqQryTransferBank func(uintptr, *CThostFtdcQryTransferBankField, int32) int32
+	_TraderReqQryInvestorPositionDetail func(uintptr, *CThostFtdcQryInvestorPositionDetailField, int32) int32
+	_TraderReqQryNotice func(uintptr, *CThostFtdcQryNoticeField, int32) int32
+	_TraderReqQrySettlementInfoConfirm func(uintptr, *CThostFtdcQrySettlementInfoConfirmField, int32) int32
+	_TraderReqQryInvestorPositionCombineDetail func(uintptr, *CThostFtdcQryInvestorPositionCombineDetailField, int32) int32
+	_TraderReqQryCFMMCTradingAccountKey func(uintptr, *CThostFtdcQryCFMMCTradingAccountKeyField, int32) int32
+	_TraderReqQryEWarrantOffset func(uintptr, *CThostFtdcQryEWarrantOffsetField, int32) int32
+	_TraderReqQryInvestorProductGroupMargin func(uintptr, *CThostFtdcQryInvestorProductGroupMarginField, int32) int32
+	_TraderReqQryExchangeMarginRate func(uintptr, *CThostFtdcQryExchangeMarginRateField, int32) int32
+	_TraderReqQryExchangeMarginRateAdjust func(uintptr, *CThostFtdcQryExchangeMarginRateAdjustField, int32) int32
+	_TraderReqQryExchangeRate func(uintptr, *CThostFtdcQryExchangeRateField, int32) int32
+	_TraderReqQrySecAgentACIDMap func(uintptr, *CThostFtdcQrySecAgentACIDMapField, int32) int32
+	_TraderReqQryProductExchRate func(uintptr, *CThostFtdcQryProductExchRateField, int32) int32
+	_TraderReqQryProductGroup func(uintptr, *CThostFtdcQryProductGroupField, int32) int32
+	_TraderReqQryMMInstrumentCommissionRate func(uintptr, *CThostFtdcQryMMInstrumentCommissionRateField, int32) int32
+	_TraderReqQryMMOptionInstrCommRate func(uintptr, *CThostFtdcQryMMOptionInstrCommRateField, int32) int32
+	_TraderReqQryInstrumentOrderCommRate func(uintptr, *CThostFtdcQryInstrumentOrderCommRateField, int32) int32
+	_TraderReqQrySecAgentTradingAccount func(uintptr, *CThostFtdcQryTradingAccountField, int32) int32
+	_TraderReqQrySecAgentCheckMode func(uintptr, *CThostFtdcQrySecAgentCheckModeField, int32) int32
+	_TraderReqQrySecAgentTradeInfo func(uintptr, *CThostFtdcQrySecAgentTradeInfoField, int32) int32
+	_TraderReqQryOptionInstrTradeCost func(uintptr, *CThostFtdcQryOptionInstrTradeCostField, int32) int32
+	_TraderReqQryOptionInstrCommRate func(uintptr, *CThostFtdcQryOptionInstrCommRateField, int32) int32
+	_TraderReqQryExecOrder func(uintptr, *CThostFtdcQryExecOrderField, int32) int32
+	_TraderReqQryForQuote func(uintptr, *CThostFtdcQryForQuoteField, int32) int32
+	_TraderReqQryQuote func(uintptr, *CThostFtdcQryQuoteField, int32) int32
+	_TraderReqQryOptionSelfClose func(uintptr, *CThostFtdcQryOptionSelfCloseField, int32) int32
+	_TraderReqQryInvestUnit func(uintptr, *CThostFtdcQryInvestUnitField, int32) int32
+	_TraderReqQryCombInstrumentGuard func(uintptr, *CThostFtdcQryCombInstrumentGuardField, int32) int32
+	_TraderReqQryCombAction func(uintptr, *CThostFtdcQryCombActionField, int32) int32
+	_TraderReqQryTransferSerial func(uintptr, *CThostFtdcQryTransferSerialField, int32) int32
+	_TraderReqQryAccountregister func(uintptr, *CThostFtdcQryAccountregisterField, int32) int32
+	_TraderReqQryContractBank func(uintptr, *CThostFtdcQryContractBankField, int32) int32
+	_TraderReqQryParkedOrder func(uintptr, *CThostFtdcQryParkedOrderField, int32) int32
+	_TraderReqQryParkedOrderAction func(uintptr, *CThostFtdcQryParkedOrderActionField, int32) int32
+	_TraderReqQryTradingNotice func(uintptr, *CThostFtdcQryTradingNoticeField, int32) int32
+	_TraderReqQryBrokerTradingParams func(uintptr, *CThostFtdcQryBrokerTradingParamsField, int32) int32
+	_TraderReqQryBrokerTradingAlgos func(uintptr, *CThostFtdcQryBrokerTradingAlgosField, int32) int32
+	_TraderReqQueryCFMMCTradingAccountToken func(uintptr, *CThostFtdcQueryCFMMCTradingAccountTokenField, int32) int32
+	_TraderReqFromBankToFutureByFuture func(uintptr, *CThostFtdcReqTransferField, int32) int32
+	_TraderReqFromFutureToBankByFuture func(uintptr, *CThostFtdcReqTransferField, int32) int32
+	_TraderReqQueryBankAccountMoneyByFuture func(uintptr, *CThostFtdcReqQueryAccountField, int32) int32
+	_TraderReqQryClassifiedInstrument func(uintptr, *CThostFtdcQryClassifiedInstrumentField, int32) int32
+	_TraderReqQryCombPromotionParam func(uintptr, *CThostFtdcQryCombPromotionParamField, int32) int32
+	_TraderReqQryRiskSettleInvstPosition func(uintptr, *CThostFtdcQryRiskSettleInvstPositionField, int32) int32
+	_TraderReqQryRiskSettleProductStatus func(uintptr, *CThostFtdcQryRiskSettleProductStatusField, int32) int32
+	_TraderReqQrySPBMFutureParameter func(uintptr, *CThostFtdcQrySPBMFutureParameterField, int32) int32
+	_TraderReqQrySPBMOptionParameter func(uintptr, *CThostFtdcQrySPBMOptionParameterField, int32) int32
+	_TraderReqQrySPBMIntraParameter func(uintptr, *CThostFtdcQrySPBMIntraParameterField, int32) int32
+	_TraderReqQrySPBMInterParameter func(uintptr, *CThostFtdcQrySPBMInterParameterField, int32) int32
+	_TraderReqQrySPBMPortfDefinition func(uintptr, *CThostFtdcQrySPBMPortfDefinitionField, int32) int32
+	_TraderReqQrySPBMInvestorPortfDef func(uintptr, *CThostFtdcQrySPBMInvestorPortfDefField, int32) int32
+	_TraderReqQryInvestorPortfMarginRatio func(uintptr, *CThostFtdcQryInvestorPortfMarginRatioField, int32) int32
+	_TraderReqQryInvestorProdSPBMDetail func(uintptr, *CThostFtdcQryInvestorProdSPBMDetailField, int32) int32
+	_TraderReqQryInvestorCommoditySPMMMargin func(uintptr, *CThostFtdcQryInvestorCommoditySPMMMarginField, int32) int32
+	_TraderReqQryInvestorCommodityGroupSPMMMargin func(uintptr, *CThostFtdcQryInvestorCommodityGroupSPMMMarginField, int32) int32
+	_TraderReqQrySPMMInstParam func(uintptr, *CThostFtdcQrySPMMInstParamField, int32) int32
+	_TraderReqQrySPMMProductParam func(uintptr, *CThostFtdcQrySPMMProductParamField, int32) int32
+	_TraderReqQrySPBMAddOnInterParameter func(uintptr, *CThostFtdcQrySPBMAddOnInterParameterField, int32) int32
+	_TraderReqQryRCAMSCombProductInfo func(uintptr, *CThostFtdcQryRCAMSCombProductInfoField, int32) int32
+	_TraderReqQryRCAMSInstrParameter func(uintptr, *CThostFtdcQryRCAMSInstrParameterField, int32) int32
+	_TraderReqQryRCAMSIntraParameter func(uintptr, *CThostFtdcQryRCAMSIntraParameterField, int32) int32
+	_TraderReqQryRCAMSInterParameter func(uintptr, *CThostFtdcQryRCAMSInterParameterField, int32) int32
+	_TraderReqQryRCAMSShortOptAdjustParam func(uintptr, *CThostFtdcQryRCAMSShortOptAdjustParamField, int32) int32
+	_TraderReqQryRCAMSInvestorCombPosition func(uintptr, *CThostFtdcQryRCAMSInvestorCombPositionField, int32) int32
+	_TraderReqQryInvestorProdRCAMSMargin func(uintptr, *CThostFtdcQryInvestorProdRCAMSMarginField, int32) int32
+	_TraderReqQryRULEInstrParameter func(uintptr, *CThostFtdcQryRULEInstrParameterField, int32) int32
+	_TraderReqQryRULEIntraParameter func(uintptr, *CThostFtdcQryRULEIntraParameterField, int32) int32
+	_TraderReqQryRULEInterParameter func(uintptr, *CThostFtdcQryRULEInterParameterField, int32) int32
+	_TraderReqQryInvestorProdRULEMargin func(uintptr, *CThostFtdcQryInvestorProdRULEMarginField, int32) int32
+	_TraderReqQryInvestorPortfSetting func(uintptr, *CThostFtdcQryInvestorPortfSettingField, int32) int32
+	_TraderSpiCreate func(uintptr) uintptr
+	_TraderSpiDestroy func(uintptr)
+	_TraderRegisterSpi func(uintptr, uintptr)
+	_TraderSpiSetCallbacks func(uintptr, *TraderSpiCallbacks)
+	_TraderSpiSetOnFrontConnected func(uintptr, uintptr)
+	_TraderSpiSetOnFrontDisconnected func(uintptr, uintptr)
+	_TraderSpiSetOnHeartBeatWarning func(uintptr, uintptr)
+	_TraderSpiSetOnRspAuthenticate func(uintptr, uintptr)
+	_TraderSpiSetOnRspUserLogin func(uintptr, uintptr)
+	_TraderSpiSetOnRspUserLogout func(uintptr, uintptr)
+	_TraderSpiSetOnRspUserPasswordUpdate func(uintptr, uintptr)
+	_TraderSpiSetOnRspTradingAccountPasswordUpdate func(uintptr, uintptr)
+	_TraderSpiSetOnRspUserAuthMethod func(uintptr, uintptr)
+	_TraderSpiSetOnRspGenUserCaptcha func(uintptr, uintptr)
+	_TraderSpiSetOnRspGenUserText func(uintptr, uintptr)
+	_TraderSpiSetOnRspOrderInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspParkedOrderInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspParkedOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryMaxOrderVolume func(uintptr, uintptr)
+	_TraderSpiSetOnRspSettlementInfoConfirm func(uintptr, uintptr)
+	_TraderSpiSetOnRspRemoveParkedOrder func(uintptr, uintptr)
+	_TraderSpiSetOnRspRemoveParkedOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspExecOrderInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspExecOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspForQuoteInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspQuoteInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspQuoteAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspBatchOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspOptionSelfCloseInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspOptionSelfCloseAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspCombActionInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryOrder func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryTrade func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorPosition func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryTradingAccount func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestor func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryTradingCode func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInstrumentMarginRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInstrumentCommissionRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryExchange func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryProduct func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInstrument func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryDepthMarketData func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryTraderOffer func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySettlementInfo func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryTransferBank func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorPositionDetail func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryNotice func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySettlementInfoConfirm func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorPositionCombineDetail func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryCFMMCTradingAccountKey func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryEWarrantOffset func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorProductGroupMargin func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryExchangeMarginRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryExchangeMarginRateAdjust func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryExchangeRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySecAgentACIDMap func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryProductExchRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryProductGroup func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryMMInstrumentCommissionRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryMMOptionInstrCommRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInstrumentOrderCommRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySecAgentTradingAccount func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySecAgentCheckMode func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySecAgentTradeInfo func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryOptionInstrTradeCost func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryOptionInstrCommRate func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryExecOrder func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryForQuote func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryQuote func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryOptionSelfClose func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestUnit func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryCombInstrumentGuard func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryCombAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryTransferSerial func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryAccountregister func(uintptr, uintptr)
+	_TraderSpiSetOnRspError func(uintptr, uintptr)
+	_TraderSpiSetOnRtnOrder func(uintptr, uintptr)
+	_TraderSpiSetOnRtnTrade func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnOrderInsert func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRtnInstrumentStatus func(uintptr, uintptr)
+	_TraderSpiSetOnRtnBulletin func(uintptr, uintptr)
+	_TraderSpiSetOnRtnTradingNotice func(uintptr, uintptr)
+	_TraderSpiSetOnRtnErrorConditionalOrder func(uintptr, uintptr)
+	_TraderSpiSetOnRtnExecOrder func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnExecOrderInsert func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnExecOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnForQuoteInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRtnQuote func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnQuoteInsert func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnQuoteAction func(uintptr, uintptr)
+	_TraderSpiSetOnRtnForQuoteRsp func(uintptr, uintptr)
+	_TraderSpiSetOnRtnCFMMCTradingAccountToken func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnBatchOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRtnOptionSelfClose func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnOptionSelfCloseInsert func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnOptionSelfCloseAction func(uintptr, uintptr)
+	_TraderSpiSetOnRtnCombAction func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnCombActionInsert func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryContractBank func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryParkedOrder func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryParkedOrderAction func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryTradingNotice func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryBrokerTradingParams func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryBrokerTradingAlgos func(uintptr, uintptr)
+	_TraderSpiSetOnRspQueryCFMMCTradingAccountToken func(uintptr, uintptr)
+	_TraderSpiSetOnRtnFromBankToFutureByBank func(uintptr, uintptr)
+	_TraderSpiSetOnRtnFromFutureToBankByBank func(uintptr, uintptr)
+	_TraderSpiSetOnRtnRepealFromBankToFutureByBank func(uintptr, uintptr)
+	_TraderSpiSetOnRtnRepealFromFutureToBankByBank func(uintptr, uintptr)
+	_TraderSpiSetOnRtnFromBankToFutureByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRtnFromFutureToBankByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRtnRepealFromBankToFutureByFutureManual func(uintptr, uintptr)
+	_TraderSpiSetOnRtnRepealFromFutureToBankByFutureManual func(uintptr, uintptr)
+	_TraderSpiSetOnRtnQueryBankBalanceByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnBankToFutureByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnFutureToBankByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnRepealBankToFutureByFutureManual func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnRepealFutureToBankByFutureManual func(uintptr, uintptr)
+	_TraderSpiSetOnErrRtnQueryBankBalanceByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRtnRepealFromBankToFutureByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRtnRepealFromFutureToBankByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRspFromBankToFutureByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRspFromFutureToBankByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRspQueryBankAccountMoneyByFuture func(uintptr, uintptr)
+	_TraderSpiSetOnRtnOpenAccountByBank func(uintptr, uintptr)
+	_TraderSpiSetOnRtnCancelAccountByBank func(uintptr, uintptr)
+	_TraderSpiSetOnRtnChangeAccountByBank func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryClassifiedInstrument func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryCombPromotionParam func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRiskSettleInvstPosition func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRiskSettleProductStatus func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPBMFutureParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPBMOptionParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPBMIntraParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPBMInterParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPBMPortfDefinition func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPBMInvestorPortfDef func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorPortfMarginRatio func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorProdSPBMDetail func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorCommoditySPMMMargin func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorCommodityGroupSPMMMargin func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPMMInstParam func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPMMProductParam func(uintptr, uintptr)
+	_TraderSpiSetOnRspQrySPBMAddOnInterParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRCAMSCombProductInfo func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRCAMSInstrParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRCAMSIntraParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRCAMSInterParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRCAMSShortOptAdjustParam func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRCAMSInvestorCombPosition func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorProdRCAMSMargin func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRULEInstrParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRULEIntraParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryRULEInterParameter func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorProdRULEMargin func(uintptr, uintptr)
+	_TraderSpiSetOnRspQryInvestorPortfSetting func(uintptr, uintptr)
+	_TraderReqUserLoginWithSystemInfo func(uintptr, *CThostFtdcReqUserLoginField, int32, int32, *byte) int32
 )
 
 // initTraderApi 初始化交易 API 函数
@@ -1441,29 +1442,24 @@ func NewTraderApi(flowPath string) *TraderApi {
 	api.userData = registerTraderInstance(api)
 
 	// 将相对路径转换为绝对路径，确保 CTP API 能正确识别目录
-	// CTP API 基于当前工作目录解析相对路径，但可能工作目录不是我们期望的
-	// 所以转换为绝对路径更可靠
 	absFlowPath := flowPath
 	if !filepath.IsAbs(flowPath) {
-		// 如果是相对路径，转换为基于当前工作目录的绝对路径
 		var err error
 		absFlowPath, err = filepath.Abs(flowPath)
 		if err != nil {
-			// 如果转换失败，使用原始路径
 			absFlowPath = flowPath
 		}
 	}
 
-	// 确保路径以路径分隔符结尾（CTP API 可能需要这样才能识别为目录）
+	// 确保路径以路径分隔符结尾
 	if len(absFlowPath) > 0 && absFlowPath[len(absFlowPath)-1] != filepath.Separator {
 		absFlowPath += string(filepath.Separator)
 	}
 
 	// 将 flowPath 转换为 C 字符串并保存，防止被 GC 回收
-	// CTP API 可能会在后续使用这个路径
 	api.flowPath = make([]byte, len(absFlowPath)+1)
 	copy(api.flowPath, absFlowPath)
-	api.flowPath[len(absFlowPath)] = 0 // null terminator
+	api.flowPath[len(absFlowPath)] = 0
 	pathPtr := &api.flowPath[0]
 
 	api.handle = _TraderCreateFtdcTraderApi(pathPtr)
@@ -1486,8 +1482,6 @@ func (api *TraderApi) GetApiVersion() string {
 // Release 删除接口对象本身
 func (api *TraderApi) Release() {
 	_TraderRelease(api.handle)
-	// 从实例映射中注销，防止内存泄漏
-	unregisterTraderInstance(api.userData)
 }
 
 // Init 初始化
@@ -2129,789 +2123,1270 @@ func (api *TraderApi) SpiSetCallbacks(callbacks *TraderSpiCallbacks) {
 	_TraderSpiSetCallbacks(api.handle, callbacks)
 }
 
-// SpiSetOnFrontConnected 单独设置回调 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
-func (api *TraderApi) SpiSetOnFrontConnected(callback TraderOnFrontConnectedCallback) {
-	_TraderSpiSetOnFrontConnected(api.handle, callback)
-}
-
-// SpiSetOnFrontDisconnected 0x2003 收到错误报文
-func (api *TraderApi) SpiSetOnFrontDisconnected(callback TraderOnFrontDisconnectedCallback) {
-	_TraderSpiSetOnFrontDisconnected(api.handle, callback)
-}
-
-// SpiSetOnHeartBeatWarning 心跳超时警告。当长时间未收到报文时，该方法被调用。
-func (api *TraderApi) SpiSetOnHeartBeatWarning(callback TraderOnHeartBeatWarningCallback) {
-	_TraderSpiSetOnHeartBeatWarning(api.handle, callback)
-}
-
-// SpiSetOnRspAuthenticate 客户端认证响应
-func (api *TraderApi) SpiSetOnRspAuthenticate(callback TraderOnRspAuthenticateCallback) {
-	_TraderSpiSetOnRspAuthenticate(api.handle, callback)
-}
-
-// SpiSetOnRspUserLogin 登录请求响应
-func (api *TraderApi) SpiSetOnRspUserLogin(callback TraderOnRspUserLoginCallback) {
-	_TraderSpiSetOnRspUserLogin(api.handle, callback)
-}
-
-// SpiSetOnRspUserLogout 登出请求响应
-func (api *TraderApi) SpiSetOnRspUserLogout(callback TraderOnRspUserLogoutCallback) {
-	_TraderSpiSetOnRspUserLogout(api.handle, callback)
-}
-
-// SpiSetOnRspUserPasswordUpdate 用户口令更新请求响应
-func (api *TraderApi) SpiSetOnRspUserPasswordUpdate(callback TraderOnRspUserPasswordUpdateCallback) {
-	_TraderSpiSetOnRspUserPasswordUpdate(api.handle, callback)
-}
-
-// SpiSetOnRspTradingAccountPasswordUpdate 资金账户口令更新请求响应
-func (api *TraderApi) SpiSetOnRspTradingAccountPasswordUpdate(callback TraderOnRspTradingAccountPasswordUpdateCallback) {
-	_TraderSpiSetOnRspTradingAccountPasswordUpdate(api.handle, callback)
-}
-
-// SpiSetOnRspUserAuthMethod 查询用户当前支持的认证模式的回复
-func (api *TraderApi) SpiSetOnRspUserAuthMethod(callback TraderOnRspUserAuthMethodCallback) {
-	_TraderSpiSetOnRspUserAuthMethod(api.handle, callback)
-}
-
-// SpiSetOnRspGenUserCaptcha 获取图形验证码请求的回复
-func (api *TraderApi) SpiSetOnRspGenUserCaptcha(callback TraderOnRspGenUserCaptchaCallback) {
-	_TraderSpiSetOnRspGenUserCaptcha(api.handle, callback)
-}
-
-// SpiSetOnRspGenUserText 获取短信验证码请求的回复
-func (api *TraderApi) SpiSetOnRspGenUserText(callback TraderOnRspGenUserTextCallback) {
-	_TraderSpiSetOnRspGenUserText(api.handle, callback)
-}
-
-// SpiSetOnRspOrderInsert 报单录入请求响应
-func (api *TraderApi) SpiSetOnRspOrderInsert(callback TraderOnRspOrderInsertCallback) {
-	_TraderSpiSetOnRspOrderInsert(api.handle, callback)
-}
-
-// SpiSetOnRspParkedOrderInsert 预埋单录入请求响应
-func (api *TraderApi) SpiSetOnRspParkedOrderInsert(callback TraderOnRspParkedOrderInsertCallback) {
-	_TraderSpiSetOnRspParkedOrderInsert(api.handle, callback)
-}
-
-// SpiSetOnRspParkedOrderAction 预埋撤单录入请求响应
-func (api *TraderApi) SpiSetOnRspParkedOrderAction(callback TraderOnRspParkedOrderActionCallback) {
-	_TraderSpiSetOnRspParkedOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRspOrderAction 报单操作请求响应
-func (api *TraderApi) SpiSetOnRspOrderAction(callback TraderOnRspOrderActionCallback) {
-	_TraderSpiSetOnRspOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRspQryMaxOrderVolume 查询最大报单数量响应
-func (api *TraderApi) SpiSetOnRspQryMaxOrderVolume(callback TraderOnRspQryMaxOrderVolumeCallback) {
-	_TraderSpiSetOnRspQryMaxOrderVolume(api.handle, callback)
-}
-
-// SpiSetOnRspSettlementInfoConfirm 投资者结算结果确认响应
-func (api *TraderApi) SpiSetOnRspSettlementInfoConfirm(callback TraderOnRspSettlementInfoConfirmCallback) {
-	_TraderSpiSetOnRspSettlementInfoConfirm(api.handle, callback)
-}
-
-// SpiSetOnRspRemoveParkedOrder 删除预埋单响应
-func (api *TraderApi) SpiSetOnRspRemoveParkedOrder(callback TraderOnRspRemoveParkedOrderCallback) {
-	_TraderSpiSetOnRspRemoveParkedOrder(api.handle, callback)
-}
-
-// SpiSetOnRspRemoveParkedOrderAction 删除预埋撤单响应
-func (api *TraderApi) SpiSetOnRspRemoveParkedOrderAction(callback TraderOnRspRemoveParkedOrderActionCallback) {
-	_TraderSpiSetOnRspRemoveParkedOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRspExecOrderInsert 执行宣告录入请求响应
-func (api *TraderApi) SpiSetOnRspExecOrderInsert(callback TraderOnRspExecOrderInsertCallback) {
-	_TraderSpiSetOnRspExecOrderInsert(api.handle, callback)
-}
-
-// SpiSetOnRspExecOrderAction 执行宣告操作请求响应
-func (api *TraderApi) SpiSetOnRspExecOrderAction(callback TraderOnRspExecOrderActionCallback) {
-	_TraderSpiSetOnRspExecOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRspForQuoteInsert 询价录入请求响应
-func (api *TraderApi) SpiSetOnRspForQuoteInsert(callback TraderOnRspForQuoteInsertCallback) {
-	_TraderSpiSetOnRspForQuoteInsert(api.handle, callback)
-}
-
-// SpiSetOnRspQuoteInsert 报价录入请求响应
-func (api *TraderApi) SpiSetOnRspQuoteInsert(callback TraderOnRspQuoteInsertCallback) {
-	_TraderSpiSetOnRspQuoteInsert(api.handle, callback)
-}
-
-// SpiSetOnRspQuoteAction 报价操作请求响应
-func (api *TraderApi) SpiSetOnRspQuoteAction(callback TraderOnRspQuoteActionCallback) {
-	_TraderSpiSetOnRspQuoteAction(api.handle, callback)
-}
-
-// SpiSetOnRspBatchOrderAction 批量报单操作请求响应
-func (api *TraderApi) SpiSetOnRspBatchOrderAction(callback TraderOnRspBatchOrderActionCallback) {
-	_TraderSpiSetOnRspBatchOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRspOptionSelfCloseInsert 期权自对冲录入请求响应
-func (api *TraderApi) SpiSetOnRspOptionSelfCloseInsert(callback TraderOnRspOptionSelfCloseInsertCallback) {
-	_TraderSpiSetOnRspOptionSelfCloseInsert(api.handle, callback)
-}
-
-// SpiSetOnRspOptionSelfCloseAction 期权自对冲操作请求响应
-func (api *TraderApi) SpiSetOnRspOptionSelfCloseAction(callback TraderOnRspOptionSelfCloseActionCallback) {
-	_TraderSpiSetOnRspOptionSelfCloseAction(api.handle, callback)
-}
-
-// SpiSetOnRspCombActionInsert 申请组合录入请求响应
-func (api *TraderApi) SpiSetOnRspCombActionInsert(callback TraderOnRspCombActionInsertCallback) {
-	_TraderSpiSetOnRspCombActionInsert(api.handle, callback)
-}
-
-// SpiSetOnRspQryOrder 请求查询报单响应
-func (api *TraderApi) SpiSetOnRspQryOrder(callback TraderOnRspQryOrderCallback) {
-	_TraderSpiSetOnRspQryOrder(api.handle, callback)
-}
-
-// SpiSetOnRspQryTrade 请求查询成交响应
-func (api *TraderApi) SpiSetOnRspQryTrade(callback TraderOnRspQryTradeCallback) {
-	_TraderSpiSetOnRspQryTrade(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorPosition 请求查询投资者持仓响应
-func (api *TraderApi) SpiSetOnRspQryInvestorPosition(callback TraderOnRspQryInvestorPositionCallback) {
-	_TraderSpiSetOnRspQryInvestorPosition(api.handle, callback)
-}
-
-// SpiSetOnRspQryTradingAccount 请求查询资金账户响应
-func (api *TraderApi) SpiSetOnRspQryTradingAccount(callback TraderOnRspQryTradingAccountCallback) {
-	_TraderSpiSetOnRspQryTradingAccount(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestor 请求查询投资者响应
-func (api *TraderApi) SpiSetOnRspQryInvestor(callback TraderOnRspQryInvestorCallback) {
-	_TraderSpiSetOnRspQryInvestor(api.handle, callback)
-}
-
-// SpiSetOnRspQryTradingCode 请求查询交易编码响应
-func (api *TraderApi) SpiSetOnRspQryTradingCode(callback TraderOnRspQryTradingCodeCallback) {
-	_TraderSpiSetOnRspQryTradingCode(api.handle, callback)
-}
-
-// SpiSetOnRspQryInstrumentMarginRate 请求查询合约保证金率响应
-func (api *TraderApi) SpiSetOnRspQryInstrumentMarginRate(callback TraderOnRspQryInstrumentMarginRateCallback) {
-	_TraderSpiSetOnRspQryInstrumentMarginRate(api.handle, callback)
-}
-
-// SpiSetOnRspQryInstrumentCommissionRate 请求查询合约手续费率响应
-func (api *TraderApi) SpiSetOnRspQryInstrumentCommissionRate(callback TraderOnRspQryInstrumentCommissionRateCallback) {
-	_TraderSpiSetOnRspQryInstrumentCommissionRate(api.handle, callback)
-}
-
-// SpiSetOnRspQryExchange 请求查询交易所响应
-func (api *TraderApi) SpiSetOnRspQryExchange(callback TraderOnRspQryExchangeCallback) {
-	_TraderSpiSetOnRspQryExchange(api.handle, callback)
-}
-
-// SpiSetOnRspQryProduct 请求查询产品响应
-func (api *TraderApi) SpiSetOnRspQryProduct(callback TraderOnRspQryProductCallback) {
-	_TraderSpiSetOnRspQryProduct(api.handle, callback)
-}
-
-// SpiSetOnRspQryInstrument 请求查询合约响应
-func (api *TraderApi) SpiSetOnRspQryInstrument(callback TraderOnRspQryInstrumentCallback) {
-	_TraderSpiSetOnRspQryInstrument(api.handle, callback)
-}
-
-// SpiSetOnRspQryDepthMarketData 请求查询行情响应
-func (api *TraderApi) SpiSetOnRspQryDepthMarketData(callback TraderOnRspQryDepthMarketDataCallback) {
-	_TraderSpiSetOnRspQryDepthMarketData(api.handle, callback)
-}
-
-// SpiSetOnRspQryTraderOffer 请求查询交易员报盘机响应
-func (api *TraderApi) SpiSetOnRspQryTraderOffer(callback TraderOnRspQryTraderOfferCallback) {
-	_TraderSpiSetOnRspQryTraderOffer(api.handle, callback)
-}
-
-// SpiSetOnRspQrySettlementInfo 请求查询投资者结算结果响应
-func (api *TraderApi) SpiSetOnRspQrySettlementInfo(callback TraderOnRspQrySettlementInfoCallback) {
-	_TraderSpiSetOnRspQrySettlementInfo(api.handle, callback)
-}
-
-// SpiSetOnRspQryTransferBank 请求查询转帐银行响应
-func (api *TraderApi) SpiSetOnRspQryTransferBank(callback TraderOnRspQryTransferBankCallback) {
-	_TraderSpiSetOnRspQryTransferBank(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorPositionDetail 请求查询投资者持仓明细响应
-func (api *TraderApi) SpiSetOnRspQryInvestorPositionDetail(callback TraderOnRspQryInvestorPositionDetailCallback) {
-	_TraderSpiSetOnRspQryInvestorPositionDetail(api.handle, callback)
-}
-
-// SpiSetOnRspQryNotice 请求查询客户通知响应
-func (api *TraderApi) SpiSetOnRspQryNotice(callback TraderOnRspQryNoticeCallback) {
-	_TraderSpiSetOnRspQryNotice(api.handle, callback)
-}
-
-// SpiSetOnRspQrySettlementInfoConfirm 请求查询结算信息确认响应
-func (api *TraderApi) SpiSetOnRspQrySettlementInfoConfirm(callback TraderOnRspQrySettlementInfoConfirmCallback) {
-	_TraderSpiSetOnRspQrySettlementInfoConfirm(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorPositionCombineDetail 请求查询投资者持仓明细响应
-func (api *TraderApi) SpiSetOnRspQryInvestorPositionCombineDetail(callback TraderOnRspQryInvestorPositionCombineDetailCallback) {
-	_TraderSpiSetOnRspQryInvestorPositionCombineDetail(api.handle, callback)
-}
-
-// SpiSetOnRspQryCFMMCTradingAccountKey 查询保证金监管系统经纪公司资金账户密钥响应
-func (api *TraderApi) SpiSetOnRspQryCFMMCTradingAccountKey(callback TraderOnRspQryCFMMCTradingAccountKeyCallback) {
-	_TraderSpiSetOnRspQryCFMMCTradingAccountKey(api.handle, callback)
-}
-
-// SpiSetOnRspQryEWarrantOffset 请求查询仓单折抵信息响应
-func (api *TraderApi) SpiSetOnRspQryEWarrantOffset(callback TraderOnRspQryEWarrantOffsetCallback) {
-	_TraderSpiSetOnRspQryEWarrantOffset(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorProductGroupMargin 请求查询投资者品种/跨品种保证金响应
-func (api *TraderApi) SpiSetOnRspQryInvestorProductGroupMargin(callback TraderOnRspQryInvestorProductGroupMarginCallback) {
-	_TraderSpiSetOnRspQryInvestorProductGroupMargin(api.handle, callback)
-}
-
-// SpiSetOnRspQryExchangeMarginRate 请求查询交易所保证金率响应
-func (api *TraderApi) SpiSetOnRspQryExchangeMarginRate(callback TraderOnRspQryExchangeMarginRateCallback) {
-	_TraderSpiSetOnRspQryExchangeMarginRate(api.handle, callback)
-}
-
-// SpiSetOnRspQryExchangeMarginRateAdjust 请求查询交易所调整保证金率响应
-func (api *TraderApi) SpiSetOnRspQryExchangeMarginRateAdjust(callback TraderOnRspQryExchangeMarginRateAdjustCallback) {
-	_TraderSpiSetOnRspQryExchangeMarginRateAdjust(api.handle, callback)
-}
-
-// SpiSetOnRspQryExchangeRate 请求查询汇率响应
-func (api *TraderApi) SpiSetOnRspQryExchangeRate(callback TraderOnRspQryExchangeRateCallback) {
-	_TraderSpiSetOnRspQryExchangeRate(api.handle, callback)
-}
-
-// SpiSetOnRspQrySecAgentACIDMap 请求查询二级代理操作员银期权限响应
-func (api *TraderApi) SpiSetOnRspQrySecAgentACIDMap(callback TraderOnRspQrySecAgentACIDMapCallback) {
-	_TraderSpiSetOnRspQrySecAgentACIDMap(api.handle, callback)
-}
-
-// SpiSetOnRspQryProductExchRate 请求查询产品报价汇率
-func (api *TraderApi) SpiSetOnRspQryProductExchRate(callback TraderOnRspQryProductExchRateCallback) {
-	_TraderSpiSetOnRspQryProductExchRate(api.handle, callback)
-}
-
-// SpiSetOnRspQryProductGroup 请求查询产品组
-func (api *TraderApi) SpiSetOnRspQryProductGroup(callback TraderOnRspQryProductGroupCallback) {
-	_TraderSpiSetOnRspQryProductGroup(api.handle, callback)
-}
-
-// SpiSetOnRspQryMMInstrumentCommissionRate 请求查询做市商合约手续费率响应
-func (api *TraderApi) SpiSetOnRspQryMMInstrumentCommissionRate(callback TraderOnRspQryMMInstrumentCommissionRateCallback) {
-	_TraderSpiSetOnRspQryMMInstrumentCommissionRate(api.handle, callback)
-}
-
-// SpiSetOnRspQryMMOptionInstrCommRate 请求查询做市商期权合约手续费响应
-func (api *TraderApi) SpiSetOnRspQryMMOptionInstrCommRate(callback TraderOnRspQryMMOptionInstrCommRateCallback) {
-	_TraderSpiSetOnRspQryMMOptionInstrCommRate(api.handle, callback)
-}
-
-// SpiSetOnRspQryInstrumentOrderCommRate 请求查询报单手续费响应
-func (api *TraderApi) SpiSetOnRspQryInstrumentOrderCommRate(callback TraderOnRspQryInstrumentOrderCommRateCallback) {
-	_TraderSpiSetOnRspQryInstrumentOrderCommRate(api.handle, callback)
-}
-
-// SpiSetOnRspQrySecAgentTradingAccount 请求查询资金账户响应
-func (api *TraderApi) SpiSetOnRspQrySecAgentTradingAccount(callback TraderOnRspQrySecAgentTradingAccountCallback) {
-	_TraderSpiSetOnRspQrySecAgentTradingAccount(api.handle, callback)
-}
-
-// SpiSetOnRspQrySecAgentCheckMode 请求查询二级代理商资金校验模式响应
-func (api *TraderApi) SpiSetOnRspQrySecAgentCheckMode(callback TraderOnRspQrySecAgentCheckModeCallback) {
-	_TraderSpiSetOnRspQrySecAgentCheckMode(api.handle, callback)
-}
-
-// SpiSetOnRspQrySecAgentTradeInfo 请求查询二级代理商信息响应
-func (api *TraderApi) SpiSetOnRspQrySecAgentTradeInfo(callback TraderOnRspQrySecAgentTradeInfoCallback) {
-	_TraderSpiSetOnRspQrySecAgentTradeInfo(api.handle, callback)
-}
-
-// SpiSetOnRspQryOptionInstrTradeCost 请求查询期权交易成本响应
-func (api *TraderApi) SpiSetOnRspQryOptionInstrTradeCost(callback TraderOnRspQryOptionInstrTradeCostCallback) {
-	_TraderSpiSetOnRspQryOptionInstrTradeCost(api.handle, callback)
-}
-
-// SpiSetOnRspQryOptionInstrCommRate 请求查询期权合约手续费响应
-func (api *TraderApi) SpiSetOnRspQryOptionInstrCommRate(callback TraderOnRspQryOptionInstrCommRateCallback) {
-	_TraderSpiSetOnRspQryOptionInstrCommRate(api.handle, callback)
-}
-
-// SpiSetOnRspQryExecOrder 请求查询执行宣告响应
-func (api *TraderApi) SpiSetOnRspQryExecOrder(callback TraderOnRspQryExecOrderCallback) {
-	_TraderSpiSetOnRspQryExecOrder(api.handle, callback)
-}
-
-// SpiSetOnRspQryForQuote 请求查询询价响应
-func (api *TraderApi) SpiSetOnRspQryForQuote(callback TraderOnRspQryForQuoteCallback) {
-	_TraderSpiSetOnRspQryForQuote(api.handle, callback)
-}
-
-// SpiSetOnRspQryQuote 请求查询报价响应
-func (api *TraderApi) SpiSetOnRspQryQuote(callback TraderOnRspQryQuoteCallback) {
-	_TraderSpiSetOnRspQryQuote(api.handle, callback)
-}
-
-// SpiSetOnRspQryOptionSelfClose 请求查询期权自对冲响应
-func (api *TraderApi) SpiSetOnRspQryOptionSelfClose(callback TraderOnRspQryOptionSelfCloseCallback) {
-	_TraderSpiSetOnRspQryOptionSelfClose(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestUnit 请求查询投资单元响应
-func (api *TraderApi) SpiSetOnRspQryInvestUnit(callback TraderOnRspQryInvestUnitCallback) {
-	_TraderSpiSetOnRspQryInvestUnit(api.handle, callback)
-}
-
-// SpiSetOnRspQryCombInstrumentGuard 请求查询组合合约安全系数响应
-func (api *TraderApi) SpiSetOnRspQryCombInstrumentGuard(callback TraderOnRspQryCombInstrumentGuardCallback) {
-	_TraderSpiSetOnRspQryCombInstrumentGuard(api.handle, callback)
-}
-
-// SpiSetOnRspQryCombAction 请求查询申请组合响应
-func (api *TraderApi) SpiSetOnRspQryCombAction(callback TraderOnRspQryCombActionCallback) {
-	_TraderSpiSetOnRspQryCombAction(api.handle, callback)
-}
-
-// SpiSetOnRspQryTransferSerial 请求查询转帐流水响应
-func (api *TraderApi) SpiSetOnRspQryTransferSerial(callback TraderOnRspQryTransferSerialCallback) {
-	_TraderSpiSetOnRspQryTransferSerial(api.handle, callback)
-}
-
-// SpiSetOnRspQryAccountregister 请求查询银期签约关系响应
-func (api *TraderApi) SpiSetOnRspQryAccountregister(callback TraderOnRspQryAccountregisterCallback) {
-	_TraderSpiSetOnRspQryAccountregister(api.handle, callback)
-}
-
-// SpiSetOnRspError 错误应答
-func (api *TraderApi) SpiSetOnRspError(callback TraderOnRspErrorCallback) {
-	_TraderSpiSetOnRspError(api.handle, callback)
-}
-
-// SpiSetOnRtnOrder 报单通知
-func (api *TraderApi) SpiSetOnRtnOrder(callback TraderOnRtnOrderCallback) {
-	_TraderSpiSetOnRtnOrder(api.handle, callback)
-}
-
-// SpiSetOnRtnTrade 成交通知
-func (api *TraderApi) SpiSetOnRtnTrade(callback TraderOnRtnTradeCallback) {
-	_TraderSpiSetOnRtnTrade(api.handle, callback)
-}
-
-// SpiSetOnErrRtnOrderInsert 报单录入错误回报
-func (api *TraderApi) SpiSetOnErrRtnOrderInsert(callback TraderOnErrRtnOrderInsertCallback) {
-	_TraderSpiSetOnErrRtnOrderInsert(api.handle, callback)
-}
-
-// SpiSetOnErrRtnOrderAction 报单操作错误回报
-func (api *TraderApi) SpiSetOnErrRtnOrderAction(callback TraderOnErrRtnOrderActionCallback) {
-	_TraderSpiSetOnErrRtnOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRtnInstrumentStatus 合约交易状态通知
-func (api *TraderApi) SpiSetOnRtnInstrumentStatus(callback TraderOnRtnInstrumentStatusCallback) {
-	_TraderSpiSetOnRtnInstrumentStatus(api.handle, callback)
-}
-
-// SpiSetOnRtnBulletin 交易所公告通知
-func (api *TraderApi) SpiSetOnRtnBulletin(callback TraderOnRtnBulletinCallback) {
-	_TraderSpiSetOnRtnBulletin(api.handle, callback)
-}
-
-// SpiSetOnRtnTradingNotice 交易通知
-func (api *TraderApi) SpiSetOnRtnTradingNotice(callback TraderOnRtnTradingNoticeCallback) {
-	_TraderSpiSetOnRtnTradingNotice(api.handle, callback)
-}
-
-// SpiSetOnRtnErrorConditionalOrder 提示条件单校验错误
-func (api *TraderApi) SpiSetOnRtnErrorConditionalOrder(callback TraderOnRtnErrorConditionalOrderCallback) {
-	_TraderSpiSetOnRtnErrorConditionalOrder(api.handle, callback)
-}
-
-// SpiSetOnRtnExecOrder 执行宣告通知
-func (api *TraderApi) SpiSetOnRtnExecOrder(callback TraderOnRtnExecOrderCallback) {
-	_TraderSpiSetOnRtnExecOrder(api.handle, callback)
-}
-
-// SpiSetOnErrRtnExecOrderInsert 执行宣告录入错误回报
-func (api *TraderApi) SpiSetOnErrRtnExecOrderInsert(callback TraderOnErrRtnExecOrderInsertCallback) {
-	_TraderSpiSetOnErrRtnExecOrderInsert(api.handle, callback)
-}
-
-// SpiSetOnErrRtnExecOrderAction 执行宣告操作错误回报
-func (api *TraderApi) SpiSetOnErrRtnExecOrderAction(callback TraderOnErrRtnExecOrderActionCallback) {
-	_TraderSpiSetOnErrRtnExecOrderAction(api.handle, callback)
-}
-
-// SpiSetOnErrRtnForQuoteInsert 询价录入错误回报
-func (api *TraderApi) SpiSetOnErrRtnForQuoteInsert(callback TraderOnErrRtnForQuoteInsertCallback) {
-	_TraderSpiSetOnErrRtnForQuoteInsert(api.handle, callback)
-}
-
-// SpiSetOnRtnQuote 报价通知
-func (api *TraderApi) SpiSetOnRtnQuote(callback TraderOnRtnQuoteCallback) {
-	_TraderSpiSetOnRtnQuote(api.handle, callback)
-}
-
-// SpiSetOnErrRtnQuoteInsert 报价录入错误回报
-func (api *TraderApi) SpiSetOnErrRtnQuoteInsert(callback TraderOnErrRtnQuoteInsertCallback) {
-	_TraderSpiSetOnErrRtnQuoteInsert(api.handle, callback)
-}
-
-// SpiSetOnErrRtnQuoteAction 报价操作错误回报
-func (api *TraderApi) SpiSetOnErrRtnQuoteAction(callback TraderOnErrRtnQuoteActionCallback) {
-	_TraderSpiSetOnErrRtnQuoteAction(api.handle, callback)
-}
-
-// SpiSetOnRtnForQuoteRsp 询价通知
-func (api *TraderApi) SpiSetOnRtnForQuoteRsp(callback TraderOnRtnForQuoteRspCallback) {
-	_TraderSpiSetOnRtnForQuoteRsp(api.handle, callback)
-}
-
-// SpiSetOnRtnCFMMCTradingAccountToken 保证金监控中心用户令牌
-func (api *TraderApi) SpiSetOnRtnCFMMCTradingAccountToken(callback TraderOnRtnCFMMCTradingAccountTokenCallback) {
-	_TraderSpiSetOnRtnCFMMCTradingAccountToken(api.handle, callback)
-}
-
-// SpiSetOnErrRtnBatchOrderAction 批量报单操作错误回报
-func (api *TraderApi) SpiSetOnErrRtnBatchOrderAction(callback TraderOnErrRtnBatchOrderActionCallback) {
-	_TraderSpiSetOnErrRtnBatchOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRtnOptionSelfClose 期权自对冲通知
-func (api *TraderApi) SpiSetOnRtnOptionSelfClose(callback TraderOnRtnOptionSelfCloseCallback) {
-	_TraderSpiSetOnRtnOptionSelfClose(api.handle, callback)
-}
-
-// SpiSetOnErrRtnOptionSelfCloseInsert 期权自对冲录入错误回报
-func (api *TraderApi) SpiSetOnErrRtnOptionSelfCloseInsert(callback TraderOnErrRtnOptionSelfCloseInsertCallback) {
-	_TraderSpiSetOnErrRtnOptionSelfCloseInsert(api.handle, callback)
-}
-
-// SpiSetOnErrRtnOptionSelfCloseAction 期权自对冲操作错误回报
-func (api *TraderApi) SpiSetOnErrRtnOptionSelfCloseAction(callback TraderOnErrRtnOptionSelfCloseActionCallback) {
-	_TraderSpiSetOnErrRtnOptionSelfCloseAction(api.handle, callback)
-}
-
-// SpiSetOnRtnCombAction 申请组合通知
-func (api *TraderApi) SpiSetOnRtnCombAction(callback TraderOnRtnCombActionCallback) {
-	_TraderSpiSetOnRtnCombAction(api.handle, callback)
-}
-
-// SpiSetOnErrRtnCombActionInsert 申请组合录入错误回报
-func (api *TraderApi) SpiSetOnErrRtnCombActionInsert(callback TraderOnErrRtnCombActionInsertCallback) {
-	_TraderSpiSetOnErrRtnCombActionInsert(api.handle, callback)
-}
-
-// SpiSetOnRspQryContractBank 请求查询签约银行响应
-func (api *TraderApi) SpiSetOnRspQryContractBank(callback TraderOnRspQryContractBankCallback) {
-	_TraderSpiSetOnRspQryContractBank(api.handle, callback)
-}
-
-// SpiSetOnRspQryParkedOrder 请求查询预埋单响应
-func (api *TraderApi) SpiSetOnRspQryParkedOrder(callback TraderOnRspQryParkedOrderCallback) {
-	_TraderSpiSetOnRspQryParkedOrder(api.handle, callback)
-}
-
-// SpiSetOnRspQryParkedOrderAction 请求查询预埋撤单响应
-func (api *TraderApi) SpiSetOnRspQryParkedOrderAction(callback TraderOnRspQryParkedOrderActionCallback) {
-	_TraderSpiSetOnRspQryParkedOrderAction(api.handle, callback)
-}
-
-// SpiSetOnRspQryTradingNotice 请求查询交易通知响应
-func (api *TraderApi) SpiSetOnRspQryTradingNotice(callback TraderOnRspQryTradingNoticeCallback) {
-	_TraderSpiSetOnRspQryTradingNotice(api.handle, callback)
-}
-
-// SpiSetOnRspQryBrokerTradingParams 请求查询经纪公司交易参数响应
-func (api *TraderApi) SpiSetOnRspQryBrokerTradingParams(callback TraderOnRspQryBrokerTradingParamsCallback) {
-	_TraderSpiSetOnRspQryBrokerTradingParams(api.handle, callback)
-}
-
-// SpiSetOnRspQryBrokerTradingAlgos 请求查询经纪公司交易算法响应
-func (api *TraderApi) SpiSetOnRspQryBrokerTradingAlgos(callback TraderOnRspQryBrokerTradingAlgosCallback) {
-	_TraderSpiSetOnRspQryBrokerTradingAlgos(api.handle, callback)
-}
-
-// SpiSetOnRspQueryCFMMCTradingAccountToken 请求查询监控中心用户令牌
-func (api *TraderApi) SpiSetOnRspQueryCFMMCTradingAccountToken(callback TraderOnRspQueryCFMMCTradingAccountTokenCallback) {
-	_TraderSpiSetOnRspQueryCFMMCTradingAccountToken(api.handle, callback)
-}
-
-// SpiSetOnRtnFromBankToFutureByBank 银行发起银行资金转期货通知
-func (api *TraderApi) SpiSetOnRtnFromBankToFutureByBank(callback TraderOnRtnFromBankToFutureByBankCallback) {
-	_TraderSpiSetOnRtnFromBankToFutureByBank(api.handle, callback)
-}
-
-// SpiSetOnRtnFromFutureToBankByBank 银行发起期货资金转银行通知
-func (api *TraderApi) SpiSetOnRtnFromFutureToBankByBank(callback TraderOnRtnFromFutureToBankByBankCallback) {
-	_TraderSpiSetOnRtnFromFutureToBankByBank(api.handle, callback)
-}
-
-// SpiSetOnRtnRepealFromBankToFutureByBank 银行发起冲正银行转期货通知
-func (api *TraderApi) SpiSetOnRtnRepealFromBankToFutureByBank(callback TraderOnRtnRepealFromBankToFutureByBankCallback) {
-	_TraderSpiSetOnRtnRepealFromBankToFutureByBank(api.handle, callback)
-}
-
-// SpiSetOnRtnRepealFromFutureToBankByBank 银行发起冲正期货转银行通知
-func (api *TraderApi) SpiSetOnRtnRepealFromFutureToBankByBank(callback TraderOnRtnRepealFromFutureToBankByBankCallback) {
-	_TraderSpiSetOnRtnRepealFromFutureToBankByBank(api.handle, callback)
-}
-
-// SpiSetOnRtnFromBankToFutureByFuture 期货发起银行资金转期货通知
-func (api *TraderApi) SpiSetOnRtnFromBankToFutureByFuture(callback TraderOnRtnFromBankToFutureByFutureCallback) {
-	_TraderSpiSetOnRtnFromBankToFutureByFuture(api.handle, callback)
-}
-
-// SpiSetOnRtnFromFutureToBankByFuture 期货发起期货资金转银行通知
-func (api *TraderApi) SpiSetOnRtnFromFutureToBankByFuture(callback TraderOnRtnFromFutureToBankByFutureCallback) {
-	_TraderSpiSetOnRtnFromFutureToBankByFuture(api.handle, callback)
-}
-
-// SpiSetOnRtnRepealFromBankToFutureByFutureManual 系统运行时期货端手工发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
-func (api *TraderApi) SpiSetOnRtnRepealFromBankToFutureByFutureManual(callback TraderOnRtnRepealFromBankToFutureByFutureManualCallback) {
-	_TraderSpiSetOnRtnRepealFromBankToFutureByFutureManual(api.handle, callback)
-}
-
-// SpiSetOnRtnRepealFromFutureToBankByFutureManual 系统运行时期货端手工发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
-func (api *TraderApi) SpiSetOnRtnRepealFromFutureToBankByFutureManual(callback TraderOnRtnRepealFromFutureToBankByFutureManualCallback) {
-	_TraderSpiSetOnRtnRepealFromFutureToBankByFutureManual(api.handle, callback)
-}
-
-// SpiSetOnRtnQueryBankBalanceByFuture 期货发起查询银行余额通知
-func (api *TraderApi) SpiSetOnRtnQueryBankBalanceByFuture(callback TraderOnRtnQueryBankBalanceByFutureCallback) {
-	_TraderSpiSetOnRtnQueryBankBalanceByFuture(api.handle, callback)
-}
-
-// SpiSetOnErrRtnBankToFutureByFuture 期货发起银行资金转期货错误回报
-func (api *TraderApi) SpiSetOnErrRtnBankToFutureByFuture(callback TraderOnErrRtnBankToFutureByFutureCallback) {
-	_TraderSpiSetOnErrRtnBankToFutureByFuture(api.handle, callback)
-}
-
-// SpiSetOnErrRtnFutureToBankByFuture 期货发起期货资金转银行错误回报
-func (api *TraderApi) SpiSetOnErrRtnFutureToBankByFuture(callback TraderOnErrRtnFutureToBankByFutureCallback) {
-	_TraderSpiSetOnErrRtnFutureToBankByFuture(api.handle, callback)
-}
-
-// SpiSetOnErrRtnRepealBankToFutureByFutureManual 系统运行时期货端手工发起冲正银行转期货错误回报
-func (api *TraderApi) SpiSetOnErrRtnRepealBankToFutureByFutureManual(callback TraderOnErrRtnRepealBankToFutureByFutureManualCallback) {
-	_TraderSpiSetOnErrRtnRepealBankToFutureByFutureManual(api.handle, callback)
-}
-
-// SpiSetOnErrRtnRepealFutureToBankByFutureManual 系统运行时期货端手工发起冲正期货转银行错误回报
-func (api *TraderApi) SpiSetOnErrRtnRepealFutureToBankByFutureManual(callback TraderOnErrRtnRepealFutureToBankByFutureManualCallback) {
-	_TraderSpiSetOnErrRtnRepealFutureToBankByFutureManual(api.handle, callback)
-}
-
-// SpiSetOnErrRtnQueryBankBalanceByFuture 期货发起查询银行余额错误回报
-func (api *TraderApi) SpiSetOnErrRtnQueryBankBalanceByFuture(callback TraderOnErrRtnQueryBankBalanceByFutureCallback) {
-	_TraderSpiSetOnErrRtnQueryBankBalanceByFuture(api.handle, callback)
-}
-
-// SpiSetOnRtnRepealFromBankToFutureByFuture 期货发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
-func (api *TraderApi) SpiSetOnRtnRepealFromBankToFutureByFuture(callback TraderOnRtnRepealFromBankToFutureByFutureCallback) {
-	_TraderSpiSetOnRtnRepealFromBankToFutureByFuture(api.handle, callback)
-}
-
-// SpiSetOnRtnRepealFromFutureToBankByFuture 期货发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
-func (api *TraderApi) SpiSetOnRtnRepealFromFutureToBankByFuture(callback TraderOnRtnRepealFromFutureToBankByFutureCallback) {
-	_TraderSpiSetOnRtnRepealFromFutureToBankByFuture(api.handle, callback)
-}
-
-// SpiSetOnRspFromBankToFutureByFuture 期货发起银行资金转期货应答
-func (api *TraderApi) SpiSetOnRspFromBankToFutureByFuture(callback TraderOnRspFromBankToFutureByFutureCallback) {
-	_TraderSpiSetOnRspFromBankToFutureByFuture(api.handle, callback)
-}
-
-// SpiSetOnRspFromFutureToBankByFuture 期货发起期货资金转银行应答
-func (api *TraderApi) SpiSetOnRspFromFutureToBankByFuture(callback TraderOnRspFromFutureToBankByFutureCallback) {
-	_TraderSpiSetOnRspFromFutureToBankByFuture(api.handle, callback)
-}
-
-// SpiSetOnRspQueryBankAccountMoneyByFuture 期货发起查询银行余额应答
-func (api *TraderApi) SpiSetOnRspQueryBankAccountMoneyByFuture(callback TraderOnRspQueryBankAccountMoneyByFutureCallback) {
-	_TraderSpiSetOnRspQueryBankAccountMoneyByFuture(api.handle, callback)
-}
-
-// SpiSetOnRtnOpenAccountByBank 银行发起银期开户通知
-func (api *TraderApi) SpiSetOnRtnOpenAccountByBank(callback TraderOnRtnOpenAccountByBankCallback) {
-	_TraderSpiSetOnRtnOpenAccountByBank(api.handle, callback)
-}
-
-// SpiSetOnRtnCancelAccountByBank 银行发起银期销户通知
-func (api *TraderApi) SpiSetOnRtnCancelAccountByBank(callback TraderOnRtnCancelAccountByBankCallback) {
-	_TraderSpiSetOnRtnCancelAccountByBank(api.handle, callback)
-}
-
-// SpiSetOnRtnChangeAccountByBank 银行发起变更银行账号通知
-func (api *TraderApi) SpiSetOnRtnChangeAccountByBank(callback TraderOnRtnChangeAccountByBankCallback) {
-	_TraderSpiSetOnRtnChangeAccountByBank(api.handle, callback)
-}
-
-// SpiSetOnRspQryClassifiedInstrument 请求查询分类合约响应
-func (api *TraderApi) SpiSetOnRspQryClassifiedInstrument(callback TraderOnRspQryClassifiedInstrumentCallback) {
-	_TraderSpiSetOnRspQryClassifiedInstrument(api.handle, callback)
-}
-
-// SpiSetOnRspQryCombPromotionParam 请求组合优惠比例响应
-func (api *TraderApi) SpiSetOnRspQryCombPromotionParam(callback TraderOnRspQryCombPromotionParamCallback) {
-	_TraderSpiSetOnRspQryCombPromotionParam(api.handle, callback)
-}
-
-// SpiSetOnRspQryRiskSettleInvstPosition 投资者风险结算持仓查询响应
-func (api *TraderApi) SpiSetOnRspQryRiskSettleInvstPosition(callback TraderOnRspQryRiskSettleInvstPositionCallback) {
-	_TraderSpiSetOnRspQryRiskSettleInvstPosition(api.handle, callback)
-}
-
-// SpiSetOnRspQryRiskSettleProductStatus 风险结算产品查询响应
-func (api *TraderApi) SpiSetOnRspQryRiskSettleProductStatus(callback TraderOnRspQryRiskSettleProductStatusCallback) {
-	_TraderSpiSetOnRspQryRiskSettleProductStatus(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPBMFutureParameter SPBM期货合约参数查询响应
-func (api *TraderApi) SpiSetOnRspQrySPBMFutureParameter(callback TraderOnRspQrySPBMFutureParameterCallback) {
-	_TraderSpiSetOnRspQrySPBMFutureParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPBMOptionParameter SPBM期权合约参数查询响应
-func (api *TraderApi) SpiSetOnRspQrySPBMOptionParameter(callback TraderOnRspQrySPBMOptionParameterCallback) {
-	_TraderSpiSetOnRspQrySPBMOptionParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPBMIntraParameter SPBM品种内对锁仓折扣参数查询响应
-func (api *TraderApi) SpiSetOnRspQrySPBMIntraParameter(callback TraderOnRspQrySPBMIntraParameterCallback) {
-	_TraderSpiSetOnRspQrySPBMIntraParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPBMInterParameter SPBM跨品种抵扣参数查询响应
-func (api *TraderApi) SpiSetOnRspQrySPBMInterParameter(callback TraderOnRspQrySPBMInterParameterCallback) {
-	_TraderSpiSetOnRspQrySPBMInterParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPBMPortfDefinition SPBM组合保证金套餐查询响应
-func (api *TraderApi) SpiSetOnRspQrySPBMPortfDefinition(callback TraderOnRspQrySPBMPortfDefinitionCallback) {
-	_TraderSpiSetOnRspQrySPBMPortfDefinition(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPBMInvestorPortfDef 投资者SPBM套餐选择查询响应
-func (api *TraderApi) SpiSetOnRspQrySPBMInvestorPortfDef(callback TraderOnRspQrySPBMInvestorPortfDefCallback) {
-	_TraderSpiSetOnRspQrySPBMInvestorPortfDef(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorPortfMarginRatio 投资者新型组合保证金系数查询响应
-func (api *TraderApi) SpiSetOnRspQryInvestorPortfMarginRatio(callback TraderOnRspQryInvestorPortfMarginRatioCallback) {
-	_TraderSpiSetOnRspQryInvestorPortfMarginRatio(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorProdSPBMDetail 投资者产品SPBM明细查询响应
-func (api *TraderApi) SpiSetOnRspQryInvestorProdSPBMDetail(callback TraderOnRspQryInvestorProdSPBMDetailCallback) {
-	_TraderSpiSetOnRspQryInvestorProdSPBMDetail(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorCommoditySPMMMargin 投资者商品组SPMM记录查询响应
-func (api *TraderApi) SpiSetOnRspQryInvestorCommoditySPMMMargin(callback TraderOnRspQryInvestorCommoditySPMMMarginCallback) {
-	_TraderSpiSetOnRspQryInvestorCommoditySPMMMargin(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorCommodityGroupSPMMMargin 投资者商品群SPMM记录查询响应
-func (api *TraderApi) SpiSetOnRspQryInvestorCommodityGroupSPMMMargin(callback TraderOnRspQryInvestorCommodityGroupSPMMMarginCallback) {
-	_TraderSpiSetOnRspQryInvestorCommodityGroupSPMMMargin(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPMMInstParam SPMM合约参数查询响应
-func (api *TraderApi) SpiSetOnRspQrySPMMInstParam(callback TraderOnRspQrySPMMInstParamCallback) {
-	_TraderSpiSetOnRspQrySPMMInstParam(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPMMProductParam SPMM产品参数查询响应
-func (api *TraderApi) SpiSetOnRspQrySPMMProductParam(callback TraderOnRspQrySPMMProductParamCallback) {
-	_TraderSpiSetOnRspQrySPMMProductParam(api.handle, callback)
-}
-
-// SpiSetOnRspQrySPBMAddOnInterParameter SPBM附加跨品种抵扣参数查询响应
-func (api *TraderApi) SpiSetOnRspQrySPBMAddOnInterParameter(callback TraderOnRspQrySPBMAddOnInterParameterCallback) {
-	_TraderSpiSetOnRspQrySPBMAddOnInterParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQryRCAMSCombProductInfo RCAMS产品组合信息查询响应
-func (api *TraderApi) SpiSetOnRspQryRCAMSCombProductInfo(callback TraderOnRspQryRCAMSCombProductInfoCallback) {
-	_TraderSpiSetOnRspQryRCAMSCombProductInfo(api.handle, callback)
-}
-
-// SpiSetOnRspQryRCAMSInstrParameter RCAMS同合约风险对冲参数查询响应
-func (api *TraderApi) SpiSetOnRspQryRCAMSInstrParameter(callback TraderOnRspQryRCAMSInstrParameterCallback) {
-	_TraderSpiSetOnRspQryRCAMSInstrParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQryRCAMSIntraParameter RCAMS品种内风险对冲参数查询响应
-func (api *TraderApi) SpiSetOnRspQryRCAMSIntraParameter(callback TraderOnRspQryRCAMSIntraParameterCallback) {
-	_TraderSpiSetOnRspQryRCAMSIntraParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQryRCAMSInterParameter RCAMS跨品种风险折抵参数查询响应
-func (api *TraderApi) SpiSetOnRspQryRCAMSInterParameter(callback TraderOnRspQryRCAMSInterParameterCallback) {
-	_TraderSpiSetOnRspQryRCAMSInterParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQryRCAMSShortOptAdjustParam RCAMS空头期权风险调整参数查询响应
-func (api *TraderApi) SpiSetOnRspQryRCAMSShortOptAdjustParam(callback TraderOnRspQryRCAMSShortOptAdjustParamCallback) {
-	_TraderSpiSetOnRspQryRCAMSShortOptAdjustParam(api.handle, callback)
-}
-
-// SpiSetOnRspQryRCAMSInvestorCombPosition RCAMS策略组合持仓查询响应
-func (api *TraderApi) SpiSetOnRspQryRCAMSInvestorCombPosition(callback TraderOnRspQryRCAMSInvestorCombPositionCallback) {
-	_TraderSpiSetOnRspQryRCAMSInvestorCombPosition(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorProdRCAMSMargin 投资者品种RCAMS保证金查询响应
-func (api *TraderApi) SpiSetOnRspQryInvestorProdRCAMSMargin(callback TraderOnRspQryInvestorProdRCAMSMarginCallback) {
-	_TraderSpiSetOnRspQryInvestorProdRCAMSMargin(api.handle, callback)
-}
-
-// SpiSetOnRspQryRULEInstrParameter RULE合约保证金参数查询响应
-func (api *TraderApi) SpiSetOnRspQryRULEInstrParameter(callback TraderOnRspQryRULEInstrParameterCallback) {
-	_TraderSpiSetOnRspQryRULEInstrParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQryRULEIntraParameter RULE品种内对锁仓折扣参数查询响应
-func (api *TraderApi) SpiSetOnRspQryRULEIntraParameter(callback TraderOnRspQryRULEIntraParameterCallback) {
-	_TraderSpiSetOnRspQryRULEIntraParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQryRULEInterParameter RULE跨品种抵扣参数查询响应
-func (api *TraderApi) SpiSetOnRspQryRULEInterParameter(callback TraderOnRspQryRULEInterParameterCallback) {
-	_TraderSpiSetOnRspQryRULEInterParameter(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorProdRULEMargin 投资者产品RULE保证金查询响应
-func (api *TraderApi) SpiSetOnRspQryInvestorProdRULEMargin(callback TraderOnRspQryInvestorProdRULEMarginCallback) {
-	_TraderSpiSetOnRspQryInvestorProdRULEMargin(api.handle, callback)
-}
-
-// SpiSetOnRspQryInvestorPortfSetting 投资者投资者新组保设置查询响应
-func (api *TraderApi) SpiSetOnRspQryInvestorPortfSetting(callback TraderOnRspQryInvestorPortfSettingCallback) {
-	_TraderSpiSetOnRspQryInvestorPortfSetting(api.handle, callback)
-}
-
 // ReqUserLoginWithSystemInfo ========== 跨平台统一登录接口 ========== 说明: macOS 版本的 ReqUserLogin 需要额外的 systemInfo 参数 此函数在 Linux/Windows 上忽略 systemInfo，在 macOS 上使用它 带系统信息的用户登录请求（跨平台统一接口） systemInfoLen: 系统信息长度，传 0 表示自动采集（仅 macOS 生效） systemInfo: 系统信息数据，传 NULL 表示自动采集（仅 macOS 生效）
 func (api *TraderApi) ReqUserLoginWithSystemInfo(pReqUserLoginField *CThostFtdcReqUserLoginField, nRequestID int32, systemInfoLen int32, systemInfo string) int32 {
 	return _TraderReqUserLoginWithSystemInfo(api.handle, pReqUserLoginField, nRequestID, systemInfoLen, CString(systemInfo))
 }
 
+// ========== SPI 回调设置方法 ==========
+
+// SpiSetOnFrontConnected ========== 回调函数类型（带 userData） ========== 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
+func (api *TraderApi) SpiSetOnFrontConnected(callback TraderOnFrontConnectedCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnFrontConnected(api.spiHandle, ptr)
+}
+
+// SpiSetOnFrontDisconnected 0x2003 收到错误报文
+func (api *TraderApi) SpiSetOnFrontDisconnected(callback TraderOnFrontDisconnectedCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnFrontDisconnected(api.spiHandle, ptr)
+}
+
+// SpiSetOnHeartBeatWarning 心跳超时警告。当长时间未收到报文时，该方法被调用。
+func (api *TraderApi) SpiSetOnHeartBeatWarning(callback TraderOnHeartBeatWarningCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnHeartBeatWarning(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspAuthenticate 客户端认证响应
+func (api *TraderApi) SpiSetOnRspAuthenticate(callback TraderOnRspAuthenticateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspAuthenticate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspUserLogin 登录请求响应
+func (api *TraderApi) SpiSetOnRspUserLogin(callback TraderOnRspUserLoginCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspUserLogin(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspUserLogout 登出请求响应
+func (api *TraderApi) SpiSetOnRspUserLogout(callback TraderOnRspUserLogoutCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspUserLogout(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspUserPasswordUpdate 用户口令更新请求响应
+func (api *TraderApi) SpiSetOnRspUserPasswordUpdate(callback TraderOnRspUserPasswordUpdateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspUserPasswordUpdate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspTradingAccountPasswordUpdate 资金账户口令更新请求响应
+func (api *TraderApi) SpiSetOnRspTradingAccountPasswordUpdate(callback TraderOnRspTradingAccountPasswordUpdateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspTradingAccountPasswordUpdate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspUserAuthMethod 查询用户当前支持的认证模式的回复
+func (api *TraderApi) SpiSetOnRspUserAuthMethod(callback TraderOnRspUserAuthMethodCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspUserAuthMethod(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspGenUserCaptcha 获取图形验证码请求的回复
+func (api *TraderApi) SpiSetOnRspGenUserCaptcha(callback TraderOnRspGenUserCaptchaCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspGenUserCaptcha(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspGenUserText 获取短信验证码请求的回复
+func (api *TraderApi) SpiSetOnRspGenUserText(callback TraderOnRspGenUserTextCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspGenUserText(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspOrderInsert 报单录入请求响应
+func (api *TraderApi) SpiSetOnRspOrderInsert(callback TraderOnRspOrderInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspOrderInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspParkedOrderInsert 预埋单录入请求响应
+func (api *TraderApi) SpiSetOnRspParkedOrderInsert(callback TraderOnRspParkedOrderInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspParkedOrderInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspParkedOrderAction 预埋撤单录入请求响应
+func (api *TraderApi) SpiSetOnRspParkedOrderAction(callback TraderOnRspParkedOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspParkedOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspOrderAction 报单操作请求响应
+func (api *TraderApi) SpiSetOnRspOrderAction(callback TraderOnRspOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryMaxOrderVolume 查询最大报单数量响应
+func (api *TraderApi) SpiSetOnRspQryMaxOrderVolume(callback TraderOnRspQryMaxOrderVolumeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryMaxOrderVolume(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspSettlementInfoConfirm 投资者结算结果确认响应
+func (api *TraderApi) SpiSetOnRspSettlementInfoConfirm(callback TraderOnRspSettlementInfoConfirmCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspSettlementInfoConfirm(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspRemoveParkedOrder 删除预埋单响应
+func (api *TraderApi) SpiSetOnRspRemoveParkedOrder(callback TraderOnRspRemoveParkedOrderCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspRemoveParkedOrder(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspRemoveParkedOrderAction 删除预埋撤单响应
+func (api *TraderApi) SpiSetOnRspRemoveParkedOrderAction(callback TraderOnRspRemoveParkedOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspRemoveParkedOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspExecOrderInsert 执行宣告录入请求响应
+func (api *TraderApi) SpiSetOnRspExecOrderInsert(callback TraderOnRspExecOrderInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspExecOrderInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspExecOrderAction 执行宣告操作请求响应
+func (api *TraderApi) SpiSetOnRspExecOrderAction(callback TraderOnRspExecOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspExecOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspForQuoteInsert 询价录入请求响应
+func (api *TraderApi) SpiSetOnRspForQuoteInsert(callback TraderOnRspForQuoteInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspForQuoteInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQuoteInsert 报价录入请求响应
+func (api *TraderApi) SpiSetOnRspQuoteInsert(callback TraderOnRspQuoteInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQuoteInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQuoteAction 报价操作请求响应
+func (api *TraderApi) SpiSetOnRspQuoteAction(callback TraderOnRspQuoteActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQuoteAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspBatchOrderAction 批量报单操作请求响应
+func (api *TraderApi) SpiSetOnRspBatchOrderAction(callback TraderOnRspBatchOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspBatchOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspOptionSelfCloseInsert 期权自对冲录入请求响应
+func (api *TraderApi) SpiSetOnRspOptionSelfCloseInsert(callback TraderOnRspOptionSelfCloseInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspOptionSelfCloseInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspOptionSelfCloseAction 期权自对冲操作请求响应
+func (api *TraderApi) SpiSetOnRspOptionSelfCloseAction(callback TraderOnRspOptionSelfCloseActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspOptionSelfCloseAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspCombActionInsert 申请组合录入请求响应
+func (api *TraderApi) SpiSetOnRspCombActionInsert(callback TraderOnRspCombActionInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspCombActionInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryOrder 请求查询报单响应
+func (api *TraderApi) SpiSetOnRspQryOrder(callback TraderOnRspQryOrderCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryOrder(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryTrade 请求查询成交响应
+func (api *TraderApi) SpiSetOnRspQryTrade(callback TraderOnRspQryTradeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryTrade(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorPosition 请求查询投资者持仓响应
+func (api *TraderApi) SpiSetOnRspQryInvestorPosition(callback TraderOnRspQryInvestorPositionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorPosition(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryTradingAccount 请求查询资金账户响应
+func (api *TraderApi) SpiSetOnRspQryTradingAccount(callback TraderOnRspQryTradingAccountCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryTradingAccount(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestor 请求查询投资者响应
+func (api *TraderApi) SpiSetOnRspQryInvestor(callback TraderOnRspQryInvestorCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestor(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryTradingCode 请求查询交易编码响应
+func (api *TraderApi) SpiSetOnRspQryTradingCode(callback TraderOnRspQryTradingCodeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryTradingCode(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInstrumentMarginRate 请求查询合约保证金率响应
+func (api *TraderApi) SpiSetOnRspQryInstrumentMarginRate(callback TraderOnRspQryInstrumentMarginRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInstrumentMarginRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInstrumentCommissionRate 请求查询合约手续费率响应
+func (api *TraderApi) SpiSetOnRspQryInstrumentCommissionRate(callback TraderOnRspQryInstrumentCommissionRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInstrumentCommissionRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryExchange 请求查询交易所响应
+func (api *TraderApi) SpiSetOnRspQryExchange(callback TraderOnRspQryExchangeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryExchange(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryProduct 请求查询产品响应
+func (api *TraderApi) SpiSetOnRspQryProduct(callback TraderOnRspQryProductCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryProduct(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInstrument 请求查询合约响应
+func (api *TraderApi) SpiSetOnRspQryInstrument(callback TraderOnRspQryInstrumentCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInstrument(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryDepthMarketData 请求查询行情响应
+func (api *TraderApi) SpiSetOnRspQryDepthMarketData(callback TraderOnRspQryDepthMarketDataCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryDepthMarketData(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryTraderOffer 请求查询交易员报盘机响应
+func (api *TraderApi) SpiSetOnRspQryTraderOffer(callback TraderOnRspQryTraderOfferCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryTraderOffer(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySettlementInfo 请求查询投资者结算结果响应
+func (api *TraderApi) SpiSetOnRspQrySettlementInfo(callback TraderOnRspQrySettlementInfoCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySettlementInfo(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryTransferBank 请求查询转帐银行响应
+func (api *TraderApi) SpiSetOnRspQryTransferBank(callback TraderOnRspQryTransferBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryTransferBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorPositionDetail 请求查询投资者持仓明细响应
+func (api *TraderApi) SpiSetOnRspQryInvestorPositionDetail(callback TraderOnRspQryInvestorPositionDetailCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorPositionDetail(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryNotice 请求查询客户通知响应
+func (api *TraderApi) SpiSetOnRspQryNotice(callback TraderOnRspQryNoticeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryNotice(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySettlementInfoConfirm 请求查询结算信息确认响应
+func (api *TraderApi) SpiSetOnRspQrySettlementInfoConfirm(callback TraderOnRspQrySettlementInfoConfirmCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySettlementInfoConfirm(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorPositionCombineDetail 请求查询投资者持仓明细响应
+func (api *TraderApi) SpiSetOnRspQryInvestorPositionCombineDetail(callback TraderOnRspQryInvestorPositionCombineDetailCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorPositionCombineDetail(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryCFMMCTradingAccountKey 查询保证金监管系统经纪公司资金账户密钥响应
+func (api *TraderApi) SpiSetOnRspQryCFMMCTradingAccountKey(callback TraderOnRspQryCFMMCTradingAccountKeyCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryCFMMCTradingAccountKey(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryEWarrantOffset 请求查询仓单折抵信息响应
+func (api *TraderApi) SpiSetOnRspQryEWarrantOffset(callback TraderOnRspQryEWarrantOffsetCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryEWarrantOffset(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorProductGroupMargin 请求查询投资者品种/跨品种保证金响应
+func (api *TraderApi) SpiSetOnRspQryInvestorProductGroupMargin(callback TraderOnRspQryInvestorProductGroupMarginCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorProductGroupMargin(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryExchangeMarginRate 请求查询交易所保证金率响应
+func (api *TraderApi) SpiSetOnRspQryExchangeMarginRate(callback TraderOnRspQryExchangeMarginRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryExchangeMarginRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryExchangeMarginRateAdjust 请求查询交易所调整保证金率响应
+func (api *TraderApi) SpiSetOnRspQryExchangeMarginRateAdjust(callback TraderOnRspQryExchangeMarginRateAdjustCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryExchangeMarginRateAdjust(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryExchangeRate 请求查询汇率响应
+func (api *TraderApi) SpiSetOnRspQryExchangeRate(callback TraderOnRspQryExchangeRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryExchangeRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySecAgentACIDMap 请求查询二级代理操作员银期权限响应
+func (api *TraderApi) SpiSetOnRspQrySecAgentACIDMap(callback TraderOnRspQrySecAgentACIDMapCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySecAgentACIDMap(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryProductExchRate 请求查询产品报价汇率
+func (api *TraderApi) SpiSetOnRspQryProductExchRate(callback TraderOnRspQryProductExchRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryProductExchRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryProductGroup 请求查询产品组
+func (api *TraderApi) SpiSetOnRspQryProductGroup(callback TraderOnRspQryProductGroupCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryProductGroup(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryMMInstrumentCommissionRate 请求查询做市商合约手续费率响应
+func (api *TraderApi) SpiSetOnRspQryMMInstrumentCommissionRate(callback TraderOnRspQryMMInstrumentCommissionRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryMMInstrumentCommissionRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryMMOptionInstrCommRate 请求查询做市商期权合约手续费响应
+func (api *TraderApi) SpiSetOnRspQryMMOptionInstrCommRate(callback TraderOnRspQryMMOptionInstrCommRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryMMOptionInstrCommRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInstrumentOrderCommRate 请求查询报单手续费响应
+func (api *TraderApi) SpiSetOnRspQryInstrumentOrderCommRate(callback TraderOnRspQryInstrumentOrderCommRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInstrumentOrderCommRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySecAgentTradingAccount 请求查询资金账户响应
+func (api *TraderApi) SpiSetOnRspQrySecAgentTradingAccount(callback TraderOnRspQrySecAgentTradingAccountCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySecAgentTradingAccount(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySecAgentCheckMode 请求查询二级代理商资金校验模式响应
+func (api *TraderApi) SpiSetOnRspQrySecAgentCheckMode(callback TraderOnRspQrySecAgentCheckModeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySecAgentCheckMode(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySecAgentTradeInfo 请求查询二级代理商信息响应
+func (api *TraderApi) SpiSetOnRspQrySecAgentTradeInfo(callback TraderOnRspQrySecAgentTradeInfoCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySecAgentTradeInfo(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryOptionInstrTradeCost 请求查询期权交易成本响应
+func (api *TraderApi) SpiSetOnRspQryOptionInstrTradeCost(callback TraderOnRspQryOptionInstrTradeCostCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryOptionInstrTradeCost(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryOptionInstrCommRate 请求查询期权合约手续费响应
+func (api *TraderApi) SpiSetOnRspQryOptionInstrCommRate(callback TraderOnRspQryOptionInstrCommRateCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryOptionInstrCommRate(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryExecOrder 请求查询执行宣告响应
+func (api *TraderApi) SpiSetOnRspQryExecOrder(callback TraderOnRspQryExecOrderCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryExecOrder(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryForQuote 请求查询询价响应
+func (api *TraderApi) SpiSetOnRspQryForQuote(callback TraderOnRspQryForQuoteCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryForQuote(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryQuote 请求查询报价响应
+func (api *TraderApi) SpiSetOnRspQryQuote(callback TraderOnRspQryQuoteCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryQuote(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryOptionSelfClose 请求查询期权自对冲响应
+func (api *TraderApi) SpiSetOnRspQryOptionSelfClose(callback TraderOnRspQryOptionSelfCloseCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryOptionSelfClose(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestUnit 请求查询投资单元响应
+func (api *TraderApi) SpiSetOnRspQryInvestUnit(callback TraderOnRspQryInvestUnitCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestUnit(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryCombInstrumentGuard 请求查询组合合约安全系数响应
+func (api *TraderApi) SpiSetOnRspQryCombInstrumentGuard(callback TraderOnRspQryCombInstrumentGuardCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryCombInstrumentGuard(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryCombAction 请求查询申请组合响应
+func (api *TraderApi) SpiSetOnRspQryCombAction(callback TraderOnRspQryCombActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryCombAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryTransferSerial 请求查询转帐流水响应
+func (api *TraderApi) SpiSetOnRspQryTransferSerial(callback TraderOnRspQryTransferSerialCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryTransferSerial(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryAccountregister 请求查询银期签约关系响应
+func (api *TraderApi) SpiSetOnRspQryAccountregister(callback TraderOnRspQryAccountregisterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryAccountregister(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspError 错误应答
+func (api *TraderApi) SpiSetOnRspError(callback TraderOnRspErrorCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspError(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnOrder 报单通知
+func (api *TraderApi) SpiSetOnRtnOrder(callback TraderOnRtnOrderCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnOrder(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnTrade 成交通知
+func (api *TraderApi) SpiSetOnRtnTrade(callback TraderOnRtnTradeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnTrade(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnOrderInsert 报单录入错误回报
+func (api *TraderApi) SpiSetOnErrRtnOrderInsert(callback TraderOnErrRtnOrderInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnOrderInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnOrderAction 报单操作错误回报
+func (api *TraderApi) SpiSetOnErrRtnOrderAction(callback TraderOnErrRtnOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnInstrumentStatus 合约交易状态通知
+func (api *TraderApi) SpiSetOnRtnInstrumentStatus(callback TraderOnRtnInstrumentStatusCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnInstrumentStatus(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnBulletin 交易所公告通知
+func (api *TraderApi) SpiSetOnRtnBulletin(callback TraderOnRtnBulletinCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnBulletin(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnTradingNotice 交易通知
+func (api *TraderApi) SpiSetOnRtnTradingNotice(callback TraderOnRtnTradingNoticeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnTradingNotice(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnErrorConditionalOrder 提示条件单校验错误
+func (api *TraderApi) SpiSetOnRtnErrorConditionalOrder(callback TraderOnRtnErrorConditionalOrderCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnErrorConditionalOrder(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnExecOrder 执行宣告通知
+func (api *TraderApi) SpiSetOnRtnExecOrder(callback TraderOnRtnExecOrderCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnExecOrder(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnExecOrderInsert 执行宣告录入错误回报
+func (api *TraderApi) SpiSetOnErrRtnExecOrderInsert(callback TraderOnErrRtnExecOrderInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnExecOrderInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnExecOrderAction 执行宣告操作错误回报
+func (api *TraderApi) SpiSetOnErrRtnExecOrderAction(callback TraderOnErrRtnExecOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnExecOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnForQuoteInsert 询价录入错误回报
+func (api *TraderApi) SpiSetOnErrRtnForQuoteInsert(callback TraderOnErrRtnForQuoteInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnForQuoteInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnQuote 报价通知
+func (api *TraderApi) SpiSetOnRtnQuote(callback TraderOnRtnQuoteCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnQuote(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnQuoteInsert 报价录入错误回报
+func (api *TraderApi) SpiSetOnErrRtnQuoteInsert(callback TraderOnErrRtnQuoteInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnQuoteInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnQuoteAction 报价操作错误回报
+func (api *TraderApi) SpiSetOnErrRtnQuoteAction(callback TraderOnErrRtnQuoteActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnQuoteAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnForQuoteRsp 询价通知
+func (api *TraderApi) SpiSetOnRtnForQuoteRsp(callback TraderOnRtnForQuoteRspCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnForQuoteRsp(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnCFMMCTradingAccountToken 保证金监控中心用户令牌
+func (api *TraderApi) SpiSetOnRtnCFMMCTradingAccountToken(callback TraderOnRtnCFMMCTradingAccountTokenCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnCFMMCTradingAccountToken(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnBatchOrderAction 批量报单操作错误回报
+func (api *TraderApi) SpiSetOnErrRtnBatchOrderAction(callback TraderOnErrRtnBatchOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnBatchOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnOptionSelfClose 期权自对冲通知
+func (api *TraderApi) SpiSetOnRtnOptionSelfClose(callback TraderOnRtnOptionSelfCloseCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnOptionSelfClose(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnOptionSelfCloseInsert 期权自对冲录入错误回报
+func (api *TraderApi) SpiSetOnErrRtnOptionSelfCloseInsert(callback TraderOnErrRtnOptionSelfCloseInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnOptionSelfCloseInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnOptionSelfCloseAction 期权自对冲操作错误回报
+func (api *TraderApi) SpiSetOnErrRtnOptionSelfCloseAction(callback TraderOnErrRtnOptionSelfCloseActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnOptionSelfCloseAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnCombAction 申请组合通知
+func (api *TraderApi) SpiSetOnRtnCombAction(callback TraderOnRtnCombActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnCombAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnCombActionInsert 申请组合录入错误回报
+func (api *TraderApi) SpiSetOnErrRtnCombActionInsert(callback TraderOnErrRtnCombActionInsertCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnCombActionInsert(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryContractBank 请求查询签约银行响应
+func (api *TraderApi) SpiSetOnRspQryContractBank(callback TraderOnRspQryContractBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryContractBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryParkedOrder 请求查询预埋单响应
+func (api *TraderApi) SpiSetOnRspQryParkedOrder(callback TraderOnRspQryParkedOrderCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryParkedOrder(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryParkedOrderAction 请求查询预埋撤单响应
+func (api *TraderApi) SpiSetOnRspQryParkedOrderAction(callback TraderOnRspQryParkedOrderActionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryParkedOrderAction(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryTradingNotice 请求查询交易通知响应
+func (api *TraderApi) SpiSetOnRspQryTradingNotice(callback TraderOnRspQryTradingNoticeCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryTradingNotice(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryBrokerTradingParams 请求查询经纪公司交易参数响应
+func (api *TraderApi) SpiSetOnRspQryBrokerTradingParams(callback TraderOnRspQryBrokerTradingParamsCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryBrokerTradingParams(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryBrokerTradingAlgos 请求查询经纪公司交易算法响应
+func (api *TraderApi) SpiSetOnRspQryBrokerTradingAlgos(callback TraderOnRspQryBrokerTradingAlgosCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryBrokerTradingAlgos(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQueryCFMMCTradingAccountToken 请求查询监控中心用户令牌
+func (api *TraderApi) SpiSetOnRspQueryCFMMCTradingAccountToken(callback TraderOnRspQueryCFMMCTradingAccountTokenCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQueryCFMMCTradingAccountToken(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnFromBankToFutureByBank 银行发起银行资金转期货通知
+func (api *TraderApi) SpiSetOnRtnFromBankToFutureByBank(callback TraderOnRtnFromBankToFutureByBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnFromBankToFutureByBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnFromFutureToBankByBank 银行发起期货资金转银行通知
+func (api *TraderApi) SpiSetOnRtnFromFutureToBankByBank(callback TraderOnRtnFromFutureToBankByBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnFromFutureToBankByBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnRepealFromBankToFutureByBank 银行发起冲正银行转期货通知
+func (api *TraderApi) SpiSetOnRtnRepealFromBankToFutureByBank(callback TraderOnRtnRepealFromBankToFutureByBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnRepealFromBankToFutureByBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnRepealFromFutureToBankByBank 银行发起冲正期货转银行通知
+func (api *TraderApi) SpiSetOnRtnRepealFromFutureToBankByBank(callback TraderOnRtnRepealFromFutureToBankByBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnRepealFromFutureToBankByBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnFromBankToFutureByFuture 期货发起银行资金转期货通知
+func (api *TraderApi) SpiSetOnRtnFromBankToFutureByFuture(callback TraderOnRtnFromBankToFutureByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnFromBankToFutureByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnFromFutureToBankByFuture 期货发起期货资金转银行通知
+func (api *TraderApi) SpiSetOnRtnFromFutureToBankByFuture(callback TraderOnRtnFromFutureToBankByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnFromFutureToBankByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnRepealFromBankToFutureByFutureManual 系统运行时期货端手工发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
+func (api *TraderApi) SpiSetOnRtnRepealFromBankToFutureByFutureManual(callback TraderOnRtnRepealFromBankToFutureByFutureManualCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnRepealFromBankToFutureByFutureManual(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnRepealFromFutureToBankByFutureManual 系统运行时期货端手工发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
+func (api *TraderApi) SpiSetOnRtnRepealFromFutureToBankByFutureManual(callback TraderOnRtnRepealFromFutureToBankByFutureManualCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnRepealFromFutureToBankByFutureManual(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnQueryBankBalanceByFuture 期货发起查询银行余额通知
+func (api *TraderApi) SpiSetOnRtnQueryBankBalanceByFuture(callback TraderOnRtnQueryBankBalanceByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnQueryBankBalanceByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnBankToFutureByFuture 期货发起银行资金转期货错误回报
+func (api *TraderApi) SpiSetOnErrRtnBankToFutureByFuture(callback TraderOnErrRtnBankToFutureByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnBankToFutureByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnFutureToBankByFuture 期货发起期货资金转银行错误回报
+func (api *TraderApi) SpiSetOnErrRtnFutureToBankByFuture(callback TraderOnErrRtnFutureToBankByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnFutureToBankByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnRepealBankToFutureByFutureManual 系统运行时期货端手工发起冲正银行转期货错误回报
+func (api *TraderApi) SpiSetOnErrRtnRepealBankToFutureByFutureManual(callback TraderOnErrRtnRepealBankToFutureByFutureManualCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnRepealBankToFutureByFutureManual(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnRepealFutureToBankByFutureManual 系统运行时期货端手工发起冲正期货转银行错误回报
+func (api *TraderApi) SpiSetOnErrRtnRepealFutureToBankByFutureManual(callback TraderOnErrRtnRepealFutureToBankByFutureManualCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnRepealFutureToBankByFutureManual(api.spiHandle, ptr)
+}
+
+// SpiSetOnErrRtnQueryBankBalanceByFuture 期货发起查询银行余额错误回报
+func (api *TraderApi) SpiSetOnErrRtnQueryBankBalanceByFuture(callback TraderOnErrRtnQueryBankBalanceByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnErrRtnQueryBankBalanceByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnRepealFromBankToFutureByFuture 期货发起冲正银行转期货请求，银行处理完毕后报盘发回的通知
+func (api *TraderApi) SpiSetOnRtnRepealFromBankToFutureByFuture(callback TraderOnRtnRepealFromBankToFutureByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnRepealFromBankToFutureByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnRepealFromFutureToBankByFuture 期货发起冲正期货转银行请求，银行处理完毕后报盘发回的通知
+func (api *TraderApi) SpiSetOnRtnRepealFromFutureToBankByFuture(callback TraderOnRtnRepealFromFutureToBankByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnRepealFromFutureToBankByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspFromBankToFutureByFuture 期货发起银行资金转期货应答
+func (api *TraderApi) SpiSetOnRspFromBankToFutureByFuture(callback TraderOnRspFromBankToFutureByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspFromBankToFutureByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspFromFutureToBankByFuture 期货发起期货资金转银行应答
+func (api *TraderApi) SpiSetOnRspFromFutureToBankByFuture(callback TraderOnRspFromFutureToBankByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspFromFutureToBankByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQueryBankAccountMoneyByFuture 期货发起查询银行余额应答
+func (api *TraderApi) SpiSetOnRspQueryBankAccountMoneyByFuture(callback TraderOnRspQueryBankAccountMoneyByFutureCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQueryBankAccountMoneyByFuture(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnOpenAccountByBank 银行发起银期开户通知
+func (api *TraderApi) SpiSetOnRtnOpenAccountByBank(callback TraderOnRtnOpenAccountByBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnOpenAccountByBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnCancelAccountByBank 银行发起银期销户通知
+func (api *TraderApi) SpiSetOnRtnCancelAccountByBank(callback TraderOnRtnCancelAccountByBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnCancelAccountByBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRtnChangeAccountByBank 银行发起变更银行账号通知
+func (api *TraderApi) SpiSetOnRtnChangeAccountByBank(callback TraderOnRtnChangeAccountByBankCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRtnChangeAccountByBank(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryClassifiedInstrument 请求查询分类合约响应
+func (api *TraderApi) SpiSetOnRspQryClassifiedInstrument(callback TraderOnRspQryClassifiedInstrumentCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryClassifiedInstrument(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryCombPromotionParam 请求组合优惠比例响应
+func (api *TraderApi) SpiSetOnRspQryCombPromotionParam(callback TraderOnRspQryCombPromotionParamCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryCombPromotionParam(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRiskSettleInvstPosition 投资者风险结算持仓查询响应
+func (api *TraderApi) SpiSetOnRspQryRiskSettleInvstPosition(callback TraderOnRspQryRiskSettleInvstPositionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRiskSettleInvstPosition(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRiskSettleProductStatus 风险结算产品查询响应
+func (api *TraderApi) SpiSetOnRspQryRiskSettleProductStatus(callback TraderOnRspQryRiskSettleProductStatusCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRiskSettleProductStatus(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPBMFutureParameter SPBM期货合约参数查询响应
+func (api *TraderApi) SpiSetOnRspQrySPBMFutureParameter(callback TraderOnRspQrySPBMFutureParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPBMFutureParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPBMOptionParameter SPBM期权合约参数查询响应
+func (api *TraderApi) SpiSetOnRspQrySPBMOptionParameter(callback TraderOnRspQrySPBMOptionParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPBMOptionParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPBMIntraParameter SPBM品种内对锁仓折扣参数查询响应
+func (api *TraderApi) SpiSetOnRspQrySPBMIntraParameter(callback TraderOnRspQrySPBMIntraParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPBMIntraParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPBMInterParameter SPBM跨品种抵扣参数查询响应
+func (api *TraderApi) SpiSetOnRspQrySPBMInterParameter(callback TraderOnRspQrySPBMInterParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPBMInterParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPBMPortfDefinition SPBM组合保证金套餐查询响应
+func (api *TraderApi) SpiSetOnRspQrySPBMPortfDefinition(callback TraderOnRspQrySPBMPortfDefinitionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPBMPortfDefinition(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPBMInvestorPortfDef 投资者SPBM套餐选择查询响应
+func (api *TraderApi) SpiSetOnRspQrySPBMInvestorPortfDef(callback TraderOnRspQrySPBMInvestorPortfDefCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPBMInvestorPortfDef(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorPortfMarginRatio 投资者新型组合保证金系数查询响应
+func (api *TraderApi) SpiSetOnRspQryInvestorPortfMarginRatio(callback TraderOnRspQryInvestorPortfMarginRatioCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorPortfMarginRatio(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorProdSPBMDetail 投资者产品SPBM明细查询响应
+func (api *TraderApi) SpiSetOnRspQryInvestorProdSPBMDetail(callback TraderOnRspQryInvestorProdSPBMDetailCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorProdSPBMDetail(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorCommoditySPMMMargin 投资者商品组SPMM记录查询响应
+func (api *TraderApi) SpiSetOnRspQryInvestorCommoditySPMMMargin(callback TraderOnRspQryInvestorCommoditySPMMMarginCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorCommoditySPMMMargin(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorCommodityGroupSPMMMargin 投资者商品群SPMM记录查询响应
+func (api *TraderApi) SpiSetOnRspQryInvestorCommodityGroupSPMMMargin(callback TraderOnRspQryInvestorCommodityGroupSPMMMarginCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorCommodityGroupSPMMMargin(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPMMInstParam SPMM合约参数查询响应
+func (api *TraderApi) SpiSetOnRspQrySPMMInstParam(callback TraderOnRspQrySPMMInstParamCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPMMInstParam(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPMMProductParam SPMM产品参数查询响应
+func (api *TraderApi) SpiSetOnRspQrySPMMProductParam(callback TraderOnRspQrySPMMProductParamCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPMMProductParam(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQrySPBMAddOnInterParameter SPBM附加跨品种抵扣参数查询响应
+func (api *TraderApi) SpiSetOnRspQrySPBMAddOnInterParameter(callback TraderOnRspQrySPBMAddOnInterParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQrySPBMAddOnInterParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRCAMSCombProductInfo RCAMS产品组合信息查询响应
+func (api *TraderApi) SpiSetOnRspQryRCAMSCombProductInfo(callback TraderOnRspQryRCAMSCombProductInfoCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRCAMSCombProductInfo(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRCAMSInstrParameter RCAMS同合约风险对冲参数查询响应
+func (api *TraderApi) SpiSetOnRspQryRCAMSInstrParameter(callback TraderOnRspQryRCAMSInstrParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRCAMSInstrParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRCAMSIntraParameter RCAMS品种内风险对冲参数查询响应
+func (api *TraderApi) SpiSetOnRspQryRCAMSIntraParameter(callback TraderOnRspQryRCAMSIntraParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRCAMSIntraParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRCAMSInterParameter RCAMS跨品种风险折抵参数查询响应
+func (api *TraderApi) SpiSetOnRspQryRCAMSInterParameter(callback TraderOnRspQryRCAMSInterParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRCAMSInterParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRCAMSShortOptAdjustParam RCAMS空头期权风险调整参数查询响应
+func (api *TraderApi) SpiSetOnRspQryRCAMSShortOptAdjustParam(callback TraderOnRspQryRCAMSShortOptAdjustParamCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRCAMSShortOptAdjustParam(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRCAMSInvestorCombPosition RCAMS策略组合持仓查询响应
+func (api *TraderApi) SpiSetOnRspQryRCAMSInvestorCombPosition(callback TraderOnRspQryRCAMSInvestorCombPositionCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRCAMSInvestorCombPosition(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorProdRCAMSMargin 投资者品种RCAMS保证金查询响应
+func (api *TraderApi) SpiSetOnRspQryInvestorProdRCAMSMargin(callback TraderOnRspQryInvestorProdRCAMSMarginCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorProdRCAMSMargin(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRULEInstrParameter RULE合约保证金参数查询响应
+func (api *TraderApi) SpiSetOnRspQryRULEInstrParameter(callback TraderOnRspQryRULEInstrParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRULEInstrParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRULEIntraParameter RULE品种内对锁仓折扣参数查询响应
+func (api *TraderApi) SpiSetOnRspQryRULEIntraParameter(callback TraderOnRspQryRULEIntraParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRULEIntraParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryRULEInterParameter RULE跨品种抵扣参数查询响应
+func (api *TraderApi) SpiSetOnRspQryRULEInterParameter(callback TraderOnRspQryRULEInterParameterCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryRULEInterParameter(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorProdRULEMargin 投资者产品RULE保证金查询响应
+func (api *TraderApi) SpiSetOnRspQryInvestorProdRULEMargin(callback TraderOnRspQryInvestorProdRULEMarginCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorProdRULEMargin(api.spiHandle, ptr)
+}
+
+// SpiSetOnRspQryInvestorPortfSetting 投资者投资者新组保设置查询响应
+func (api *TraderApi) SpiSetOnRspQryInvestorPortfSetting(callback TraderOnRspQryInvestorPortfSettingCallback) {
+	// 将函数类型转换为 uintptr
+	ptr := *(*uintptr)(unsafe.Pointer(&callback))
+	_TraderSpiSetOnRspQryInvestorPortfSetting(api.spiHandle, ptr)
+}
+
 // SetSpi 设置回调接口
+// 此方法会创建 C SPI 实例，注册 Go 回调函数，并将 SPI 注册到 API
 func (api *TraderApi) SetSpi(spi TraderSpi) {
 	api.mu.Lock()
 	defer api.mu.Unlock()
 	api.spi = spi
+
+	// 如果已有 C SPI 实例，先销毁
+	if api.spiHandle != 0 {
+		_TraderSpiDestroy(api.spiHandle)
+	}
+
+	// 创建新的 C SPI 实例
+	api.spiHandle = _TraderSpiCreate(api.userData)
+
+	// 注册所有回调函数到 C SPI
+	_TraderSpiSetOnFrontConnected(api.spiHandle, GetGoTraderOnFrontConnected())
+	_TraderSpiSetOnFrontDisconnected(api.spiHandle, GetGoTraderOnFrontDisconnected())
+	_TraderSpiSetOnHeartBeatWarning(api.spiHandle, GetGoTraderOnHeartBeatWarning())
+	_TraderSpiSetOnRspAuthenticate(api.spiHandle, GetGoTraderOnRspAuthenticate())
+	_TraderSpiSetOnRspUserLogin(api.spiHandle, GetGoTraderOnRspUserLogin())
+	_TraderSpiSetOnRspUserLogout(api.spiHandle, GetGoTraderOnRspUserLogout())
+	_TraderSpiSetOnRspUserPasswordUpdate(api.spiHandle, GetGoTraderOnRspUserPasswordUpdate())
+	_TraderSpiSetOnRspTradingAccountPasswordUpdate(api.spiHandle, GetGoTraderOnRspTradingAccountPasswordUpdate())
+	_TraderSpiSetOnRspUserAuthMethod(api.spiHandle, GetGoTraderOnRspUserAuthMethod())
+	_TraderSpiSetOnRspGenUserCaptcha(api.spiHandle, GetGoTraderOnRspGenUserCaptcha())
+	_TraderSpiSetOnRspGenUserText(api.spiHandle, GetGoTraderOnRspGenUserText())
+	_TraderSpiSetOnRspOrderInsert(api.spiHandle, GetGoTraderOnRspOrderInsert())
+	_TraderSpiSetOnRspParkedOrderInsert(api.spiHandle, GetGoTraderOnRspParkedOrderInsert())
+	_TraderSpiSetOnRspParkedOrderAction(api.spiHandle, GetGoTraderOnRspParkedOrderAction())
+	_TraderSpiSetOnRspOrderAction(api.spiHandle, GetGoTraderOnRspOrderAction())
+	_TraderSpiSetOnRspQryMaxOrderVolume(api.spiHandle, GetGoTraderOnRspQryMaxOrderVolume())
+	_TraderSpiSetOnRspSettlementInfoConfirm(api.spiHandle, GetGoTraderOnRspSettlementInfoConfirm())
+	_TraderSpiSetOnRspRemoveParkedOrder(api.spiHandle, GetGoTraderOnRspRemoveParkedOrder())
+	_TraderSpiSetOnRspRemoveParkedOrderAction(api.spiHandle, GetGoTraderOnRspRemoveParkedOrderAction())
+	_TraderSpiSetOnRspExecOrderInsert(api.spiHandle, GetGoTraderOnRspExecOrderInsert())
+	_TraderSpiSetOnRspExecOrderAction(api.spiHandle, GetGoTraderOnRspExecOrderAction())
+	_TraderSpiSetOnRspForQuoteInsert(api.spiHandle, GetGoTraderOnRspForQuoteInsert())
+	_TraderSpiSetOnRspQuoteInsert(api.spiHandle, GetGoTraderOnRspQuoteInsert())
+	_TraderSpiSetOnRspQuoteAction(api.spiHandle, GetGoTraderOnRspQuoteAction())
+	_TraderSpiSetOnRspBatchOrderAction(api.spiHandle, GetGoTraderOnRspBatchOrderAction())
+	_TraderSpiSetOnRspOptionSelfCloseInsert(api.spiHandle, GetGoTraderOnRspOptionSelfCloseInsert())
+	_TraderSpiSetOnRspOptionSelfCloseAction(api.spiHandle, GetGoTraderOnRspOptionSelfCloseAction())
+	_TraderSpiSetOnRspCombActionInsert(api.spiHandle, GetGoTraderOnRspCombActionInsert())
+	_TraderSpiSetOnRspQryOrder(api.spiHandle, GetGoTraderOnRspQryOrder())
+	_TraderSpiSetOnRspQryTrade(api.spiHandle, GetGoTraderOnRspQryTrade())
+	_TraderSpiSetOnRspQryInvestorPosition(api.spiHandle, GetGoTraderOnRspQryInvestorPosition())
+	_TraderSpiSetOnRspQryTradingAccount(api.spiHandle, GetGoTraderOnRspQryTradingAccount())
+	_TraderSpiSetOnRspQryInvestor(api.spiHandle, GetGoTraderOnRspQryInvestor())
+	_TraderSpiSetOnRspQryTradingCode(api.spiHandle, GetGoTraderOnRspQryTradingCode())
+	_TraderSpiSetOnRspQryInstrumentMarginRate(api.spiHandle, GetGoTraderOnRspQryInstrumentMarginRate())
+	_TraderSpiSetOnRspQryInstrumentCommissionRate(api.spiHandle, GetGoTraderOnRspQryInstrumentCommissionRate())
+	_TraderSpiSetOnRspQryExchange(api.spiHandle, GetGoTraderOnRspQryExchange())
+	_TraderSpiSetOnRspQryProduct(api.spiHandle, GetGoTraderOnRspQryProduct())
+	_TraderSpiSetOnRspQryInstrument(api.spiHandle, GetGoTraderOnRspQryInstrument())
+	_TraderSpiSetOnRspQryDepthMarketData(api.spiHandle, GetGoTraderOnRspQryDepthMarketData())
+	_TraderSpiSetOnRspQryTraderOffer(api.spiHandle, GetGoTraderOnRspQryTraderOffer())
+	_TraderSpiSetOnRspQrySettlementInfo(api.spiHandle, GetGoTraderOnRspQrySettlementInfo())
+	_TraderSpiSetOnRspQryTransferBank(api.spiHandle, GetGoTraderOnRspQryTransferBank())
+	_TraderSpiSetOnRspQryInvestorPositionDetail(api.spiHandle, GetGoTraderOnRspQryInvestorPositionDetail())
+	_TraderSpiSetOnRspQryNotice(api.spiHandle, GetGoTraderOnRspQryNotice())
+	_TraderSpiSetOnRspQrySettlementInfoConfirm(api.spiHandle, GetGoTraderOnRspQrySettlementInfoConfirm())
+	_TraderSpiSetOnRspQryInvestorPositionCombineDetail(api.spiHandle, GetGoTraderOnRspQryInvestorPositionCombineDetail())
+	_TraderSpiSetOnRspQryCFMMCTradingAccountKey(api.spiHandle, GetGoTraderOnRspQryCFMMCTradingAccountKey())
+	_TraderSpiSetOnRspQryEWarrantOffset(api.spiHandle, GetGoTraderOnRspQryEWarrantOffset())
+	_TraderSpiSetOnRspQryInvestorProductGroupMargin(api.spiHandle, GetGoTraderOnRspQryInvestorProductGroupMargin())
+	_TraderSpiSetOnRspQryExchangeMarginRate(api.spiHandle, GetGoTraderOnRspQryExchangeMarginRate())
+	_TraderSpiSetOnRspQryExchangeMarginRateAdjust(api.spiHandle, GetGoTraderOnRspQryExchangeMarginRateAdjust())
+	_TraderSpiSetOnRspQryExchangeRate(api.spiHandle, GetGoTraderOnRspQryExchangeRate())
+	_TraderSpiSetOnRspQrySecAgentACIDMap(api.spiHandle, GetGoTraderOnRspQrySecAgentACIDMap())
+	_TraderSpiSetOnRspQryProductExchRate(api.spiHandle, GetGoTraderOnRspQryProductExchRate())
+	_TraderSpiSetOnRspQryProductGroup(api.spiHandle, GetGoTraderOnRspQryProductGroup())
+	_TraderSpiSetOnRspQryMMInstrumentCommissionRate(api.spiHandle, GetGoTraderOnRspQryMMInstrumentCommissionRate())
+	_TraderSpiSetOnRspQryMMOptionInstrCommRate(api.spiHandle, GetGoTraderOnRspQryMMOptionInstrCommRate())
+	_TraderSpiSetOnRspQryInstrumentOrderCommRate(api.spiHandle, GetGoTraderOnRspQryInstrumentOrderCommRate())
+	_TraderSpiSetOnRspQrySecAgentTradingAccount(api.spiHandle, GetGoTraderOnRspQrySecAgentTradingAccount())
+	_TraderSpiSetOnRspQrySecAgentCheckMode(api.spiHandle, GetGoTraderOnRspQrySecAgentCheckMode())
+	_TraderSpiSetOnRspQrySecAgentTradeInfo(api.spiHandle, GetGoTraderOnRspQrySecAgentTradeInfo())
+	_TraderSpiSetOnRspQryOptionInstrTradeCost(api.spiHandle, GetGoTraderOnRspQryOptionInstrTradeCost())
+	_TraderSpiSetOnRspQryOptionInstrCommRate(api.spiHandle, GetGoTraderOnRspQryOptionInstrCommRate())
+	_TraderSpiSetOnRspQryExecOrder(api.spiHandle, GetGoTraderOnRspQryExecOrder())
+	_TraderSpiSetOnRspQryForQuote(api.spiHandle, GetGoTraderOnRspQryForQuote())
+	_TraderSpiSetOnRspQryQuote(api.spiHandle, GetGoTraderOnRspQryQuote())
+	_TraderSpiSetOnRspQryOptionSelfClose(api.spiHandle, GetGoTraderOnRspQryOptionSelfClose())
+	_TraderSpiSetOnRspQryInvestUnit(api.spiHandle, GetGoTraderOnRspQryInvestUnit())
+	_TraderSpiSetOnRspQryCombInstrumentGuard(api.spiHandle, GetGoTraderOnRspQryCombInstrumentGuard())
+	_TraderSpiSetOnRspQryCombAction(api.spiHandle, GetGoTraderOnRspQryCombAction())
+	_TraderSpiSetOnRspQryTransferSerial(api.spiHandle, GetGoTraderOnRspQryTransferSerial())
+	_TraderSpiSetOnRspQryAccountregister(api.spiHandle, GetGoTraderOnRspQryAccountregister())
+	_TraderSpiSetOnRspError(api.spiHandle, GetGoTraderOnRspError())
+	_TraderSpiSetOnRtnOrder(api.spiHandle, GetGoTraderOnRtnOrder())
+	_TraderSpiSetOnRtnTrade(api.spiHandle, GetGoTraderOnRtnTrade())
+	_TraderSpiSetOnErrRtnOrderInsert(api.spiHandle, GetGoTraderOnErrRtnOrderInsert())
+	_TraderSpiSetOnErrRtnOrderAction(api.spiHandle, GetGoTraderOnErrRtnOrderAction())
+	_TraderSpiSetOnRtnInstrumentStatus(api.spiHandle, GetGoTraderOnRtnInstrumentStatus())
+	_TraderSpiSetOnRtnBulletin(api.spiHandle, GetGoTraderOnRtnBulletin())
+	_TraderSpiSetOnRtnTradingNotice(api.spiHandle, GetGoTraderOnRtnTradingNotice())
+	_TraderSpiSetOnRtnErrorConditionalOrder(api.spiHandle, GetGoTraderOnRtnErrorConditionalOrder())
+	_TraderSpiSetOnRtnExecOrder(api.spiHandle, GetGoTraderOnRtnExecOrder())
+	_TraderSpiSetOnErrRtnExecOrderInsert(api.spiHandle, GetGoTraderOnErrRtnExecOrderInsert())
+	_TraderSpiSetOnErrRtnExecOrderAction(api.spiHandle, GetGoTraderOnErrRtnExecOrderAction())
+	_TraderSpiSetOnErrRtnForQuoteInsert(api.spiHandle, GetGoTraderOnErrRtnForQuoteInsert())
+	_TraderSpiSetOnRtnQuote(api.spiHandle, GetGoTraderOnRtnQuote())
+	_TraderSpiSetOnErrRtnQuoteInsert(api.spiHandle, GetGoTraderOnErrRtnQuoteInsert())
+	_TraderSpiSetOnErrRtnQuoteAction(api.spiHandle, GetGoTraderOnErrRtnQuoteAction())
+	_TraderSpiSetOnRtnForQuoteRsp(api.spiHandle, GetGoTraderOnRtnForQuoteRsp())
+	_TraderSpiSetOnRtnCFMMCTradingAccountToken(api.spiHandle, GetGoTraderOnRtnCFMMCTradingAccountToken())
+	_TraderSpiSetOnErrRtnBatchOrderAction(api.spiHandle, GetGoTraderOnErrRtnBatchOrderAction())
+	_TraderSpiSetOnRtnOptionSelfClose(api.spiHandle, GetGoTraderOnRtnOptionSelfClose())
+	_TraderSpiSetOnErrRtnOptionSelfCloseInsert(api.spiHandle, GetGoTraderOnErrRtnOptionSelfCloseInsert())
+	_TraderSpiSetOnErrRtnOptionSelfCloseAction(api.spiHandle, GetGoTraderOnErrRtnOptionSelfCloseAction())
+	_TraderSpiSetOnRtnCombAction(api.spiHandle, GetGoTraderOnRtnCombAction())
+	_TraderSpiSetOnErrRtnCombActionInsert(api.spiHandle, GetGoTraderOnErrRtnCombActionInsert())
+	_TraderSpiSetOnRspQryContractBank(api.spiHandle, GetGoTraderOnRspQryContractBank())
+	_TraderSpiSetOnRspQryParkedOrder(api.spiHandle, GetGoTraderOnRspQryParkedOrder())
+	_TraderSpiSetOnRspQryParkedOrderAction(api.spiHandle, GetGoTraderOnRspQryParkedOrderAction())
+	_TraderSpiSetOnRspQryTradingNotice(api.spiHandle, GetGoTraderOnRspQryTradingNotice())
+	_TraderSpiSetOnRspQryBrokerTradingParams(api.spiHandle, GetGoTraderOnRspQryBrokerTradingParams())
+	_TraderSpiSetOnRspQryBrokerTradingAlgos(api.spiHandle, GetGoTraderOnRspQryBrokerTradingAlgos())
+	_TraderSpiSetOnRspQueryCFMMCTradingAccountToken(api.spiHandle, GetGoTraderOnRspQueryCFMMCTradingAccountToken())
+	_TraderSpiSetOnRtnFromBankToFutureByBank(api.spiHandle, GetGoTraderOnRtnFromBankToFutureByBank())
+	_TraderSpiSetOnRtnFromFutureToBankByBank(api.spiHandle, GetGoTraderOnRtnFromFutureToBankByBank())
+	_TraderSpiSetOnRtnRepealFromBankToFutureByBank(api.spiHandle, GetGoTraderOnRtnRepealFromBankToFutureByBank())
+	_TraderSpiSetOnRtnRepealFromFutureToBankByBank(api.spiHandle, GetGoTraderOnRtnRepealFromFutureToBankByBank())
+	_TraderSpiSetOnRtnFromBankToFutureByFuture(api.spiHandle, GetGoTraderOnRtnFromBankToFutureByFuture())
+	_TraderSpiSetOnRtnFromFutureToBankByFuture(api.spiHandle, GetGoTraderOnRtnFromFutureToBankByFuture())
+	_TraderSpiSetOnRtnRepealFromBankToFutureByFutureManual(api.spiHandle, GetGoTraderOnRtnRepealFromBankToFutureByFutureManual())
+	_TraderSpiSetOnRtnRepealFromFutureToBankByFutureManual(api.spiHandle, GetGoTraderOnRtnRepealFromFutureToBankByFutureManual())
+	_TraderSpiSetOnRtnQueryBankBalanceByFuture(api.spiHandle, GetGoTraderOnRtnQueryBankBalanceByFuture())
+	_TraderSpiSetOnErrRtnBankToFutureByFuture(api.spiHandle, GetGoTraderOnErrRtnBankToFutureByFuture())
+	_TraderSpiSetOnErrRtnFutureToBankByFuture(api.spiHandle, GetGoTraderOnErrRtnFutureToBankByFuture())
+	_TraderSpiSetOnErrRtnRepealBankToFutureByFutureManual(api.spiHandle, GetGoTraderOnErrRtnRepealBankToFutureByFutureManual())
+	_TraderSpiSetOnErrRtnRepealFutureToBankByFutureManual(api.spiHandle, GetGoTraderOnErrRtnRepealFutureToBankByFutureManual())
+	_TraderSpiSetOnErrRtnQueryBankBalanceByFuture(api.spiHandle, GetGoTraderOnErrRtnQueryBankBalanceByFuture())
+	_TraderSpiSetOnRtnRepealFromBankToFutureByFuture(api.spiHandle, GetGoTraderOnRtnRepealFromBankToFutureByFuture())
+	_TraderSpiSetOnRtnRepealFromFutureToBankByFuture(api.spiHandle, GetGoTraderOnRtnRepealFromFutureToBankByFuture())
+	_TraderSpiSetOnRspFromBankToFutureByFuture(api.spiHandle, GetGoTraderOnRspFromBankToFutureByFuture())
+	_TraderSpiSetOnRspFromFutureToBankByFuture(api.spiHandle, GetGoTraderOnRspFromFutureToBankByFuture())
+	_TraderSpiSetOnRspQueryBankAccountMoneyByFuture(api.spiHandle, GetGoTraderOnRspQueryBankAccountMoneyByFuture())
+	_TraderSpiSetOnRtnOpenAccountByBank(api.spiHandle, GetGoTraderOnRtnOpenAccountByBank())
+	_TraderSpiSetOnRtnCancelAccountByBank(api.spiHandle, GetGoTraderOnRtnCancelAccountByBank())
+	_TraderSpiSetOnRtnChangeAccountByBank(api.spiHandle, GetGoTraderOnRtnChangeAccountByBank())
+	_TraderSpiSetOnRspQryClassifiedInstrument(api.spiHandle, GetGoTraderOnRspQryClassifiedInstrument())
+	_TraderSpiSetOnRspQryCombPromotionParam(api.spiHandle, GetGoTraderOnRspQryCombPromotionParam())
+	_TraderSpiSetOnRspQryRiskSettleInvstPosition(api.spiHandle, GetGoTraderOnRspQryRiskSettleInvstPosition())
+	_TraderSpiSetOnRspQryRiskSettleProductStatus(api.spiHandle, GetGoTraderOnRspQryRiskSettleProductStatus())
+	_TraderSpiSetOnRspQrySPBMFutureParameter(api.spiHandle, GetGoTraderOnRspQrySPBMFutureParameter())
+	_TraderSpiSetOnRspQrySPBMOptionParameter(api.spiHandle, GetGoTraderOnRspQrySPBMOptionParameter())
+	_TraderSpiSetOnRspQrySPBMIntraParameter(api.spiHandle, GetGoTraderOnRspQrySPBMIntraParameter())
+	_TraderSpiSetOnRspQrySPBMInterParameter(api.spiHandle, GetGoTraderOnRspQrySPBMInterParameter())
+	_TraderSpiSetOnRspQrySPBMPortfDefinition(api.spiHandle, GetGoTraderOnRspQrySPBMPortfDefinition())
+	_TraderSpiSetOnRspQrySPBMInvestorPortfDef(api.spiHandle, GetGoTraderOnRspQrySPBMInvestorPortfDef())
+	_TraderSpiSetOnRspQryInvestorPortfMarginRatio(api.spiHandle, GetGoTraderOnRspQryInvestorPortfMarginRatio())
+	_TraderSpiSetOnRspQryInvestorProdSPBMDetail(api.spiHandle, GetGoTraderOnRspQryInvestorProdSPBMDetail())
+	_TraderSpiSetOnRspQryInvestorCommoditySPMMMargin(api.spiHandle, GetGoTraderOnRspQryInvestorCommoditySPMMMargin())
+	_TraderSpiSetOnRspQryInvestorCommodityGroupSPMMMargin(api.spiHandle, GetGoTraderOnRspQryInvestorCommodityGroupSPMMMargin())
+	_TraderSpiSetOnRspQrySPMMInstParam(api.spiHandle, GetGoTraderOnRspQrySPMMInstParam())
+	_TraderSpiSetOnRspQrySPMMProductParam(api.spiHandle, GetGoTraderOnRspQrySPMMProductParam())
+	_TraderSpiSetOnRspQrySPBMAddOnInterParameter(api.spiHandle, GetGoTraderOnRspQrySPBMAddOnInterParameter())
+	_TraderSpiSetOnRspQryRCAMSCombProductInfo(api.spiHandle, GetGoTraderOnRspQryRCAMSCombProductInfo())
+	_TraderSpiSetOnRspQryRCAMSInstrParameter(api.spiHandle, GetGoTraderOnRspQryRCAMSInstrParameter())
+	_TraderSpiSetOnRspQryRCAMSIntraParameter(api.spiHandle, GetGoTraderOnRspQryRCAMSIntraParameter())
+	_TraderSpiSetOnRspQryRCAMSInterParameter(api.spiHandle, GetGoTraderOnRspQryRCAMSInterParameter())
+	_TraderSpiSetOnRspQryRCAMSShortOptAdjustParam(api.spiHandle, GetGoTraderOnRspQryRCAMSShortOptAdjustParam())
+	_TraderSpiSetOnRspQryRCAMSInvestorCombPosition(api.spiHandle, GetGoTraderOnRspQryRCAMSInvestorCombPosition())
+	_TraderSpiSetOnRspQryInvestorProdRCAMSMargin(api.spiHandle, GetGoTraderOnRspQryInvestorProdRCAMSMargin())
+	_TraderSpiSetOnRspQryRULEInstrParameter(api.spiHandle, GetGoTraderOnRspQryRULEInstrParameter())
+	_TraderSpiSetOnRspQryRULEIntraParameter(api.spiHandle, GetGoTraderOnRspQryRULEIntraParameter())
+	_TraderSpiSetOnRspQryRULEInterParameter(api.spiHandle, GetGoTraderOnRspQryRULEInterParameter())
+	_TraderSpiSetOnRspQryInvestorProdRULEMargin(api.spiHandle, GetGoTraderOnRspQryInvestorProdRULEMargin())
+	_TraderSpiSetOnRspQryInvestorPortfSetting(api.spiHandle, GetGoTraderOnRspQryInvestorPortfSetting())
+
+	// 将 C SPI 注册到 API
+	_TraderRegisterSpi(api.handle, api.spiHandle)
 }

@@ -111,7 +111,7 @@ echo Building Market Data API...
 echo ========================================
 cl /LD /O2 /EHsc /std:c++17 /W3 /utf-8 /wd4828 /DCTP_EXPORTS ^
    /I. /I"%CTPAPI_DIR%\windows" /I"%CSRC_DIR%" ^
-   "%CSRC_DIR%\ctp_md_c_api.cpp" ^
+   "%CSRC_DIR%\ctpmd_c_api.cpp" ^
    /link /LIBPATH:"%CTPAPI_DIR%\windows" ^
    thostmduserapi_se.lib ^
    /OUT:"%LIBS_DIR%\ctpmd_c_api.dll"
@@ -133,7 +133,7 @@ echo Building Trader API...
 echo ========================================
 cl /LD /O2 /EHsc /std:c++17 /W3 /utf-8 /wd4828 /DCTP_EXPORTS ^
    /I. /I"%CTPAPI_DIR%\windows" /I"%CSRC_DIR%" ^
-   "%CSRC_DIR%\ctp_trader_c_api.cpp" ^
+   "%CSRC_DIR%\ctptrader_c_api.cpp" ^
    /link /LIBPATH:"%CTPAPI_DIR%\windows" ^
    thosttraderapi_se.lib WinDataCollect.lib ^
    /OUT:"%LIBS_DIR%\ctptrader_c_api.dll"

@@ -12,8 +12,8 @@ LIBS_DIR := libs
 BUILD_DIR := build
 
 # 源文件
-MD_SRC := $(CSRC_DIR)/ctp_md_c_api.cpp
-TRADER_SRC := $(CSRC_DIR)/ctp_trader_c_api.cpp
+MD_SRC := $(CSRC_DIR)/ctpmd_c_api.cpp
+TRADER_SRC := $(CSRC_DIR)/ctptrader_c_api.cpp
 
 # 编译器标志
 CXXFLAGS := -std=c++17 -fPIC -O3 -Wall -Wextra -Wno-unused-parameter
@@ -204,7 +204,7 @@ endif
 # 编译行情API
 md: $(MD_LIB)
 
-$(MD_LIB): $(MD_SRC) $(CSRC_DIR)/ctp_md_c_api.h
+$(MD_LIB): $(MD_SRC) $(CSRC_DIR)/ctpmd_c_api.h
 	@echo "编译行情API: $@"
 	@mkdir -p $(dir $(MD_LIB))
 ifeq ($(PLATFORM),windows)
@@ -224,7 +224,7 @@ endif
 # 编译交易API
 trader: $(TRADER_LIB)
 
-$(TRADER_LIB): $(TRADER_SRC) $(CSRC_DIR)/ctp_trader_c_api.h
+$(TRADER_LIB): $(TRADER_SRC) $(CSRC_DIR)/ctptrader_c_api.h
 	@echo "编译交易API: $@"
 	@mkdir -p $(dir $(TRADER_LIB))
 ifeq ($(PLATFORM),windows)

@@ -2,17 +2,17 @@ package ctpgo
 
 // 此文件由代码生成器自动生成，请勿手动修改
 // CTP 交易回调实现
+// 使用 purego.NewCallback 替代 CGO，支持 Windows 平台无需 C 编译器
 
-/*
-#include <stdint.h>
-*/
-import "C"
+import (
+	"unsafe"
 
-import "unsafe"
+	"github.com/ebitengine/purego"
+)
 
 // ========== 回调函数 ==========
 
-//export goTraderOnFrontConnected
+// goTraderOnFrontConnected 回调函数实现
 func goTraderOnFrontConnected(userData uintptr) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -21,7 +21,7 @@ func goTraderOnFrontConnected(userData uintptr) {
 	api.spi.OnFrontConnected()
 }
 
-//export goTraderOnFrontDisconnected
+// goTraderOnFrontDisconnected 回调函数实现
 func goTraderOnFrontDisconnected(userData uintptr, nReason int32) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -30,7 +30,7 @@ func goTraderOnFrontDisconnected(userData uintptr, nReason int32) {
 	api.spi.OnFrontDisconnected(nReason)
 }
 
-//export goTraderOnHeartBeatWarning
+// goTraderOnHeartBeatWarning 回调函数实现
 func goTraderOnHeartBeatWarning(userData uintptr, nTimeLapse int32) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -39,7 +39,7 @@ func goTraderOnHeartBeatWarning(userData uintptr, nTimeLapse int32) {
 	api.spi.OnHeartBeatWarning(nTimeLapse)
 }
 
-//export goTraderOnRspAuthenticate
+// goTraderOnRspAuthenticate 回调函数实现（C 调用约定版本）
 func goTraderOnRspAuthenticate(userData uintptr, pRspAuthenticateField unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -48,7 +48,7 @@ func goTraderOnRspAuthenticate(userData uintptr, pRspAuthenticateField unsafe.Po
 	api.spi.OnRspAuthenticate((*CThostFtdcRspAuthenticateField)(pRspAuthenticateField), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspUserLogin
+// goTraderOnRspUserLogin 回调函数实现（C 调用约定版本）
 func goTraderOnRspUserLogin(userData uintptr, pRspUserLogin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -57,7 +57,7 @@ func goTraderOnRspUserLogin(userData uintptr, pRspUserLogin unsafe.Pointer, pRsp
 	api.spi.OnRspUserLogin((*CThostFtdcRspUserLoginField)(pRspUserLogin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspUserLogout
+// goTraderOnRspUserLogout 回调函数实现（C 调用约定版本）
 func goTraderOnRspUserLogout(userData uintptr, pUserLogout unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -66,7 +66,7 @@ func goTraderOnRspUserLogout(userData uintptr, pUserLogout unsafe.Pointer, pRspI
 	api.spi.OnRspUserLogout((*CThostFtdcUserLogoutField)(pUserLogout), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspUserPasswordUpdate
+// goTraderOnRspUserPasswordUpdate 回调函数实现（C 调用约定版本）
 func goTraderOnRspUserPasswordUpdate(userData uintptr, pUserPasswordUpdate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -75,7 +75,7 @@ func goTraderOnRspUserPasswordUpdate(userData uintptr, pUserPasswordUpdate unsaf
 	api.spi.OnRspUserPasswordUpdate((*CThostFtdcUserPasswordUpdateField)(pUserPasswordUpdate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspTradingAccountPasswordUpdate
+// goTraderOnRspTradingAccountPasswordUpdate 回调函数实现（C 调用约定版本）
 func goTraderOnRspTradingAccountPasswordUpdate(userData uintptr, pTradingAccountPasswordUpdate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -84,7 +84,7 @@ func goTraderOnRspTradingAccountPasswordUpdate(userData uintptr, pTradingAccount
 	api.spi.OnRspTradingAccountPasswordUpdate((*CThostFtdcTradingAccountPasswordUpdateField)(pTradingAccountPasswordUpdate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspUserAuthMethod
+// goTraderOnRspUserAuthMethod 回调函数实现（C 调用约定版本）
 func goTraderOnRspUserAuthMethod(userData uintptr, pRspUserAuthMethod unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -93,7 +93,7 @@ func goTraderOnRspUserAuthMethod(userData uintptr, pRspUserAuthMethod unsafe.Poi
 	api.spi.OnRspUserAuthMethod((*CThostFtdcRspUserAuthMethodField)(pRspUserAuthMethod), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspGenUserCaptcha
+// goTraderOnRspGenUserCaptcha 回调函数实现（C 调用约定版本）
 func goTraderOnRspGenUserCaptcha(userData uintptr, pRspGenUserCaptcha unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -102,7 +102,7 @@ func goTraderOnRspGenUserCaptcha(userData uintptr, pRspGenUserCaptcha unsafe.Poi
 	api.spi.OnRspGenUserCaptcha((*CThostFtdcRspGenUserCaptchaField)(pRspGenUserCaptcha), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspGenUserText
+// goTraderOnRspGenUserText 回调函数实现（C 调用约定版本）
 func goTraderOnRspGenUserText(userData uintptr, pRspGenUserText unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -111,7 +111,7 @@ func goTraderOnRspGenUserText(userData uintptr, pRspGenUserText unsafe.Pointer, 
 	api.spi.OnRspGenUserText((*CThostFtdcRspGenUserTextField)(pRspGenUserText), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspOrderInsert
+// goTraderOnRspOrderInsert 回调函数实现（C 调用约定版本）
 func goTraderOnRspOrderInsert(userData uintptr, pInputOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -120,7 +120,7 @@ func goTraderOnRspOrderInsert(userData uintptr, pInputOrder unsafe.Pointer, pRsp
 	api.spi.OnRspOrderInsert((*CThostFtdcInputOrderField)(pInputOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspParkedOrderInsert
+// goTraderOnRspParkedOrderInsert 回调函数实现（C 调用约定版本）
 func goTraderOnRspParkedOrderInsert(userData uintptr, pParkedOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -129,7 +129,7 @@ func goTraderOnRspParkedOrderInsert(userData uintptr, pParkedOrder unsafe.Pointe
 	api.spi.OnRspParkedOrderInsert((*CThostFtdcParkedOrderField)(pParkedOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspParkedOrderAction
+// goTraderOnRspParkedOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspParkedOrderAction(userData uintptr, pParkedOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -138,7 +138,7 @@ func goTraderOnRspParkedOrderAction(userData uintptr, pParkedOrderAction unsafe.
 	api.spi.OnRspParkedOrderAction((*CThostFtdcParkedOrderActionField)(pParkedOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspOrderAction
+// goTraderOnRspOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspOrderAction(userData uintptr, pInputOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -147,7 +147,7 @@ func goTraderOnRspOrderAction(userData uintptr, pInputOrderAction unsafe.Pointer
 	api.spi.OnRspOrderAction((*CThostFtdcInputOrderActionField)(pInputOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryMaxOrderVolume
+// goTraderOnRspQryMaxOrderVolume 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryMaxOrderVolume(userData uintptr, pQryMaxOrderVolume unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -156,7 +156,7 @@ func goTraderOnRspQryMaxOrderVolume(userData uintptr, pQryMaxOrderVolume unsafe.
 	api.spi.OnRspQryMaxOrderVolume((*CThostFtdcQryMaxOrderVolumeField)(pQryMaxOrderVolume), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspSettlementInfoConfirm
+// goTraderOnRspSettlementInfoConfirm 回调函数实现（C 调用约定版本）
 func goTraderOnRspSettlementInfoConfirm(userData uintptr, pSettlementInfoConfirm unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -165,7 +165,7 @@ func goTraderOnRspSettlementInfoConfirm(userData uintptr, pSettlementInfoConfirm
 	api.spi.OnRspSettlementInfoConfirm((*CThostFtdcSettlementInfoConfirmField)(pSettlementInfoConfirm), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspRemoveParkedOrder
+// goTraderOnRspRemoveParkedOrder 回调函数实现（C 调用约定版本）
 func goTraderOnRspRemoveParkedOrder(userData uintptr, pRemoveParkedOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -174,7 +174,7 @@ func goTraderOnRspRemoveParkedOrder(userData uintptr, pRemoveParkedOrder unsafe.
 	api.spi.OnRspRemoveParkedOrder((*CThostFtdcRemoveParkedOrderField)(pRemoveParkedOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspRemoveParkedOrderAction
+// goTraderOnRspRemoveParkedOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspRemoveParkedOrderAction(userData uintptr, pRemoveParkedOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -183,7 +183,7 @@ func goTraderOnRspRemoveParkedOrderAction(userData uintptr, pRemoveParkedOrderAc
 	api.spi.OnRspRemoveParkedOrderAction((*CThostFtdcRemoveParkedOrderActionField)(pRemoveParkedOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspExecOrderInsert
+// goTraderOnRspExecOrderInsert 回调函数实现（C 调用约定版本）
 func goTraderOnRspExecOrderInsert(userData uintptr, pInputExecOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -192,7 +192,7 @@ func goTraderOnRspExecOrderInsert(userData uintptr, pInputExecOrder unsafe.Point
 	api.spi.OnRspExecOrderInsert((*CThostFtdcInputExecOrderField)(pInputExecOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspExecOrderAction
+// goTraderOnRspExecOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspExecOrderAction(userData uintptr, pInputExecOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -201,7 +201,7 @@ func goTraderOnRspExecOrderAction(userData uintptr, pInputExecOrderAction unsafe
 	api.spi.OnRspExecOrderAction((*CThostFtdcInputExecOrderActionField)(pInputExecOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspForQuoteInsert
+// goTraderOnRspForQuoteInsert 回调函数实现（C 调用约定版本）
 func goTraderOnRspForQuoteInsert(userData uintptr, pInputForQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -210,7 +210,7 @@ func goTraderOnRspForQuoteInsert(userData uintptr, pInputForQuote unsafe.Pointer
 	api.spi.OnRspForQuoteInsert((*CThostFtdcInputForQuoteField)(pInputForQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQuoteInsert
+// goTraderOnRspQuoteInsert 回调函数实现（C 调用约定版本）
 func goTraderOnRspQuoteInsert(userData uintptr, pInputQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -219,7 +219,7 @@ func goTraderOnRspQuoteInsert(userData uintptr, pInputQuote unsafe.Pointer, pRsp
 	api.spi.OnRspQuoteInsert((*CThostFtdcInputQuoteField)(pInputQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQuoteAction
+// goTraderOnRspQuoteAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspQuoteAction(userData uintptr, pInputQuoteAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -228,7 +228,7 @@ func goTraderOnRspQuoteAction(userData uintptr, pInputQuoteAction unsafe.Pointer
 	api.spi.OnRspQuoteAction((*CThostFtdcInputQuoteActionField)(pInputQuoteAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspBatchOrderAction
+// goTraderOnRspBatchOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspBatchOrderAction(userData uintptr, pInputBatchOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -237,7 +237,7 @@ func goTraderOnRspBatchOrderAction(userData uintptr, pInputBatchOrderAction unsa
 	api.spi.OnRspBatchOrderAction((*CThostFtdcInputBatchOrderActionField)(pInputBatchOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspOptionSelfCloseInsert
+// goTraderOnRspOptionSelfCloseInsert 回调函数实现（C 调用约定版本）
 func goTraderOnRspOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClose unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -246,7 +246,7 @@ func goTraderOnRspOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClose 
 	api.spi.OnRspOptionSelfCloseInsert((*CThostFtdcInputOptionSelfCloseField)(pInputOptionSelfClose), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspOptionSelfCloseAction
+// goTraderOnRspOptionSelfCloseAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspOptionSelfCloseAction(userData uintptr, pInputOptionSelfCloseAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -255,7 +255,7 @@ func goTraderOnRspOptionSelfCloseAction(userData uintptr, pInputOptionSelfCloseA
 	api.spi.OnRspOptionSelfCloseAction((*CThostFtdcInputOptionSelfCloseActionField)(pInputOptionSelfCloseAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspCombActionInsert
+// goTraderOnRspCombActionInsert 回调函数实现（C 调用约定版本）
 func goTraderOnRspCombActionInsert(userData uintptr, pInputCombAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -264,7 +264,7 @@ func goTraderOnRspCombActionInsert(userData uintptr, pInputCombAction unsafe.Poi
 	api.spi.OnRspCombActionInsert((*CThostFtdcInputCombActionField)(pInputCombAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryOrder
+// goTraderOnRspQryOrder 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryOrder(userData uintptr, pOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -273,7 +273,7 @@ func goTraderOnRspQryOrder(userData uintptr, pOrder unsafe.Pointer, pRspInfo uns
 	api.spi.OnRspQryOrder((*CThostFtdcOrderField)(pOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryTrade
+// goTraderOnRspQryTrade 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryTrade(userData uintptr, pTrade unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -282,7 +282,7 @@ func goTraderOnRspQryTrade(userData uintptr, pTrade unsafe.Pointer, pRspInfo uns
 	api.spi.OnRspQryTrade((*CThostFtdcTradeField)(pTrade), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorPosition
+// goTraderOnRspQryInvestorPosition 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorPosition(userData uintptr, pInvestorPosition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -291,7 +291,7 @@ func goTraderOnRspQryInvestorPosition(userData uintptr, pInvestorPosition unsafe
 	api.spi.OnRspQryInvestorPosition((*CThostFtdcInvestorPositionField)(pInvestorPosition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryTradingAccount
+// goTraderOnRspQryTradingAccount 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryTradingAccount(userData uintptr, pTradingAccount unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -300,7 +300,7 @@ func goTraderOnRspQryTradingAccount(userData uintptr, pTradingAccount unsafe.Poi
 	api.spi.OnRspQryTradingAccount((*CThostFtdcTradingAccountField)(pTradingAccount), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestor
+// goTraderOnRspQryInvestor 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestor(userData uintptr, pInvestor unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -309,7 +309,7 @@ func goTraderOnRspQryInvestor(userData uintptr, pInvestor unsafe.Pointer, pRspIn
 	api.spi.OnRspQryInvestor((*CThostFtdcInvestorField)(pInvestor), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryTradingCode
+// goTraderOnRspQryTradingCode 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryTradingCode(userData uintptr, pTradingCode unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -318,7 +318,7 @@ func goTraderOnRspQryTradingCode(userData uintptr, pTradingCode unsafe.Pointer, 
 	api.spi.OnRspQryTradingCode((*CThostFtdcTradingCodeField)(pTradingCode), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInstrumentMarginRate
+// goTraderOnRspQryInstrumentMarginRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInstrumentMarginRate(userData uintptr, pInstrumentMarginRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -327,7 +327,7 @@ func goTraderOnRspQryInstrumentMarginRate(userData uintptr, pInstrumentMarginRat
 	api.spi.OnRspQryInstrumentMarginRate((*CThostFtdcInstrumentMarginRateField)(pInstrumentMarginRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInstrumentCommissionRate
+// goTraderOnRspQryInstrumentCommissionRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInstrumentCommissionRate(userData uintptr, pInstrumentCommissionRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -336,7 +336,7 @@ func goTraderOnRspQryInstrumentCommissionRate(userData uintptr, pInstrumentCommi
 	api.spi.OnRspQryInstrumentCommissionRate((*CThostFtdcInstrumentCommissionRateField)(pInstrumentCommissionRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryExchange
+// goTraderOnRspQryExchange 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryExchange(userData uintptr, pExchange unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -345,7 +345,7 @@ func goTraderOnRspQryExchange(userData uintptr, pExchange unsafe.Pointer, pRspIn
 	api.spi.OnRspQryExchange((*CThostFtdcExchangeField)(pExchange), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryProduct
+// goTraderOnRspQryProduct 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryProduct(userData uintptr, pProduct unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -354,7 +354,7 @@ func goTraderOnRspQryProduct(userData uintptr, pProduct unsafe.Pointer, pRspInfo
 	api.spi.OnRspQryProduct((*CThostFtdcProductField)(pProduct), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInstrument
+// goTraderOnRspQryInstrument 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInstrument(userData uintptr, pInstrument unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -363,7 +363,7 @@ func goTraderOnRspQryInstrument(userData uintptr, pInstrument unsafe.Pointer, pR
 	api.spi.OnRspQryInstrument((*CThostFtdcInstrumentField)(pInstrument), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryDepthMarketData
+// goTraderOnRspQryDepthMarketData 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryDepthMarketData(userData uintptr, pDepthMarketData unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -372,7 +372,7 @@ func goTraderOnRspQryDepthMarketData(userData uintptr, pDepthMarketData unsafe.P
 	api.spi.OnRspQryDepthMarketData((*CThostFtdcDepthMarketDataField)(pDepthMarketData), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryTraderOffer
+// goTraderOnRspQryTraderOffer 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryTraderOffer(userData uintptr, pTraderOffer unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -381,7 +381,7 @@ func goTraderOnRspQryTraderOffer(userData uintptr, pTraderOffer unsafe.Pointer, 
 	api.spi.OnRspQryTraderOffer((*CThostFtdcTraderOfferField)(pTraderOffer), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySettlementInfo
+// goTraderOnRspQrySettlementInfo 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySettlementInfo(userData uintptr, pSettlementInfo unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -390,7 +390,7 @@ func goTraderOnRspQrySettlementInfo(userData uintptr, pSettlementInfo unsafe.Poi
 	api.spi.OnRspQrySettlementInfo((*CThostFtdcSettlementInfoField)(pSettlementInfo), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryTransferBank
+// goTraderOnRspQryTransferBank 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryTransferBank(userData uintptr, pTransferBank unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -399,7 +399,7 @@ func goTraderOnRspQryTransferBank(userData uintptr, pTransferBank unsafe.Pointer
 	api.spi.OnRspQryTransferBank((*CThostFtdcTransferBankField)(pTransferBank), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorPositionDetail
+// goTraderOnRspQryInvestorPositionDetail 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorPositionDetail(userData uintptr, pInvestorPositionDetail unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -408,7 +408,7 @@ func goTraderOnRspQryInvestorPositionDetail(userData uintptr, pInvestorPositionD
 	api.spi.OnRspQryInvestorPositionDetail((*CThostFtdcInvestorPositionDetailField)(pInvestorPositionDetail), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryNotice
+// goTraderOnRspQryNotice 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryNotice(userData uintptr, pNotice unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -417,7 +417,7 @@ func goTraderOnRspQryNotice(userData uintptr, pNotice unsafe.Pointer, pRspInfo u
 	api.spi.OnRspQryNotice((*CThostFtdcNoticeField)(pNotice), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySettlementInfoConfirm
+// goTraderOnRspQrySettlementInfoConfirm 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySettlementInfoConfirm(userData uintptr, pSettlementInfoConfirm unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -426,7 +426,7 @@ func goTraderOnRspQrySettlementInfoConfirm(userData uintptr, pSettlementInfoConf
 	api.spi.OnRspQrySettlementInfoConfirm((*CThostFtdcSettlementInfoConfirmField)(pSettlementInfoConfirm), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorPositionCombineDetail
+// goTraderOnRspQryInvestorPositionCombineDetail 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorPositionCombineDetail(userData uintptr, pInvestorPositionCombineDetail unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -435,7 +435,7 @@ func goTraderOnRspQryInvestorPositionCombineDetail(userData uintptr, pInvestorPo
 	api.spi.OnRspQryInvestorPositionCombineDetail((*CThostFtdcInvestorPositionCombineDetailField)(pInvestorPositionCombineDetail), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryCFMMCTradingAccountKey
+// goTraderOnRspQryCFMMCTradingAccountKey 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryCFMMCTradingAccountKey(userData uintptr, pCFMMCTradingAccountKey unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -444,7 +444,7 @@ func goTraderOnRspQryCFMMCTradingAccountKey(userData uintptr, pCFMMCTradingAccou
 	api.spi.OnRspQryCFMMCTradingAccountKey((*CThostFtdcCFMMCTradingAccountKeyField)(pCFMMCTradingAccountKey), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryEWarrantOffset
+// goTraderOnRspQryEWarrantOffset 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryEWarrantOffset(userData uintptr, pEWarrantOffset unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -453,7 +453,7 @@ func goTraderOnRspQryEWarrantOffset(userData uintptr, pEWarrantOffset unsafe.Poi
 	api.spi.OnRspQryEWarrantOffset((*CThostFtdcEWarrantOffsetField)(pEWarrantOffset), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorProductGroupMargin
+// goTraderOnRspQryInvestorProductGroupMargin 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorProductGroupMargin(userData uintptr, pInvestorProductGroupMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -462,7 +462,7 @@ func goTraderOnRspQryInvestorProductGroupMargin(userData uintptr, pInvestorProdu
 	api.spi.OnRspQryInvestorProductGroupMargin((*CThostFtdcInvestorProductGroupMarginField)(pInvestorProductGroupMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryExchangeMarginRate
+// goTraderOnRspQryExchangeMarginRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryExchangeMarginRate(userData uintptr, pExchangeMarginRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -471,7 +471,7 @@ func goTraderOnRspQryExchangeMarginRate(userData uintptr, pExchangeMarginRate un
 	api.spi.OnRspQryExchangeMarginRate((*CThostFtdcExchangeMarginRateField)(pExchangeMarginRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryExchangeMarginRateAdjust
+// goTraderOnRspQryExchangeMarginRateAdjust 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryExchangeMarginRateAdjust(userData uintptr, pExchangeMarginRateAdjust unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -480,7 +480,7 @@ func goTraderOnRspQryExchangeMarginRateAdjust(userData uintptr, pExchangeMarginR
 	api.spi.OnRspQryExchangeMarginRateAdjust((*CThostFtdcExchangeMarginRateAdjustField)(pExchangeMarginRateAdjust), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryExchangeRate
+// goTraderOnRspQryExchangeRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryExchangeRate(userData uintptr, pExchangeRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -489,7 +489,7 @@ func goTraderOnRspQryExchangeRate(userData uintptr, pExchangeRate unsafe.Pointer
 	api.spi.OnRspQryExchangeRate((*CThostFtdcExchangeRateField)(pExchangeRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySecAgentACIDMap
+// goTraderOnRspQrySecAgentACIDMap 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySecAgentACIDMap(userData uintptr, pSecAgentACIDMap unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -498,7 +498,7 @@ func goTraderOnRspQrySecAgentACIDMap(userData uintptr, pSecAgentACIDMap unsafe.P
 	api.spi.OnRspQrySecAgentACIDMap((*CThostFtdcSecAgentACIDMapField)(pSecAgentACIDMap), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryProductExchRate
+// goTraderOnRspQryProductExchRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryProductExchRate(userData uintptr, pProductExchRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -507,7 +507,7 @@ func goTraderOnRspQryProductExchRate(userData uintptr, pProductExchRate unsafe.P
 	api.spi.OnRspQryProductExchRate((*CThostFtdcProductExchRateField)(pProductExchRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryProductGroup
+// goTraderOnRspQryProductGroup 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryProductGroup(userData uintptr, pProductGroup unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -516,7 +516,7 @@ func goTraderOnRspQryProductGroup(userData uintptr, pProductGroup unsafe.Pointer
 	api.spi.OnRspQryProductGroup((*CThostFtdcProductGroupField)(pProductGroup), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryMMInstrumentCommissionRate
+// goTraderOnRspQryMMInstrumentCommissionRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryMMInstrumentCommissionRate(userData uintptr, pMMInstrumentCommissionRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -525,7 +525,7 @@ func goTraderOnRspQryMMInstrumentCommissionRate(userData uintptr, pMMInstrumentC
 	api.spi.OnRspQryMMInstrumentCommissionRate((*CThostFtdcMMInstrumentCommissionRateField)(pMMInstrumentCommissionRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryMMOptionInstrCommRate
+// goTraderOnRspQryMMOptionInstrCommRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryMMOptionInstrCommRate(userData uintptr, pMMOptionInstrCommRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -534,7 +534,7 @@ func goTraderOnRspQryMMOptionInstrCommRate(userData uintptr, pMMOptionInstrCommR
 	api.spi.OnRspQryMMOptionInstrCommRate((*CThostFtdcMMOptionInstrCommRateField)(pMMOptionInstrCommRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInstrumentOrderCommRate
+// goTraderOnRspQryInstrumentOrderCommRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInstrumentOrderCommRate(userData uintptr, pInstrumentOrderCommRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -543,7 +543,7 @@ func goTraderOnRspQryInstrumentOrderCommRate(userData uintptr, pInstrumentOrderC
 	api.spi.OnRspQryInstrumentOrderCommRate((*CThostFtdcInstrumentOrderCommRateField)(pInstrumentOrderCommRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySecAgentTradingAccount
+// goTraderOnRspQrySecAgentTradingAccount 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySecAgentTradingAccount(userData uintptr, pTradingAccount unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -552,7 +552,7 @@ func goTraderOnRspQrySecAgentTradingAccount(userData uintptr, pTradingAccount un
 	api.spi.OnRspQrySecAgentTradingAccount((*CThostFtdcTradingAccountField)(pTradingAccount), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySecAgentCheckMode
+// goTraderOnRspQrySecAgentCheckMode 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySecAgentCheckMode(userData uintptr, pSecAgentCheckMode unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -561,7 +561,7 @@ func goTraderOnRspQrySecAgentCheckMode(userData uintptr, pSecAgentCheckMode unsa
 	api.spi.OnRspQrySecAgentCheckMode((*CThostFtdcSecAgentCheckModeField)(pSecAgentCheckMode), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySecAgentTradeInfo
+// goTraderOnRspQrySecAgentTradeInfo 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySecAgentTradeInfo(userData uintptr, pSecAgentTradeInfo unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -570,7 +570,7 @@ func goTraderOnRspQrySecAgentTradeInfo(userData uintptr, pSecAgentTradeInfo unsa
 	api.spi.OnRspQrySecAgentTradeInfo((*CThostFtdcSecAgentTradeInfoField)(pSecAgentTradeInfo), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryOptionInstrTradeCost
+// goTraderOnRspQryOptionInstrTradeCost 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryOptionInstrTradeCost(userData uintptr, pOptionInstrTradeCost unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -579,7 +579,7 @@ func goTraderOnRspQryOptionInstrTradeCost(userData uintptr, pOptionInstrTradeCos
 	api.spi.OnRspQryOptionInstrTradeCost((*CThostFtdcOptionInstrTradeCostField)(pOptionInstrTradeCost), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryOptionInstrCommRate
+// goTraderOnRspQryOptionInstrCommRate 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryOptionInstrCommRate(userData uintptr, pOptionInstrCommRate unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -588,7 +588,7 @@ func goTraderOnRspQryOptionInstrCommRate(userData uintptr, pOptionInstrCommRate 
 	api.spi.OnRspQryOptionInstrCommRate((*CThostFtdcOptionInstrCommRateField)(pOptionInstrCommRate), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryExecOrder
+// goTraderOnRspQryExecOrder 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryExecOrder(userData uintptr, pExecOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -597,7 +597,7 @@ func goTraderOnRspQryExecOrder(userData uintptr, pExecOrder unsafe.Pointer, pRsp
 	api.spi.OnRspQryExecOrder((*CThostFtdcExecOrderField)(pExecOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryForQuote
+// goTraderOnRspQryForQuote 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryForQuote(userData uintptr, pForQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -606,7 +606,7 @@ func goTraderOnRspQryForQuote(userData uintptr, pForQuote unsafe.Pointer, pRspIn
 	api.spi.OnRspQryForQuote((*CThostFtdcForQuoteField)(pForQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryQuote
+// goTraderOnRspQryQuote 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryQuote(userData uintptr, pQuote unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -615,7 +615,7 @@ func goTraderOnRspQryQuote(userData uintptr, pQuote unsafe.Pointer, pRspInfo uns
 	api.spi.OnRspQryQuote((*CThostFtdcQuoteField)(pQuote), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryOptionSelfClose
+// goTraderOnRspQryOptionSelfClose 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryOptionSelfClose(userData uintptr, pOptionSelfClose unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -624,7 +624,7 @@ func goTraderOnRspQryOptionSelfClose(userData uintptr, pOptionSelfClose unsafe.P
 	api.spi.OnRspQryOptionSelfClose((*CThostFtdcOptionSelfCloseField)(pOptionSelfClose), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestUnit
+// goTraderOnRspQryInvestUnit 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestUnit(userData uintptr, pInvestUnit unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -633,7 +633,7 @@ func goTraderOnRspQryInvestUnit(userData uintptr, pInvestUnit unsafe.Pointer, pR
 	api.spi.OnRspQryInvestUnit((*CThostFtdcInvestUnitField)(pInvestUnit), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryCombInstrumentGuard
+// goTraderOnRspQryCombInstrumentGuard 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryCombInstrumentGuard(userData uintptr, pCombInstrumentGuard unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -642,7 +642,7 @@ func goTraderOnRspQryCombInstrumentGuard(userData uintptr, pCombInstrumentGuard 
 	api.spi.OnRspQryCombInstrumentGuard((*CThostFtdcCombInstrumentGuardField)(pCombInstrumentGuard), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryCombAction
+// goTraderOnRspQryCombAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryCombAction(userData uintptr, pCombAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -651,7 +651,7 @@ func goTraderOnRspQryCombAction(userData uintptr, pCombAction unsafe.Pointer, pR
 	api.spi.OnRspQryCombAction((*CThostFtdcCombActionField)(pCombAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryTransferSerial
+// goTraderOnRspQryTransferSerial 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryTransferSerial(userData uintptr, pTransferSerial unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -660,7 +660,7 @@ func goTraderOnRspQryTransferSerial(userData uintptr, pTransferSerial unsafe.Poi
 	api.spi.OnRspQryTransferSerial((*CThostFtdcTransferSerialField)(pTransferSerial), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryAccountregister
+// goTraderOnRspQryAccountregister 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryAccountregister(userData uintptr, pAccountregister unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -669,7 +669,7 @@ func goTraderOnRspQryAccountregister(userData uintptr, pAccountregister unsafe.P
 	api.spi.OnRspQryAccountregister((*CThostFtdcAccountregisterField)(pAccountregister), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspError
+// goTraderOnRspError 回调函数实现（C 调用约定版本）
 func goTraderOnRspError(userData uintptr, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -678,7 +678,7 @@ func goTraderOnRspError(userData uintptr, pRspInfo unsafe.Pointer, nRequestID in
 	api.spi.OnRspError((*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRtnOrder
+// goTraderOnRtnOrder 回调函数实现（C 调用约定版本）
 func goTraderOnRtnOrder(userData uintptr, pOrder unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -687,7 +687,7 @@ func goTraderOnRtnOrder(userData uintptr, pOrder unsafe.Pointer) {
 	api.spi.OnRtnOrder((*CThostFtdcOrderField)(pOrder))
 }
 
-//export goTraderOnRtnTrade
+// goTraderOnRtnTrade 回调函数实现（C 调用约定版本）
 func goTraderOnRtnTrade(userData uintptr, pTrade unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -696,7 +696,7 @@ func goTraderOnRtnTrade(userData uintptr, pTrade unsafe.Pointer) {
 	api.spi.OnRtnTrade((*CThostFtdcTradeField)(pTrade))
 }
 
-//export goTraderOnErrRtnOrderInsert
+// goTraderOnErrRtnOrderInsert 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnOrderInsert(userData uintptr, pInputOrder unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -705,7 +705,7 @@ func goTraderOnErrRtnOrderInsert(userData uintptr, pInputOrder unsafe.Pointer, p
 	api.spi.OnErrRtnOrderInsert((*CThostFtdcInputOrderField)(pInputOrder), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnOrderAction
+// goTraderOnErrRtnOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnOrderAction(userData uintptr, pOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -714,7 +714,7 @@ func goTraderOnErrRtnOrderAction(userData uintptr, pOrderAction unsafe.Pointer, 
 	api.spi.OnErrRtnOrderAction((*CThostFtdcOrderActionField)(pOrderAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnRtnInstrumentStatus
+// goTraderOnRtnInstrumentStatus 回调函数实现（C 调用约定版本）
 func goTraderOnRtnInstrumentStatus(userData uintptr, pInstrumentStatus unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -723,7 +723,7 @@ func goTraderOnRtnInstrumentStatus(userData uintptr, pInstrumentStatus unsafe.Po
 	api.spi.OnRtnInstrumentStatus((*CThostFtdcInstrumentStatusField)(pInstrumentStatus))
 }
 
-//export goTraderOnRtnBulletin
+// goTraderOnRtnBulletin 回调函数实现（C 调用约定版本）
 func goTraderOnRtnBulletin(userData uintptr, pBulletin unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -732,7 +732,7 @@ func goTraderOnRtnBulletin(userData uintptr, pBulletin unsafe.Pointer) {
 	api.spi.OnRtnBulletin((*CThostFtdcBulletinField)(pBulletin))
 }
 
-//export goTraderOnRtnTradingNotice
+// goTraderOnRtnTradingNotice 回调函数实现（C 调用约定版本）
 func goTraderOnRtnTradingNotice(userData uintptr, pTradingNoticeInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -741,7 +741,7 @@ func goTraderOnRtnTradingNotice(userData uintptr, pTradingNoticeInfo unsafe.Poin
 	api.spi.OnRtnTradingNotice((*CThostFtdcTradingNoticeInfoField)(pTradingNoticeInfo))
 }
 
-//export goTraderOnRtnErrorConditionalOrder
+// goTraderOnRtnErrorConditionalOrder 回调函数实现（C 调用约定版本）
 func goTraderOnRtnErrorConditionalOrder(userData uintptr, pErrorConditionalOrder unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -750,7 +750,7 @@ func goTraderOnRtnErrorConditionalOrder(userData uintptr, pErrorConditionalOrder
 	api.spi.OnRtnErrorConditionalOrder((*CThostFtdcErrorConditionalOrderField)(pErrorConditionalOrder))
 }
 
-//export goTraderOnRtnExecOrder
+// goTraderOnRtnExecOrder 回调函数实现（C 调用约定版本）
 func goTraderOnRtnExecOrder(userData uintptr, pExecOrder unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -759,7 +759,7 @@ func goTraderOnRtnExecOrder(userData uintptr, pExecOrder unsafe.Pointer) {
 	api.spi.OnRtnExecOrder((*CThostFtdcExecOrderField)(pExecOrder))
 }
 
-//export goTraderOnErrRtnExecOrderInsert
+// goTraderOnErrRtnExecOrderInsert 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnExecOrderInsert(userData uintptr, pInputExecOrder unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -768,7 +768,7 @@ func goTraderOnErrRtnExecOrderInsert(userData uintptr, pInputExecOrder unsafe.Po
 	api.spi.OnErrRtnExecOrderInsert((*CThostFtdcInputExecOrderField)(pInputExecOrder), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnExecOrderAction
+// goTraderOnErrRtnExecOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnExecOrderAction(userData uintptr, pExecOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -777,7 +777,7 @@ func goTraderOnErrRtnExecOrderAction(userData uintptr, pExecOrderAction unsafe.P
 	api.spi.OnErrRtnExecOrderAction((*CThostFtdcExecOrderActionField)(pExecOrderAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnForQuoteInsert
+// goTraderOnErrRtnForQuoteInsert 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnForQuoteInsert(userData uintptr, pInputForQuote unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -786,7 +786,7 @@ func goTraderOnErrRtnForQuoteInsert(userData uintptr, pInputForQuote unsafe.Poin
 	api.spi.OnErrRtnForQuoteInsert((*CThostFtdcInputForQuoteField)(pInputForQuote), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnRtnQuote
+// goTraderOnRtnQuote 回调函数实现（C 调用约定版本）
 func goTraderOnRtnQuote(userData uintptr, pQuote unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -795,7 +795,7 @@ func goTraderOnRtnQuote(userData uintptr, pQuote unsafe.Pointer) {
 	api.spi.OnRtnQuote((*CThostFtdcQuoteField)(pQuote))
 }
 
-//export goTraderOnErrRtnQuoteInsert
+// goTraderOnErrRtnQuoteInsert 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnQuoteInsert(userData uintptr, pInputQuote unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -804,7 +804,7 @@ func goTraderOnErrRtnQuoteInsert(userData uintptr, pInputQuote unsafe.Pointer, p
 	api.spi.OnErrRtnQuoteInsert((*CThostFtdcInputQuoteField)(pInputQuote), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnQuoteAction
+// goTraderOnErrRtnQuoteAction 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnQuoteAction(userData uintptr, pQuoteAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -813,7 +813,7 @@ func goTraderOnErrRtnQuoteAction(userData uintptr, pQuoteAction unsafe.Pointer, 
 	api.spi.OnErrRtnQuoteAction((*CThostFtdcQuoteActionField)(pQuoteAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnRtnForQuoteRsp
+// goTraderOnRtnForQuoteRsp 回调函数实现（C 调用约定版本）
 func goTraderOnRtnForQuoteRsp(userData uintptr, pForQuoteRsp unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -822,7 +822,7 @@ func goTraderOnRtnForQuoteRsp(userData uintptr, pForQuoteRsp unsafe.Pointer) {
 	api.spi.OnRtnForQuoteRsp((*CThostFtdcForQuoteRspField)(pForQuoteRsp))
 }
 
-//export goTraderOnRtnCFMMCTradingAccountToken
+// goTraderOnRtnCFMMCTradingAccountToken 回调函数实现（C 调用约定版本）
 func goTraderOnRtnCFMMCTradingAccountToken(userData uintptr, pCFMMCTradingAccountToken unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -831,7 +831,7 @@ func goTraderOnRtnCFMMCTradingAccountToken(userData uintptr, pCFMMCTradingAccoun
 	api.spi.OnRtnCFMMCTradingAccountToken((*CThostFtdcCFMMCTradingAccountTokenField)(pCFMMCTradingAccountToken))
 }
 
-//export goTraderOnErrRtnBatchOrderAction
+// goTraderOnErrRtnBatchOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnBatchOrderAction(userData uintptr, pBatchOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -840,7 +840,7 @@ func goTraderOnErrRtnBatchOrderAction(userData uintptr, pBatchOrderAction unsafe
 	api.spi.OnErrRtnBatchOrderAction((*CThostFtdcBatchOrderActionField)(pBatchOrderAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnRtnOptionSelfClose
+// goTraderOnRtnOptionSelfClose 回调函数实现（C 调用约定版本）
 func goTraderOnRtnOptionSelfClose(userData uintptr, pOptionSelfClose unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -849,7 +849,7 @@ func goTraderOnRtnOptionSelfClose(userData uintptr, pOptionSelfClose unsafe.Poin
 	api.spi.OnRtnOptionSelfClose((*CThostFtdcOptionSelfCloseField)(pOptionSelfClose))
 }
 
-//export goTraderOnErrRtnOptionSelfCloseInsert
+// goTraderOnErrRtnOptionSelfCloseInsert 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClose unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -858,7 +858,7 @@ func goTraderOnErrRtnOptionSelfCloseInsert(userData uintptr, pInputOptionSelfClo
 	api.spi.OnErrRtnOptionSelfCloseInsert((*CThostFtdcInputOptionSelfCloseField)(pInputOptionSelfClose), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnOptionSelfCloseAction
+// goTraderOnErrRtnOptionSelfCloseAction 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnOptionSelfCloseAction(userData uintptr, pOptionSelfCloseAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -867,7 +867,7 @@ func goTraderOnErrRtnOptionSelfCloseAction(userData uintptr, pOptionSelfCloseAct
 	api.spi.OnErrRtnOptionSelfCloseAction((*CThostFtdcOptionSelfCloseActionField)(pOptionSelfCloseAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnRtnCombAction
+// goTraderOnRtnCombAction 回调函数实现（C 调用约定版本）
 func goTraderOnRtnCombAction(userData uintptr, pCombAction unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -876,7 +876,7 @@ func goTraderOnRtnCombAction(userData uintptr, pCombAction unsafe.Pointer) {
 	api.spi.OnRtnCombAction((*CThostFtdcCombActionField)(pCombAction))
 }
 
-//export goTraderOnErrRtnCombActionInsert
+// goTraderOnErrRtnCombActionInsert 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnCombActionInsert(userData uintptr, pInputCombAction unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -885,7 +885,7 @@ func goTraderOnErrRtnCombActionInsert(userData uintptr, pInputCombAction unsafe.
 	api.spi.OnErrRtnCombActionInsert((*CThostFtdcInputCombActionField)(pInputCombAction), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnRspQryContractBank
+// goTraderOnRspQryContractBank 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryContractBank(userData uintptr, pContractBank unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -894,7 +894,7 @@ func goTraderOnRspQryContractBank(userData uintptr, pContractBank unsafe.Pointer
 	api.spi.OnRspQryContractBank((*CThostFtdcContractBankField)(pContractBank), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryParkedOrder
+// goTraderOnRspQryParkedOrder 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryParkedOrder(userData uintptr, pParkedOrder unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -903,7 +903,7 @@ func goTraderOnRspQryParkedOrder(userData uintptr, pParkedOrder unsafe.Pointer, 
 	api.spi.OnRspQryParkedOrder((*CThostFtdcParkedOrderField)(pParkedOrder), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryParkedOrderAction
+// goTraderOnRspQryParkedOrderAction 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryParkedOrderAction(userData uintptr, pParkedOrderAction unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -912,7 +912,7 @@ func goTraderOnRspQryParkedOrderAction(userData uintptr, pParkedOrderAction unsa
 	api.spi.OnRspQryParkedOrderAction((*CThostFtdcParkedOrderActionField)(pParkedOrderAction), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryTradingNotice
+// goTraderOnRspQryTradingNotice 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryTradingNotice(userData uintptr, pTradingNotice unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -921,7 +921,7 @@ func goTraderOnRspQryTradingNotice(userData uintptr, pTradingNotice unsafe.Point
 	api.spi.OnRspQryTradingNotice((*CThostFtdcTradingNoticeField)(pTradingNotice), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryBrokerTradingParams
+// goTraderOnRspQryBrokerTradingParams 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryBrokerTradingParams(userData uintptr, pBrokerTradingParams unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -930,7 +930,7 @@ func goTraderOnRspQryBrokerTradingParams(userData uintptr, pBrokerTradingParams 
 	api.spi.OnRspQryBrokerTradingParams((*CThostFtdcBrokerTradingParamsField)(pBrokerTradingParams), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryBrokerTradingAlgos
+// goTraderOnRspQryBrokerTradingAlgos 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryBrokerTradingAlgos(userData uintptr, pBrokerTradingAlgos unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -939,7 +939,7 @@ func goTraderOnRspQryBrokerTradingAlgos(userData uintptr, pBrokerTradingAlgos un
 	api.spi.OnRspQryBrokerTradingAlgos((*CThostFtdcBrokerTradingAlgosField)(pBrokerTradingAlgos), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQueryCFMMCTradingAccountToken
+// goTraderOnRspQueryCFMMCTradingAccountToken 回调函数实现（C 调用约定版本）
 func goTraderOnRspQueryCFMMCTradingAccountToken(userData uintptr, pQueryCFMMCTradingAccountToken unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -948,7 +948,7 @@ func goTraderOnRspQueryCFMMCTradingAccountToken(userData uintptr, pQueryCFMMCTra
 	api.spi.OnRspQueryCFMMCTradingAccountToken((*CThostFtdcQueryCFMMCTradingAccountTokenField)(pQueryCFMMCTradingAccountToken), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRtnFromBankToFutureByBank
+// goTraderOnRtnFromBankToFutureByBank 回调函数实现（C 调用约定版本）
 func goTraderOnRtnFromBankToFutureByBank(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -957,7 +957,7 @@ func goTraderOnRtnFromBankToFutureByBank(userData uintptr, pRspTransfer unsafe.P
 	api.spi.OnRtnFromBankToFutureByBank((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goTraderOnRtnFromFutureToBankByBank
+// goTraderOnRtnFromFutureToBankByBank 回调函数实现（C 调用约定版本）
 func goTraderOnRtnFromFutureToBankByBank(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -966,7 +966,7 @@ func goTraderOnRtnFromFutureToBankByBank(userData uintptr, pRspTransfer unsafe.P
 	api.spi.OnRtnFromFutureToBankByBank((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goTraderOnRtnRepealFromBankToFutureByBank
+// goTraderOnRtnRepealFromBankToFutureByBank 回调函数实现（C 调用约定版本）
 func goTraderOnRtnRepealFromBankToFutureByBank(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -975,7 +975,7 @@ func goTraderOnRtnRepealFromBankToFutureByBank(userData uintptr, pRspRepeal unsa
 	api.spi.OnRtnRepealFromBankToFutureByBank((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goTraderOnRtnRepealFromFutureToBankByBank
+// goTraderOnRtnRepealFromFutureToBankByBank 回调函数实现（C 调用约定版本）
 func goTraderOnRtnRepealFromFutureToBankByBank(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -984,7 +984,7 @@ func goTraderOnRtnRepealFromFutureToBankByBank(userData uintptr, pRspRepeal unsa
 	api.spi.OnRtnRepealFromFutureToBankByBank((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goTraderOnRtnFromBankToFutureByFuture
+// goTraderOnRtnFromBankToFutureByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRtnFromBankToFutureByFuture(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -993,7 +993,7 @@ func goTraderOnRtnFromBankToFutureByFuture(userData uintptr, pRspTransfer unsafe
 	api.spi.OnRtnFromBankToFutureByFuture((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goTraderOnRtnFromFutureToBankByFuture
+// goTraderOnRtnFromFutureToBankByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRtnFromFutureToBankByFuture(userData uintptr, pRspTransfer unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1002,7 +1002,7 @@ func goTraderOnRtnFromFutureToBankByFuture(userData uintptr, pRspTransfer unsafe
 	api.spi.OnRtnFromFutureToBankByFuture((*CThostFtdcRspTransferField)(pRspTransfer))
 }
 
-//export goTraderOnRtnRepealFromBankToFutureByFutureManual
+// goTraderOnRtnRepealFromBankToFutureByFutureManual 回调函数实现（C 调用约定版本）
 func goTraderOnRtnRepealFromBankToFutureByFutureManual(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1011,7 +1011,7 @@ func goTraderOnRtnRepealFromBankToFutureByFutureManual(userData uintptr, pRspRep
 	api.spi.OnRtnRepealFromBankToFutureByFutureManual((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goTraderOnRtnRepealFromFutureToBankByFutureManual
+// goTraderOnRtnRepealFromFutureToBankByFutureManual 回调函数实现（C 调用约定版本）
 func goTraderOnRtnRepealFromFutureToBankByFutureManual(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1020,7 +1020,7 @@ func goTraderOnRtnRepealFromFutureToBankByFutureManual(userData uintptr, pRspRep
 	api.spi.OnRtnRepealFromFutureToBankByFutureManual((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goTraderOnRtnQueryBankBalanceByFuture
+// goTraderOnRtnQueryBankBalanceByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRtnQueryBankBalanceByFuture(userData uintptr, pNotifyQueryAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1029,7 +1029,7 @@ func goTraderOnRtnQueryBankBalanceByFuture(userData uintptr, pNotifyQueryAccount
 	api.spi.OnRtnQueryBankBalanceByFuture((*CThostFtdcNotifyQueryAccountField)(pNotifyQueryAccount))
 }
 
-//export goTraderOnErrRtnBankToFutureByFuture
+// goTraderOnErrRtnBankToFutureByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnBankToFutureByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1038,7 +1038,7 @@ func goTraderOnErrRtnBankToFutureByFuture(userData uintptr, pReqTransfer unsafe.
 	api.spi.OnErrRtnBankToFutureByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnFutureToBankByFuture
+// goTraderOnErrRtnFutureToBankByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnFutureToBankByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1047,7 +1047,7 @@ func goTraderOnErrRtnFutureToBankByFuture(userData uintptr, pReqTransfer unsafe.
 	api.spi.OnErrRtnFutureToBankByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnRepealBankToFutureByFutureManual
+// goTraderOnErrRtnRepealBankToFutureByFutureManual 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnRepealBankToFutureByFutureManual(userData uintptr, pReqRepeal unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1056,7 +1056,7 @@ func goTraderOnErrRtnRepealBankToFutureByFutureManual(userData uintptr, pReqRepe
 	api.spi.OnErrRtnRepealBankToFutureByFutureManual((*CThostFtdcReqRepealField)(pReqRepeal), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnRepealFutureToBankByFutureManual
+// goTraderOnErrRtnRepealFutureToBankByFutureManual 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnRepealFutureToBankByFutureManual(userData uintptr, pReqRepeal unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1065,7 +1065,7 @@ func goTraderOnErrRtnRepealFutureToBankByFutureManual(userData uintptr, pReqRepe
 	api.spi.OnErrRtnRepealFutureToBankByFutureManual((*CThostFtdcReqRepealField)(pReqRepeal), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnErrRtnQueryBankBalanceByFuture
+// goTraderOnErrRtnQueryBankBalanceByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnErrRtnQueryBankBalanceByFuture(userData uintptr, pReqQueryAccount unsafe.Pointer, pRspInfo unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1074,7 +1074,7 @@ func goTraderOnErrRtnQueryBankBalanceByFuture(userData uintptr, pReqQueryAccount
 	api.spi.OnErrRtnQueryBankBalanceByFuture((*CThostFtdcReqQueryAccountField)(pReqQueryAccount), (*CThostFtdcRspInfoField)(pRspInfo))
 }
 
-//export goTraderOnRtnRepealFromBankToFutureByFuture
+// goTraderOnRtnRepealFromBankToFutureByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRtnRepealFromBankToFutureByFuture(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1083,7 +1083,7 @@ func goTraderOnRtnRepealFromBankToFutureByFuture(userData uintptr, pRspRepeal un
 	api.spi.OnRtnRepealFromBankToFutureByFuture((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goTraderOnRtnRepealFromFutureToBankByFuture
+// goTraderOnRtnRepealFromFutureToBankByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRtnRepealFromFutureToBankByFuture(userData uintptr, pRspRepeal unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1092,7 +1092,7 @@ func goTraderOnRtnRepealFromFutureToBankByFuture(userData uintptr, pRspRepeal un
 	api.spi.OnRtnRepealFromFutureToBankByFuture((*CThostFtdcRspRepealField)(pRspRepeal))
 }
 
-//export goTraderOnRspFromBankToFutureByFuture
+// goTraderOnRspFromBankToFutureByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRspFromBankToFutureByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1101,7 +1101,7 @@ func goTraderOnRspFromBankToFutureByFuture(userData uintptr, pReqTransfer unsafe
 	api.spi.OnRspFromBankToFutureByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspFromFutureToBankByFuture
+// goTraderOnRspFromFutureToBankByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRspFromFutureToBankByFuture(userData uintptr, pReqTransfer unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1110,7 +1110,7 @@ func goTraderOnRspFromFutureToBankByFuture(userData uintptr, pReqTransfer unsafe
 	api.spi.OnRspFromFutureToBankByFuture((*CThostFtdcReqTransferField)(pReqTransfer), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQueryBankAccountMoneyByFuture
+// goTraderOnRspQueryBankAccountMoneyByFuture 回调函数实现（C 调用约定版本）
 func goTraderOnRspQueryBankAccountMoneyByFuture(userData uintptr, pReqQueryAccount unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1119,7 +1119,7 @@ func goTraderOnRspQueryBankAccountMoneyByFuture(userData uintptr, pReqQueryAccou
 	api.spi.OnRspQueryBankAccountMoneyByFuture((*CThostFtdcReqQueryAccountField)(pReqQueryAccount), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRtnOpenAccountByBank
+// goTraderOnRtnOpenAccountByBank 回调函数实现（C 调用约定版本）
 func goTraderOnRtnOpenAccountByBank(userData uintptr, pOpenAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1128,7 +1128,7 @@ func goTraderOnRtnOpenAccountByBank(userData uintptr, pOpenAccount unsafe.Pointe
 	api.spi.OnRtnOpenAccountByBank((*CThostFtdcOpenAccountField)(pOpenAccount))
 }
 
-//export goTraderOnRtnCancelAccountByBank
+// goTraderOnRtnCancelAccountByBank 回调函数实现（C 调用约定版本）
 func goTraderOnRtnCancelAccountByBank(userData uintptr, pCancelAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1137,7 +1137,7 @@ func goTraderOnRtnCancelAccountByBank(userData uintptr, pCancelAccount unsafe.Po
 	api.spi.OnRtnCancelAccountByBank((*CThostFtdcCancelAccountField)(pCancelAccount))
 }
 
-//export goTraderOnRtnChangeAccountByBank
+// goTraderOnRtnChangeAccountByBank 回调函数实现（C 调用约定版本）
 func goTraderOnRtnChangeAccountByBank(userData uintptr, pChangeAccount unsafe.Pointer) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1146,7 +1146,7 @@ func goTraderOnRtnChangeAccountByBank(userData uintptr, pChangeAccount unsafe.Po
 	api.spi.OnRtnChangeAccountByBank((*CThostFtdcChangeAccountField)(pChangeAccount))
 }
 
-//export goTraderOnRspQryClassifiedInstrument
+// goTraderOnRspQryClassifiedInstrument 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryClassifiedInstrument(userData uintptr, pInstrument unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1155,7 +1155,7 @@ func goTraderOnRspQryClassifiedInstrument(userData uintptr, pInstrument unsafe.P
 	api.spi.OnRspQryClassifiedInstrument((*CThostFtdcInstrumentField)(pInstrument), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryCombPromotionParam
+// goTraderOnRspQryCombPromotionParam 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryCombPromotionParam(userData uintptr, pCombPromotionParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1164,7 +1164,7 @@ func goTraderOnRspQryCombPromotionParam(userData uintptr, pCombPromotionParam un
 	api.spi.OnRspQryCombPromotionParam((*CThostFtdcCombPromotionParamField)(pCombPromotionParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRiskSettleInvstPosition
+// goTraderOnRspQryRiskSettleInvstPosition 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRiskSettleInvstPosition(userData uintptr, pRiskSettleInvstPosition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1173,7 +1173,7 @@ func goTraderOnRspQryRiskSettleInvstPosition(userData uintptr, pRiskSettleInvstP
 	api.spi.OnRspQryRiskSettleInvstPosition((*CThostFtdcRiskSettleInvstPositionField)(pRiskSettleInvstPosition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRiskSettleProductStatus
+// goTraderOnRspQryRiskSettleProductStatus 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRiskSettleProductStatus(userData uintptr, pRiskSettleProductStatus unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1182,7 +1182,7 @@ func goTraderOnRspQryRiskSettleProductStatus(userData uintptr, pRiskSettleProduc
 	api.spi.OnRspQryRiskSettleProductStatus((*CThostFtdcRiskSettleProductStatusField)(pRiskSettleProductStatus), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPBMFutureParameter
+// goTraderOnRspQrySPBMFutureParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPBMFutureParameter(userData uintptr, pSPBMFutureParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1191,7 +1191,7 @@ func goTraderOnRspQrySPBMFutureParameter(userData uintptr, pSPBMFutureParameter 
 	api.spi.OnRspQrySPBMFutureParameter((*CThostFtdcSPBMFutureParameterField)(pSPBMFutureParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPBMOptionParameter
+// goTraderOnRspQrySPBMOptionParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPBMOptionParameter(userData uintptr, pSPBMOptionParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1200,7 +1200,7 @@ func goTraderOnRspQrySPBMOptionParameter(userData uintptr, pSPBMOptionParameter 
 	api.spi.OnRspQrySPBMOptionParameter((*CThostFtdcSPBMOptionParameterField)(pSPBMOptionParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPBMIntraParameter
+// goTraderOnRspQrySPBMIntraParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPBMIntraParameter(userData uintptr, pSPBMIntraParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1209,7 +1209,7 @@ func goTraderOnRspQrySPBMIntraParameter(userData uintptr, pSPBMIntraParameter un
 	api.spi.OnRspQrySPBMIntraParameter((*CThostFtdcSPBMIntraParameterField)(pSPBMIntraParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPBMInterParameter
+// goTraderOnRspQrySPBMInterParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPBMInterParameter(userData uintptr, pSPBMInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1218,7 +1218,7 @@ func goTraderOnRspQrySPBMInterParameter(userData uintptr, pSPBMInterParameter un
 	api.spi.OnRspQrySPBMInterParameter((*CThostFtdcSPBMInterParameterField)(pSPBMInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPBMPortfDefinition
+// goTraderOnRspQrySPBMPortfDefinition 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPBMPortfDefinition(userData uintptr, pSPBMPortfDefinition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1227,7 +1227,7 @@ func goTraderOnRspQrySPBMPortfDefinition(userData uintptr, pSPBMPortfDefinition 
 	api.spi.OnRspQrySPBMPortfDefinition((*CThostFtdcSPBMPortfDefinitionField)(pSPBMPortfDefinition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPBMInvestorPortfDef
+// goTraderOnRspQrySPBMInvestorPortfDef 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPBMInvestorPortfDef(userData uintptr, pSPBMInvestorPortfDef unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1236,7 +1236,7 @@ func goTraderOnRspQrySPBMInvestorPortfDef(userData uintptr, pSPBMInvestorPortfDe
 	api.spi.OnRspQrySPBMInvestorPortfDef((*CThostFtdcSPBMInvestorPortfDefField)(pSPBMInvestorPortfDef), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorPortfMarginRatio
+// goTraderOnRspQryInvestorPortfMarginRatio 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorPortfMarginRatio(userData uintptr, pInvestorPortfMarginRatio unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1245,7 +1245,7 @@ func goTraderOnRspQryInvestorPortfMarginRatio(userData uintptr, pInvestorPortfMa
 	api.spi.OnRspQryInvestorPortfMarginRatio((*CThostFtdcInvestorPortfMarginRatioField)(pInvestorPortfMarginRatio), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorProdSPBMDetail
+// goTraderOnRspQryInvestorProdSPBMDetail 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorProdSPBMDetail(userData uintptr, pInvestorProdSPBMDetail unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1254,7 +1254,7 @@ func goTraderOnRspQryInvestorProdSPBMDetail(userData uintptr, pInvestorProdSPBMD
 	api.spi.OnRspQryInvestorProdSPBMDetail((*CThostFtdcInvestorProdSPBMDetailField)(pInvestorProdSPBMDetail), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorCommoditySPMMMargin
+// goTraderOnRspQryInvestorCommoditySPMMMargin 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorCommoditySPMMMargin(userData uintptr, pInvestorCommoditySPMMMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1263,7 +1263,7 @@ func goTraderOnRspQryInvestorCommoditySPMMMargin(userData uintptr, pInvestorComm
 	api.spi.OnRspQryInvestorCommoditySPMMMargin((*CThostFtdcInvestorCommoditySPMMMarginField)(pInvestorCommoditySPMMMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorCommodityGroupSPMMMargin
+// goTraderOnRspQryInvestorCommodityGroupSPMMMargin 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorCommodityGroupSPMMMargin(userData uintptr, pInvestorCommodityGroupSPMMMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1272,7 +1272,7 @@ func goTraderOnRspQryInvestorCommodityGroupSPMMMargin(userData uintptr, pInvesto
 	api.spi.OnRspQryInvestorCommodityGroupSPMMMargin((*CThostFtdcInvestorCommodityGroupSPMMMarginField)(pInvestorCommodityGroupSPMMMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPMMInstParam
+// goTraderOnRspQrySPMMInstParam 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPMMInstParam(userData uintptr, pSPMMInstParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1281,7 +1281,7 @@ func goTraderOnRspQrySPMMInstParam(userData uintptr, pSPMMInstParam unsafe.Point
 	api.spi.OnRspQrySPMMInstParam((*CThostFtdcSPMMInstParamField)(pSPMMInstParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPMMProductParam
+// goTraderOnRspQrySPMMProductParam 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPMMProductParam(userData uintptr, pSPMMProductParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1290,7 +1290,7 @@ func goTraderOnRspQrySPMMProductParam(userData uintptr, pSPMMProductParam unsafe
 	api.spi.OnRspQrySPMMProductParam((*CThostFtdcSPMMProductParamField)(pSPMMProductParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQrySPBMAddOnInterParameter
+// goTraderOnRspQrySPBMAddOnInterParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQrySPBMAddOnInterParameter(userData uintptr, pSPBMAddOnInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1299,7 +1299,7 @@ func goTraderOnRspQrySPBMAddOnInterParameter(userData uintptr, pSPBMAddOnInterPa
 	api.spi.OnRspQrySPBMAddOnInterParameter((*CThostFtdcSPBMAddOnInterParameterField)(pSPBMAddOnInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRCAMSCombProductInfo
+// goTraderOnRspQryRCAMSCombProductInfo 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRCAMSCombProductInfo(userData uintptr, pRCAMSCombProductInfo unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1308,7 +1308,7 @@ func goTraderOnRspQryRCAMSCombProductInfo(userData uintptr, pRCAMSCombProductInf
 	api.spi.OnRspQryRCAMSCombProductInfo((*CThostFtdcRCAMSCombProductInfoField)(pRCAMSCombProductInfo), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRCAMSInstrParameter
+// goTraderOnRspQryRCAMSInstrParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRCAMSInstrParameter(userData uintptr, pRCAMSInstrParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1317,7 +1317,7 @@ func goTraderOnRspQryRCAMSInstrParameter(userData uintptr, pRCAMSInstrParameter 
 	api.spi.OnRspQryRCAMSInstrParameter((*CThostFtdcRCAMSInstrParameterField)(pRCAMSInstrParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRCAMSIntraParameter
+// goTraderOnRspQryRCAMSIntraParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRCAMSIntraParameter(userData uintptr, pRCAMSIntraParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1326,7 +1326,7 @@ func goTraderOnRspQryRCAMSIntraParameter(userData uintptr, pRCAMSIntraParameter 
 	api.spi.OnRspQryRCAMSIntraParameter((*CThostFtdcRCAMSIntraParameterField)(pRCAMSIntraParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRCAMSInterParameter
+// goTraderOnRspQryRCAMSInterParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRCAMSInterParameter(userData uintptr, pRCAMSInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1335,7 +1335,7 @@ func goTraderOnRspQryRCAMSInterParameter(userData uintptr, pRCAMSInterParameter 
 	api.spi.OnRspQryRCAMSInterParameter((*CThostFtdcRCAMSInterParameterField)(pRCAMSInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRCAMSShortOptAdjustParam
+// goTraderOnRspQryRCAMSShortOptAdjustParam 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRCAMSShortOptAdjustParam(userData uintptr, pRCAMSShortOptAdjustParam unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1344,7 +1344,7 @@ func goTraderOnRspQryRCAMSShortOptAdjustParam(userData uintptr, pRCAMSShortOptAd
 	api.spi.OnRspQryRCAMSShortOptAdjustParam((*CThostFtdcRCAMSShortOptAdjustParamField)(pRCAMSShortOptAdjustParam), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRCAMSInvestorCombPosition
+// goTraderOnRspQryRCAMSInvestorCombPosition 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRCAMSInvestorCombPosition(userData uintptr, pRCAMSInvestorCombPosition unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1353,7 +1353,7 @@ func goTraderOnRspQryRCAMSInvestorCombPosition(userData uintptr, pRCAMSInvestorC
 	api.spi.OnRspQryRCAMSInvestorCombPosition((*CThostFtdcRCAMSInvestorCombPositionField)(pRCAMSInvestorCombPosition), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorProdRCAMSMargin
+// goTraderOnRspQryInvestorProdRCAMSMargin 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorProdRCAMSMargin(userData uintptr, pInvestorProdRCAMSMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1362,7 +1362,7 @@ func goTraderOnRspQryInvestorProdRCAMSMargin(userData uintptr, pInvestorProdRCAM
 	api.spi.OnRspQryInvestorProdRCAMSMargin((*CThostFtdcInvestorProdRCAMSMarginField)(pInvestorProdRCAMSMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRULEInstrParameter
+// goTraderOnRspQryRULEInstrParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRULEInstrParameter(userData uintptr, pRULEInstrParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1371,7 +1371,7 @@ func goTraderOnRspQryRULEInstrParameter(userData uintptr, pRULEInstrParameter un
 	api.spi.OnRspQryRULEInstrParameter((*CThostFtdcRULEInstrParameterField)(pRULEInstrParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRULEIntraParameter
+// goTraderOnRspQryRULEIntraParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRULEIntraParameter(userData uintptr, pRULEIntraParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1380,7 +1380,7 @@ func goTraderOnRspQryRULEIntraParameter(userData uintptr, pRULEIntraParameter un
 	api.spi.OnRspQryRULEIntraParameter((*CThostFtdcRULEIntraParameterField)(pRULEIntraParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryRULEInterParameter
+// goTraderOnRspQryRULEInterParameter 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryRULEInterParameter(userData uintptr, pRULEInterParameter unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1389,7 +1389,7 @@ func goTraderOnRspQryRULEInterParameter(userData uintptr, pRULEInterParameter un
 	api.spi.OnRspQryRULEInterParameter((*CThostFtdcRULEInterParameterField)(pRULEInterParameter), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorProdRULEMargin
+// goTraderOnRspQryInvestorProdRULEMargin 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorProdRULEMargin(userData uintptr, pInvestorProdRULEMargin unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
@@ -1398,11 +1398,1245 @@ func goTraderOnRspQryInvestorProdRULEMargin(userData uintptr, pInvestorProdRULEM
 	api.spi.OnRspQryInvestorProdRULEMargin((*CThostFtdcInvestorProdRULEMarginField)(pInvestorProdRULEMargin), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
 }
 
-//export goTraderOnRspQryInvestorPortfSetting
+// goTraderOnRspQryInvestorPortfSetting 回调函数实现（C 调用约定版本）
 func goTraderOnRspQryInvestorPortfSetting(userData uintptr, pInvestorPortfSetting unsafe.Pointer, pRspInfo unsafe.Pointer, nRequestID int32, bIsLast bool) {
 	api := getTraderInstance(userData)
 	if api == nil || api.spi == nil {
 		return
 	}
 	api.spi.OnRspQryInvestorPortfSetting((*CThostFtdcInvestorPortfSettingField)(pInvestorPortfSetting), (*CThostFtdcRspInfoField)(pRspInfo), nRequestID, bIsLast)
+}
+
+// ========== 辅助函数：使用 purego.NewCallback 获取 C 函数指针 ==========
+// 注意：purego.NewCallback 不支持 unsafe.Pointer 参数，需要用具体指针类型的 wrapper
+
+// GetGoTraderOnFrontConnected 获取 goTraderOnFrontConnected 的 C 函数指针
+func GetGoTraderOnFrontConnected() uintptr {
+	return purego.NewCallback(goTraderOnFrontConnected)
+}
+
+// GetGoTraderOnFrontDisconnected 获取 goTraderOnFrontDisconnected 的 C 函数指针
+func GetGoTraderOnFrontDisconnected() uintptr {
+	return purego.NewCallback(goTraderOnFrontDisconnected)
+}
+
+// GetGoTraderOnHeartBeatWarning 获取 goTraderOnHeartBeatWarning 的 C 函数指针
+func GetGoTraderOnHeartBeatWarning() uintptr {
+	return purego.NewCallback(goTraderOnHeartBeatWarning)
+}
+
+// GetGoTraderOnRspAuthenticate 获取 goTraderOnRspAuthenticate 的 C 函数指针
+func GetGoTraderOnRspAuthenticate() uintptr {
+	wrapper := func(userData uintptr, pRspAuthenticateField *CThostFtdcRspAuthenticateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspAuthenticate(userData, unsafe.Pointer(pRspAuthenticateField), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspUserLogin 获取 goTraderOnRspUserLogin 的 C 函数指针
+func GetGoTraderOnRspUserLogin() uintptr {
+	wrapper := func(userData uintptr, pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspUserLogin(userData, unsafe.Pointer(pRspUserLogin), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspUserLogout 获取 goTraderOnRspUserLogout 的 C 函数指针
+func GetGoTraderOnRspUserLogout() uintptr {
+	wrapper := func(userData uintptr, pUserLogout *CThostFtdcUserLogoutField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspUserLogout(userData, unsafe.Pointer(pUserLogout), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspUserPasswordUpdate 获取 goTraderOnRspUserPasswordUpdate 的 C 函数指针
+func GetGoTraderOnRspUserPasswordUpdate() uintptr {
+	wrapper := func(userData uintptr, pUserPasswordUpdate *CThostFtdcUserPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspUserPasswordUpdate(userData, unsafe.Pointer(pUserPasswordUpdate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspTradingAccountPasswordUpdate 获取 goTraderOnRspTradingAccountPasswordUpdate 的 C 函数指针
+func GetGoTraderOnRspTradingAccountPasswordUpdate() uintptr {
+	wrapper := func(userData uintptr, pTradingAccountPasswordUpdate *CThostFtdcTradingAccountPasswordUpdateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspTradingAccountPasswordUpdate(userData, unsafe.Pointer(pTradingAccountPasswordUpdate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspUserAuthMethod 获取 goTraderOnRspUserAuthMethod 的 C 函数指针
+func GetGoTraderOnRspUserAuthMethod() uintptr {
+	wrapper := func(userData uintptr, pRspUserAuthMethod *CThostFtdcRspUserAuthMethodField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspUserAuthMethod(userData, unsafe.Pointer(pRspUserAuthMethod), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspGenUserCaptcha 获取 goTraderOnRspGenUserCaptcha 的 C 函数指针
+func GetGoTraderOnRspGenUserCaptcha() uintptr {
+	wrapper := func(userData uintptr, pRspGenUserCaptcha *CThostFtdcRspGenUserCaptchaField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspGenUserCaptcha(userData, unsafe.Pointer(pRspGenUserCaptcha), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspGenUserText 获取 goTraderOnRspGenUserText 的 C 函数指针
+func GetGoTraderOnRspGenUserText() uintptr {
+	wrapper := func(userData uintptr, pRspGenUserText *CThostFtdcRspGenUserTextField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspGenUserText(userData, unsafe.Pointer(pRspGenUserText), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspOrderInsert 获取 goTraderOnRspOrderInsert 的 C 函数指针
+func GetGoTraderOnRspOrderInsert() uintptr {
+	wrapper := func(userData uintptr, pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspOrderInsert(userData, unsafe.Pointer(pInputOrder), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspParkedOrderInsert 获取 goTraderOnRspParkedOrderInsert 的 C 函数指针
+func GetGoTraderOnRspParkedOrderInsert() uintptr {
+	wrapper := func(userData uintptr, pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspParkedOrderInsert(userData, unsafe.Pointer(pParkedOrder), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspParkedOrderAction 获取 goTraderOnRspParkedOrderAction 的 C 函数指针
+func GetGoTraderOnRspParkedOrderAction() uintptr {
+	wrapper := func(userData uintptr, pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspParkedOrderAction(userData, unsafe.Pointer(pParkedOrderAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspOrderAction 获取 goTraderOnRspOrderAction 的 C 函数指针
+func GetGoTraderOnRspOrderAction() uintptr {
+	wrapper := func(userData uintptr, pInputOrderAction *CThostFtdcInputOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspOrderAction(userData, unsafe.Pointer(pInputOrderAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryMaxOrderVolume 获取 goTraderOnRspQryMaxOrderVolume 的 C 函数指针
+func GetGoTraderOnRspQryMaxOrderVolume() uintptr {
+	wrapper := func(userData uintptr, pQryMaxOrderVolume *CThostFtdcQryMaxOrderVolumeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryMaxOrderVolume(userData, unsafe.Pointer(pQryMaxOrderVolume), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspSettlementInfoConfirm 获取 goTraderOnRspSettlementInfoConfirm 的 C 函数指针
+func GetGoTraderOnRspSettlementInfoConfirm() uintptr {
+	wrapper := func(userData uintptr, pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspSettlementInfoConfirm(userData, unsafe.Pointer(pSettlementInfoConfirm), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspRemoveParkedOrder 获取 goTraderOnRspRemoveParkedOrder 的 C 函数指针
+func GetGoTraderOnRspRemoveParkedOrder() uintptr {
+	wrapper := func(userData uintptr, pRemoveParkedOrder *CThostFtdcRemoveParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspRemoveParkedOrder(userData, unsafe.Pointer(pRemoveParkedOrder), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspRemoveParkedOrderAction 获取 goTraderOnRspRemoveParkedOrderAction 的 C 函数指针
+func GetGoTraderOnRspRemoveParkedOrderAction() uintptr {
+	wrapper := func(userData uintptr, pRemoveParkedOrderAction *CThostFtdcRemoveParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspRemoveParkedOrderAction(userData, unsafe.Pointer(pRemoveParkedOrderAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspExecOrderInsert 获取 goTraderOnRspExecOrderInsert 的 C 函数指针
+func GetGoTraderOnRspExecOrderInsert() uintptr {
+	wrapper := func(userData uintptr, pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspExecOrderInsert(userData, unsafe.Pointer(pInputExecOrder), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspExecOrderAction 获取 goTraderOnRspExecOrderAction 的 C 函数指针
+func GetGoTraderOnRspExecOrderAction() uintptr {
+	wrapper := func(userData uintptr, pInputExecOrderAction *CThostFtdcInputExecOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspExecOrderAction(userData, unsafe.Pointer(pInputExecOrderAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspForQuoteInsert 获取 goTraderOnRspForQuoteInsert 的 C 函数指针
+func GetGoTraderOnRspForQuoteInsert() uintptr {
+	wrapper := func(userData uintptr, pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspForQuoteInsert(userData, unsafe.Pointer(pInputForQuote), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQuoteInsert 获取 goTraderOnRspQuoteInsert 的 C 函数指针
+func GetGoTraderOnRspQuoteInsert() uintptr {
+	wrapper := func(userData uintptr, pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQuoteInsert(userData, unsafe.Pointer(pInputQuote), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQuoteAction 获取 goTraderOnRspQuoteAction 的 C 函数指针
+func GetGoTraderOnRspQuoteAction() uintptr {
+	wrapper := func(userData uintptr, pInputQuoteAction *CThostFtdcInputQuoteActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQuoteAction(userData, unsafe.Pointer(pInputQuoteAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspBatchOrderAction 获取 goTraderOnRspBatchOrderAction 的 C 函数指针
+func GetGoTraderOnRspBatchOrderAction() uintptr {
+	wrapper := func(userData uintptr, pInputBatchOrderAction *CThostFtdcInputBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspBatchOrderAction(userData, unsafe.Pointer(pInputBatchOrderAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspOptionSelfCloseInsert 获取 goTraderOnRspOptionSelfCloseInsert 的 C 函数指针
+func GetGoTraderOnRspOptionSelfCloseInsert() uintptr {
+	wrapper := func(userData uintptr, pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspOptionSelfCloseInsert(userData, unsafe.Pointer(pInputOptionSelfClose), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspOptionSelfCloseAction 获取 goTraderOnRspOptionSelfCloseAction 的 C 函数指针
+func GetGoTraderOnRspOptionSelfCloseAction() uintptr {
+	wrapper := func(userData uintptr, pInputOptionSelfCloseAction *CThostFtdcInputOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspOptionSelfCloseAction(userData, unsafe.Pointer(pInputOptionSelfCloseAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspCombActionInsert 获取 goTraderOnRspCombActionInsert 的 C 函数指针
+func GetGoTraderOnRspCombActionInsert() uintptr {
+	wrapper := func(userData uintptr, pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspCombActionInsert(userData, unsafe.Pointer(pInputCombAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryOrder 获取 goTraderOnRspQryOrder 的 C 函数指针
+func GetGoTraderOnRspQryOrder() uintptr {
+	wrapper := func(userData uintptr, pOrder *CThostFtdcOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryOrder(userData, unsafe.Pointer(pOrder), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryTrade 获取 goTraderOnRspQryTrade 的 C 函数指针
+func GetGoTraderOnRspQryTrade() uintptr {
+	wrapper := func(userData uintptr, pTrade *CThostFtdcTradeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryTrade(userData, unsafe.Pointer(pTrade), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorPosition 获取 goTraderOnRspQryInvestorPosition 的 C 函数指针
+func GetGoTraderOnRspQryInvestorPosition() uintptr {
+	wrapper := func(userData uintptr, pInvestorPosition *CThostFtdcInvestorPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorPosition(userData, unsafe.Pointer(pInvestorPosition), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryTradingAccount 获取 goTraderOnRspQryTradingAccount 的 C 函数指针
+func GetGoTraderOnRspQryTradingAccount() uintptr {
+	wrapper := func(userData uintptr, pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryTradingAccount(userData, unsafe.Pointer(pTradingAccount), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestor 获取 goTraderOnRspQryInvestor 的 C 函数指针
+func GetGoTraderOnRspQryInvestor() uintptr {
+	wrapper := func(userData uintptr, pInvestor *CThostFtdcInvestorField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestor(userData, unsafe.Pointer(pInvestor), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryTradingCode 获取 goTraderOnRspQryTradingCode 的 C 函数指针
+func GetGoTraderOnRspQryTradingCode() uintptr {
+	wrapper := func(userData uintptr, pTradingCode *CThostFtdcTradingCodeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryTradingCode(userData, unsafe.Pointer(pTradingCode), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInstrumentMarginRate 获取 goTraderOnRspQryInstrumentMarginRate 的 C 函数指针
+func GetGoTraderOnRspQryInstrumentMarginRate() uintptr {
+	wrapper := func(userData uintptr, pInstrumentMarginRate *CThostFtdcInstrumentMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInstrumentMarginRate(userData, unsafe.Pointer(pInstrumentMarginRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInstrumentCommissionRate 获取 goTraderOnRspQryInstrumentCommissionRate 的 C 函数指针
+func GetGoTraderOnRspQryInstrumentCommissionRate() uintptr {
+	wrapper := func(userData uintptr, pInstrumentCommissionRate *CThostFtdcInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInstrumentCommissionRate(userData, unsafe.Pointer(pInstrumentCommissionRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryExchange 获取 goTraderOnRspQryExchange 的 C 函数指针
+func GetGoTraderOnRspQryExchange() uintptr {
+	wrapper := func(userData uintptr, pExchange *CThostFtdcExchangeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryExchange(userData, unsafe.Pointer(pExchange), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryProduct 获取 goTraderOnRspQryProduct 的 C 函数指针
+func GetGoTraderOnRspQryProduct() uintptr {
+	wrapper := func(userData uintptr, pProduct *CThostFtdcProductField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryProduct(userData, unsafe.Pointer(pProduct), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInstrument 获取 goTraderOnRspQryInstrument 的 C 函数指针
+func GetGoTraderOnRspQryInstrument() uintptr {
+	wrapper := func(userData uintptr, pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInstrument(userData, unsafe.Pointer(pInstrument), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryDepthMarketData 获取 goTraderOnRspQryDepthMarketData 的 C 函数指针
+func GetGoTraderOnRspQryDepthMarketData() uintptr {
+	wrapper := func(userData uintptr, pDepthMarketData *CThostFtdcDepthMarketDataField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryDepthMarketData(userData, unsafe.Pointer(pDepthMarketData), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryTraderOffer 获取 goTraderOnRspQryTraderOffer 的 C 函数指针
+func GetGoTraderOnRspQryTraderOffer() uintptr {
+	wrapper := func(userData uintptr, pTraderOffer *CThostFtdcTraderOfferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryTraderOffer(userData, unsafe.Pointer(pTraderOffer), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySettlementInfo 获取 goTraderOnRspQrySettlementInfo 的 C 函数指针
+func GetGoTraderOnRspQrySettlementInfo() uintptr {
+	wrapper := func(userData uintptr, pSettlementInfo *CThostFtdcSettlementInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySettlementInfo(userData, unsafe.Pointer(pSettlementInfo), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryTransferBank 获取 goTraderOnRspQryTransferBank 的 C 函数指针
+func GetGoTraderOnRspQryTransferBank() uintptr {
+	wrapper := func(userData uintptr, pTransferBank *CThostFtdcTransferBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryTransferBank(userData, unsafe.Pointer(pTransferBank), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorPositionDetail 获取 goTraderOnRspQryInvestorPositionDetail 的 C 函数指针
+func GetGoTraderOnRspQryInvestorPositionDetail() uintptr {
+	wrapper := func(userData uintptr, pInvestorPositionDetail *CThostFtdcInvestorPositionDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorPositionDetail(userData, unsafe.Pointer(pInvestorPositionDetail), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryNotice 获取 goTraderOnRspQryNotice 的 C 函数指针
+func GetGoTraderOnRspQryNotice() uintptr {
+	wrapper := func(userData uintptr, pNotice *CThostFtdcNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryNotice(userData, unsafe.Pointer(pNotice), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySettlementInfoConfirm 获取 goTraderOnRspQrySettlementInfoConfirm 的 C 函数指针
+func GetGoTraderOnRspQrySettlementInfoConfirm() uintptr {
+	wrapper := func(userData uintptr, pSettlementInfoConfirm *CThostFtdcSettlementInfoConfirmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySettlementInfoConfirm(userData, unsafe.Pointer(pSettlementInfoConfirm), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorPositionCombineDetail 获取 goTraderOnRspQryInvestorPositionCombineDetail 的 C 函数指针
+func GetGoTraderOnRspQryInvestorPositionCombineDetail() uintptr {
+	wrapper := func(userData uintptr, pInvestorPositionCombineDetail *CThostFtdcInvestorPositionCombineDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorPositionCombineDetail(userData, unsafe.Pointer(pInvestorPositionCombineDetail), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryCFMMCTradingAccountKey 获取 goTraderOnRspQryCFMMCTradingAccountKey 的 C 函数指针
+func GetGoTraderOnRspQryCFMMCTradingAccountKey() uintptr {
+	wrapper := func(userData uintptr, pCFMMCTradingAccountKey *CThostFtdcCFMMCTradingAccountKeyField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryCFMMCTradingAccountKey(userData, unsafe.Pointer(pCFMMCTradingAccountKey), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryEWarrantOffset 获取 goTraderOnRspQryEWarrantOffset 的 C 函数指针
+func GetGoTraderOnRspQryEWarrantOffset() uintptr {
+	wrapper := func(userData uintptr, pEWarrantOffset *CThostFtdcEWarrantOffsetField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryEWarrantOffset(userData, unsafe.Pointer(pEWarrantOffset), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorProductGroupMargin 获取 goTraderOnRspQryInvestorProductGroupMargin 的 C 函数指针
+func GetGoTraderOnRspQryInvestorProductGroupMargin() uintptr {
+	wrapper := func(userData uintptr, pInvestorProductGroupMargin *CThostFtdcInvestorProductGroupMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorProductGroupMargin(userData, unsafe.Pointer(pInvestorProductGroupMargin), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryExchangeMarginRate 获取 goTraderOnRspQryExchangeMarginRate 的 C 函数指针
+func GetGoTraderOnRspQryExchangeMarginRate() uintptr {
+	wrapper := func(userData uintptr, pExchangeMarginRate *CThostFtdcExchangeMarginRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryExchangeMarginRate(userData, unsafe.Pointer(pExchangeMarginRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryExchangeMarginRateAdjust 获取 goTraderOnRspQryExchangeMarginRateAdjust 的 C 函数指针
+func GetGoTraderOnRspQryExchangeMarginRateAdjust() uintptr {
+	wrapper := func(userData uintptr, pExchangeMarginRateAdjust *CThostFtdcExchangeMarginRateAdjustField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryExchangeMarginRateAdjust(userData, unsafe.Pointer(pExchangeMarginRateAdjust), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryExchangeRate 获取 goTraderOnRspQryExchangeRate 的 C 函数指针
+func GetGoTraderOnRspQryExchangeRate() uintptr {
+	wrapper := func(userData uintptr, pExchangeRate *CThostFtdcExchangeRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryExchangeRate(userData, unsafe.Pointer(pExchangeRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySecAgentACIDMap 获取 goTraderOnRspQrySecAgentACIDMap 的 C 函数指针
+func GetGoTraderOnRspQrySecAgentACIDMap() uintptr {
+	wrapper := func(userData uintptr, pSecAgentACIDMap *CThostFtdcSecAgentACIDMapField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySecAgentACIDMap(userData, unsafe.Pointer(pSecAgentACIDMap), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryProductExchRate 获取 goTraderOnRspQryProductExchRate 的 C 函数指针
+func GetGoTraderOnRspQryProductExchRate() uintptr {
+	wrapper := func(userData uintptr, pProductExchRate *CThostFtdcProductExchRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryProductExchRate(userData, unsafe.Pointer(pProductExchRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryProductGroup 获取 goTraderOnRspQryProductGroup 的 C 函数指针
+func GetGoTraderOnRspQryProductGroup() uintptr {
+	wrapper := func(userData uintptr, pProductGroup *CThostFtdcProductGroupField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryProductGroup(userData, unsafe.Pointer(pProductGroup), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryMMInstrumentCommissionRate 获取 goTraderOnRspQryMMInstrumentCommissionRate 的 C 函数指针
+func GetGoTraderOnRspQryMMInstrumentCommissionRate() uintptr {
+	wrapper := func(userData uintptr, pMMInstrumentCommissionRate *CThostFtdcMMInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryMMInstrumentCommissionRate(userData, unsafe.Pointer(pMMInstrumentCommissionRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryMMOptionInstrCommRate 获取 goTraderOnRspQryMMOptionInstrCommRate 的 C 函数指针
+func GetGoTraderOnRspQryMMOptionInstrCommRate() uintptr {
+	wrapper := func(userData uintptr, pMMOptionInstrCommRate *CThostFtdcMMOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryMMOptionInstrCommRate(userData, unsafe.Pointer(pMMOptionInstrCommRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInstrumentOrderCommRate 获取 goTraderOnRspQryInstrumentOrderCommRate 的 C 函数指针
+func GetGoTraderOnRspQryInstrumentOrderCommRate() uintptr {
+	wrapper := func(userData uintptr, pInstrumentOrderCommRate *CThostFtdcInstrumentOrderCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInstrumentOrderCommRate(userData, unsafe.Pointer(pInstrumentOrderCommRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySecAgentTradingAccount 获取 goTraderOnRspQrySecAgentTradingAccount 的 C 函数指针
+func GetGoTraderOnRspQrySecAgentTradingAccount() uintptr {
+	wrapper := func(userData uintptr, pTradingAccount *CThostFtdcTradingAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySecAgentTradingAccount(userData, unsafe.Pointer(pTradingAccount), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySecAgentCheckMode 获取 goTraderOnRspQrySecAgentCheckMode 的 C 函数指针
+func GetGoTraderOnRspQrySecAgentCheckMode() uintptr {
+	wrapper := func(userData uintptr, pSecAgentCheckMode *CThostFtdcSecAgentCheckModeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySecAgentCheckMode(userData, unsafe.Pointer(pSecAgentCheckMode), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySecAgentTradeInfo 获取 goTraderOnRspQrySecAgentTradeInfo 的 C 函数指针
+func GetGoTraderOnRspQrySecAgentTradeInfo() uintptr {
+	wrapper := func(userData uintptr, pSecAgentTradeInfo *CThostFtdcSecAgentTradeInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySecAgentTradeInfo(userData, unsafe.Pointer(pSecAgentTradeInfo), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryOptionInstrTradeCost 获取 goTraderOnRspQryOptionInstrTradeCost 的 C 函数指针
+func GetGoTraderOnRspQryOptionInstrTradeCost() uintptr {
+	wrapper := func(userData uintptr, pOptionInstrTradeCost *CThostFtdcOptionInstrTradeCostField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryOptionInstrTradeCost(userData, unsafe.Pointer(pOptionInstrTradeCost), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryOptionInstrCommRate 获取 goTraderOnRspQryOptionInstrCommRate 的 C 函数指针
+func GetGoTraderOnRspQryOptionInstrCommRate() uintptr {
+	wrapper := func(userData uintptr, pOptionInstrCommRate *CThostFtdcOptionInstrCommRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryOptionInstrCommRate(userData, unsafe.Pointer(pOptionInstrCommRate), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryExecOrder 获取 goTraderOnRspQryExecOrder 的 C 函数指针
+func GetGoTraderOnRspQryExecOrder() uintptr {
+	wrapper := func(userData uintptr, pExecOrder *CThostFtdcExecOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryExecOrder(userData, unsafe.Pointer(pExecOrder), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryForQuote 获取 goTraderOnRspQryForQuote 的 C 函数指针
+func GetGoTraderOnRspQryForQuote() uintptr {
+	wrapper := func(userData uintptr, pForQuote *CThostFtdcForQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryForQuote(userData, unsafe.Pointer(pForQuote), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryQuote 获取 goTraderOnRspQryQuote 的 C 函数指针
+func GetGoTraderOnRspQryQuote() uintptr {
+	wrapper := func(userData uintptr, pQuote *CThostFtdcQuoteField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryQuote(userData, unsafe.Pointer(pQuote), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryOptionSelfClose 获取 goTraderOnRspQryOptionSelfClose 的 C 函数指针
+func GetGoTraderOnRspQryOptionSelfClose() uintptr {
+	wrapper := func(userData uintptr, pOptionSelfClose *CThostFtdcOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryOptionSelfClose(userData, unsafe.Pointer(pOptionSelfClose), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestUnit 获取 goTraderOnRspQryInvestUnit 的 C 函数指针
+func GetGoTraderOnRspQryInvestUnit() uintptr {
+	wrapper := func(userData uintptr, pInvestUnit *CThostFtdcInvestUnitField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestUnit(userData, unsafe.Pointer(pInvestUnit), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryCombInstrumentGuard 获取 goTraderOnRspQryCombInstrumentGuard 的 C 函数指针
+func GetGoTraderOnRspQryCombInstrumentGuard() uintptr {
+	wrapper := func(userData uintptr, pCombInstrumentGuard *CThostFtdcCombInstrumentGuardField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryCombInstrumentGuard(userData, unsafe.Pointer(pCombInstrumentGuard), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryCombAction 获取 goTraderOnRspQryCombAction 的 C 函数指针
+func GetGoTraderOnRspQryCombAction() uintptr {
+	wrapper := func(userData uintptr, pCombAction *CThostFtdcCombActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryCombAction(userData, unsafe.Pointer(pCombAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryTransferSerial 获取 goTraderOnRspQryTransferSerial 的 C 函数指针
+func GetGoTraderOnRspQryTransferSerial() uintptr {
+	wrapper := func(userData uintptr, pTransferSerial *CThostFtdcTransferSerialField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryTransferSerial(userData, unsafe.Pointer(pTransferSerial), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryAccountregister 获取 goTraderOnRspQryAccountregister 的 C 函数指针
+func GetGoTraderOnRspQryAccountregister() uintptr {
+	wrapper := func(userData uintptr, pAccountregister *CThostFtdcAccountregisterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryAccountregister(userData, unsafe.Pointer(pAccountregister), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspError 获取 goTraderOnRspError 的 C 函数指针
+func GetGoTraderOnRspError() uintptr {
+	wrapper := func(userData uintptr, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspError(userData, unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnOrder 获取 goTraderOnRtnOrder 的 C 函数指针
+func GetGoTraderOnRtnOrder() uintptr {
+	wrapper := func(userData uintptr, pOrder *CThostFtdcOrderField) {
+		goTraderOnRtnOrder(userData, unsafe.Pointer(pOrder))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnTrade 获取 goTraderOnRtnTrade 的 C 函数指针
+func GetGoTraderOnRtnTrade() uintptr {
+	wrapper := func(userData uintptr, pTrade *CThostFtdcTradeField) {
+		goTraderOnRtnTrade(userData, unsafe.Pointer(pTrade))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnOrderInsert 获取 goTraderOnErrRtnOrderInsert 的 C 函数指针
+func GetGoTraderOnErrRtnOrderInsert() uintptr {
+	wrapper := func(userData uintptr, pInputOrder *CThostFtdcInputOrderField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnOrderInsert(userData, unsafe.Pointer(pInputOrder), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnOrderAction 获取 goTraderOnErrRtnOrderAction 的 C 函数指针
+func GetGoTraderOnErrRtnOrderAction() uintptr {
+	wrapper := func(userData uintptr, pOrderAction *CThostFtdcOrderActionField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnOrderAction(userData, unsafe.Pointer(pOrderAction), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnInstrumentStatus 获取 goTraderOnRtnInstrumentStatus 的 C 函数指针
+func GetGoTraderOnRtnInstrumentStatus() uintptr {
+	wrapper := func(userData uintptr, pInstrumentStatus *CThostFtdcInstrumentStatusField) {
+		goTraderOnRtnInstrumentStatus(userData, unsafe.Pointer(pInstrumentStatus))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnBulletin 获取 goTraderOnRtnBulletin 的 C 函数指针
+func GetGoTraderOnRtnBulletin() uintptr {
+	wrapper := func(userData uintptr, pBulletin *CThostFtdcBulletinField) {
+		goTraderOnRtnBulletin(userData, unsafe.Pointer(pBulletin))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnTradingNotice 获取 goTraderOnRtnTradingNotice 的 C 函数指针
+func GetGoTraderOnRtnTradingNotice() uintptr {
+	wrapper := func(userData uintptr, pTradingNoticeInfo *CThostFtdcTradingNoticeInfoField) {
+		goTraderOnRtnTradingNotice(userData, unsafe.Pointer(pTradingNoticeInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnErrorConditionalOrder 获取 goTraderOnRtnErrorConditionalOrder 的 C 函数指针
+func GetGoTraderOnRtnErrorConditionalOrder() uintptr {
+	wrapper := func(userData uintptr, pErrorConditionalOrder *CThostFtdcErrorConditionalOrderField) {
+		goTraderOnRtnErrorConditionalOrder(userData, unsafe.Pointer(pErrorConditionalOrder))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnExecOrder 获取 goTraderOnRtnExecOrder 的 C 函数指针
+func GetGoTraderOnRtnExecOrder() uintptr {
+	wrapper := func(userData uintptr, pExecOrder *CThostFtdcExecOrderField) {
+		goTraderOnRtnExecOrder(userData, unsafe.Pointer(pExecOrder))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnExecOrderInsert 获取 goTraderOnErrRtnExecOrderInsert 的 C 函数指针
+func GetGoTraderOnErrRtnExecOrderInsert() uintptr {
+	wrapper := func(userData uintptr, pInputExecOrder *CThostFtdcInputExecOrderField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnExecOrderInsert(userData, unsafe.Pointer(pInputExecOrder), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnExecOrderAction 获取 goTraderOnErrRtnExecOrderAction 的 C 函数指针
+func GetGoTraderOnErrRtnExecOrderAction() uintptr {
+	wrapper := func(userData uintptr, pExecOrderAction *CThostFtdcExecOrderActionField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnExecOrderAction(userData, unsafe.Pointer(pExecOrderAction), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnForQuoteInsert 获取 goTraderOnErrRtnForQuoteInsert 的 C 函数指针
+func GetGoTraderOnErrRtnForQuoteInsert() uintptr {
+	wrapper := func(userData uintptr, pInputForQuote *CThostFtdcInputForQuoteField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnForQuoteInsert(userData, unsafe.Pointer(pInputForQuote), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnQuote 获取 goTraderOnRtnQuote 的 C 函数指针
+func GetGoTraderOnRtnQuote() uintptr {
+	wrapper := func(userData uintptr, pQuote *CThostFtdcQuoteField) {
+		goTraderOnRtnQuote(userData, unsafe.Pointer(pQuote))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnQuoteInsert 获取 goTraderOnErrRtnQuoteInsert 的 C 函数指针
+func GetGoTraderOnErrRtnQuoteInsert() uintptr {
+	wrapper := func(userData uintptr, pInputQuote *CThostFtdcInputQuoteField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnQuoteInsert(userData, unsafe.Pointer(pInputQuote), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnQuoteAction 获取 goTraderOnErrRtnQuoteAction 的 C 函数指针
+func GetGoTraderOnErrRtnQuoteAction() uintptr {
+	wrapper := func(userData uintptr, pQuoteAction *CThostFtdcQuoteActionField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnQuoteAction(userData, unsafe.Pointer(pQuoteAction), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnForQuoteRsp 获取 goTraderOnRtnForQuoteRsp 的 C 函数指针
+func GetGoTraderOnRtnForQuoteRsp() uintptr {
+	wrapper := func(userData uintptr, pForQuoteRsp *CThostFtdcForQuoteRspField) {
+		goTraderOnRtnForQuoteRsp(userData, unsafe.Pointer(pForQuoteRsp))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnCFMMCTradingAccountToken 获取 goTraderOnRtnCFMMCTradingAccountToken 的 C 函数指针
+func GetGoTraderOnRtnCFMMCTradingAccountToken() uintptr {
+	wrapper := func(userData uintptr, pCFMMCTradingAccountToken *CThostFtdcCFMMCTradingAccountTokenField) {
+		goTraderOnRtnCFMMCTradingAccountToken(userData, unsafe.Pointer(pCFMMCTradingAccountToken))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnBatchOrderAction 获取 goTraderOnErrRtnBatchOrderAction 的 C 函数指针
+func GetGoTraderOnErrRtnBatchOrderAction() uintptr {
+	wrapper := func(userData uintptr, pBatchOrderAction *CThostFtdcBatchOrderActionField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnBatchOrderAction(userData, unsafe.Pointer(pBatchOrderAction), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnOptionSelfClose 获取 goTraderOnRtnOptionSelfClose 的 C 函数指针
+func GetGoTraderOnRtnOptionSelfClose() uintptr {
+	wrapper := func(userData uintptr, pOptionSelfClose *CThostFtdcOptionSelfCloseField) {
+		goTraderOnRtnOptionSelfClose(userData, unsafe.Pointer(pOptionSelfClose))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnOptionSelfCloseInsert 获取 goTraderOnErrRtnOptionSelfCloseInsert 的 C 函数指针
+func GetGoTraderOnErrRtnOptionSelfCloseInsert() uintptr {
+	wrapper := func(userData uintptr, pInputOptionSelfClose *CThostFtdcInputOptionSelfCloseField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnOptionSelfCloseInsert(userData, unsafe.Pointer(pInputOptionSelfClose), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnOptionSelfCloseAction 获取 goTraderOnErrRtnOptionSelfCloseAction 的 C 函数指针
+func GetGoTraderOnErrRtnOptionSelfCloseAction() uintptr {
+	wrapper := func(userData uintptr, pOptionSelfCloseAction *CThostFtdcOptionSelfCloseActionField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnOptionSelfCloseAction(userData, unsafe.Pointer(pOptionSelfCloseAction), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnCombAction 获取 goTraderOnRtnCombAction 的 C 函数指针
+func GetGoTraderOnRtnCombAction() uintptr {
+	wrapper := func(userData uintptr, pCombAction *CThostFtdcCombActionField) {
+		goTraderOnRtnCombAction(userData, unsafe.Pointer(pCombAction))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnCombActionInsert 获取 goTraderOnErrRtnCombActionInsert 的 C 函数指针
+func GetGoTraderOnErrRtnCombActionInsert() uintptr {
+	wrapper := func(userData uintptr, pInputCombAction *CThostFtdcInputCombActionField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnCombActionInsert(userData, unsafe.Pointer(pInputCombAction), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryContractBank 获取 goTraderOnRspQryContractBank 的 C 函数指针
+func GetGoTraderOnRspQryContractBank() uintptr {
+	wrapper := func(userData uintptr, pContractBank *CThostFtdcContractBankField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryContractBank(userData, unsafe.Pointer(pContractBank), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryParkedOrder 获取 goTraderOnRspQryParkedOrder 的 C 函数指针
+func GetGoTraderOnRspQryParkedOrder() uintptr {
+	wrapper := func(userData uintptr, pParkedOrder *CThostFtdcParkedOrderField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryParkedOrder(userData, unsafe.Pointer(pParkedOrder), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryParkedOrderAction 获取 goTraderOnRspQryParkedOrderAction 的 C 函数指针
+func GetGoTraderOnRspQryParkedOrderAction() uintptr {
+	wrapper := func(userData uintptr, pParkedOrderAction *CThostFtdcParkedOrderActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryParkedOrderAction(userData, unsafe.Pointer(pParkedOrderAction), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryTradingNotice 获取 goTraderOnRspQryTradingNotice 的 C 函数指针
+func GetGoTraderOnRspQryTradingNotice() uintptr {
+	wrapper := func(userData uintptr, pTradingNotice *CThostFtdcTradingNoticeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryTradingNotice(userData, unsafe.Pointer(pTradingNotice), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryBrokerTradingParams 获取 goTraderOnRspQryBrokerTradingParams 的 C 函数指针
+func GetGoTraderOnRspQryBrokerTradingParams() uintptr {
+	wrapper := func(userData uintptr, pBrokerTradingParams *CThostFtdcBrokerTradingParamsField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryBrokerTradingParams(userData, unsafe.Pointer(pBrokerTradingParams), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryBrokerTradingAlgos 获取 goTraderOnRspQryBrokerTradingAlgos 的 C 函数指针
+func GetGoTraderOnRspQryBrokerTradingAlgos() uintptr {
+	wrapper := func(userData uintptr, pBrokerTradingAlgos *CThostFtdcBrokerTradingAlgosField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryBrokerTradingAlgos(userData, unsafe.Pointer(pBrokerTradingAlgos), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQueryCFMMCTradingAccountToken 获取 goTraderOnRspQueryCFMMCTradingAccountToken 的 C 函数指针
+func GetGoTraderOnRspQueryCFMMCTradingAccountToken() uintptr {
+	wrapper := func(userData uintptr, pQueryCFMMCTradingAccountToken *CThostFtdcQueryCFMMCTradingAccountTokenField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQueryCFMMCTradingAccountToken(userData, unsafe.Pointer(pQueryCFMMCTradingAccountToken), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnFromBankToFutureByBank 获取 goTraderOnRtnFromBankToFutureByBank 的 C 函数指针
+func GetGoTraderOnRtnFromBankToFutureByBank() uintptr {
+	wrapper := func(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+		goTraderOnRtnFromBankToFutureByBank(userData, unsafe.Pointer(pRspTransfer))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnFromFutureToBankByBank 获取 goTraderOnRtnFromFutureToBankByBank 的 C 函数指针
+func GetGoTraderOnRtnFromFutureToBankByBank() uintptr {
+	wrapper := func(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+		goTraderOnRtnFromFutureToBankByBank(userData, unsafe.Pointer(pRspTransfer))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnRepealFromBankToFutureByBank 获取 goTraderOnRtnRepealFromBankToFutureByBank 的 C 函数指针
+func GetGoTraderOnRtnRepealFromBankToFutureByBank() uintptr {
+	wrapper := func(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+		goTraderOnRtnRepealFromBankToFutureByBank(userData, unsafe.Pointer(pRspRepeal))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnRepealFromFutureToBankByBank 获取 goTraderOnRtnRepealFromFutureToBankByBank 的 C 函数指针
+func GetGoTraderOnRtnRepealFromFutureToBankByBank() uintptr {
+	wrapper := func(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+		goTraderOnRtnRepealFromFutureToBankByBank(userData, unsafe.Pointer(pRspRepeal))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnFromBankToFutureByFuture 获取 goTraderOnRtnFromBankToFutureByFuture 的 C 函数指针
+func GetGoTraderOnRtnFromBankToFutureByFuture() uintptr {
+	wrapper := func(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+		goTraderOnRtnFromBankToFutureByFuture(userData, unsafe.Pointer(pRspTransfer))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnFromFutureToBankByFuture 获取 goTraderOnRtnFromFutureToBankByFuture 的 C 函数指针
+func GetGoTraderOnRtnFromFutureToBankByFuture() uintptr {
+	wrapper := func(userData uintptr, pRspTransfer *CThostFtdcRspTransferField) {
+		goTraderOnRtnFromFutureToBankByFuture(userData, unsafe.Pointer(pRspTransfer))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnRepealFromBankToFutureByFutureManual 获取 goTraderOnRtnRepealFromBankToFutureByFutureManual 的 C 函数指针
+func GetGoTraderOnRtnRepealFromBankToFutureByFutureManual() uintptr {
+	wrapper := func(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+		goTraderOnRtnRepealFromBankToFutureByFutureManual(userData, unsafe.Pointer(pRspRepeal))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnRepealFromFutureToBankByFutureManual 获取 goTraderOnRtnRepealFromFutureToBankByFutureManual 的 C 函数指针
+func GetGoTraderOnRtnRepealFromFutureToBankByFutureManual() uintptr {
+	wrapper := func(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+		goTraderOnRtnRepealFromFutureToBankByFutureManual(userData, unsafe.Pointer(pRspRepeal))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnQueryBankBalanceByFuture 获取 goTraderOnRtnQueryBankBalanceByFuture 的 C 函数指针
+func GetGoTraderOnRtnQueryBankBalanceByFuture() uintptr {
+	wrapper := func(userData uintptr, pNotifyQueryAccount *CThostFtdcNotifyQueryAccountField) {
+		goTraderOnRtnQueryBankBalanceByFuture(userData, unsafe.Pointer(pNotifyQueryAccount))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnBankToFutureByFuture 获取 goTraderOnErrRtnBankToFutureByFuture 的 C 函数指针
+func GetGoTraderOnErrRtnBankToFutureByFuture() uintptr {
+	wrapper := func(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnBankToFutureByFuture(userData, unsafe.Pointer(pReqTransfer), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnFutureToBankByFuture 获取 goTraderOnErrRtnFutureToBankByFuture 的 C 函数指针
+func GetGoTraderOnErrRtnFutureToBankByFuture() uintptr {
+	wrapper := func(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnFutureToBankByFuture(userData, unsafe.Pointer(pReqTransfer), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnRepealBankToFutureByFutureManual 获取 goTraderOnErrRtnRepealBankToFutureByFutureManual 的 C 函数指针
+func GetGoTraderOnErrRtnRepealBankToFutureByFutureManual() uintptr {
+	wrapper := func(userData uintptr, pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnRepealBankToFutureByFutureManual(userData, unsafe.Pointer(pReqRepeal), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnRepealFutureToBankByFutureManual 获取 goTraderOnErrRtnRepealFutureToBankByFutureManual 的 C 函数指针
+func GetGoTraderOnErrRtnRepealFutureToBankByFutureManual() uintptr {
+	wrapper := func(userData uintptr, pReqRepeal *CThostFtdcReqRepealField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnRepealFutureToBankByFutureManual(userData, unsafe.Pointer(pReqRepeal), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnErrRtnQueryBankBalanceByFuture 获取 goTraderOnErrRtnQueryBankBalanceByFuture 的 C 函数指针
+func GetGoTraderOnErrRtnQueryBankBalanceByFuture() uintptr {
+	wrapper := func(userData uintptr, pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField) {
+		goTraderOnErrRtnQueryBankBalanceByFuture(userData, unsafe.Pointer(pReqQueryAccount), unsafe.Pointer(pRspInfo))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnRepealFromBankToFutureByFuture 获取 goTraderOnRtnRepealFromBankToFutureByFuture 的 C 函数指针
+func GetGoTraderOnRtnRepealFromBankToFutureByFuture() uintptr {
+	wrapper := func(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+		goTraderOnRtnRepealFromBankToFutureByFuture(userData, unsafe.Pointer(pRspRepeal))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnRepealFromFutureToBankByFuture 获取 goTraderOnRtnRepealFromFutureToBankByFuture 的 C 函数指针
+func GetGoTraderOnRtnRepealFromFutureToBankByFuture() uintptr {
+	wrapper := func(userData uintptr, pRspRepeal *CThostFtdcRspRepealField) {
+		goTraderOnRtnRepealFromFutureToBankByFuture(userData, unsafe.Pointer(pRspRepeal))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspFromBankToFutureByFuture 获取 goTraderOnRspFromBankToFutureByFuture 的 C 函数指针
+func GetGoTraderOnRspFromBankToFutureByFuture() uintptr {
+	wrapper := func(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspFromBankToFutureByFuture(userData, unsafe.Pointer(pReqTransfer), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspFromFutureToBankByFuture 获取 goTraderOnRspFromFutureToBankByFuture 的 C 函数指针
+func GetGoTraderOnRspFromFutureToBankByFuture() uintptr {
+	wrapper := func(userData uintptr, pReqTransfer *CThostFtdcReqTransferField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspFromFutureToBankByFuture(userData, unsafe.Pointer(pReqTransfer), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQueryBankAccountMoneyByFuture 获取 goTraderOnRspQueryBankAccountMoneyByFuture 的 C 函数指针
+func GetGoTraderOnRspQueryBankAccountMoneyByFuture() uintptr {
+	wrapper := func(userData uintptr, pReqQueryAccount *CThostFtdcReqQueryAccountField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQueryBankAccountMoneyByFuture(userData, unsafe.Pointer(pReqQueryAccount), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnOpenAccountByBank 获取 goTraderOnRtnOpenAccountByBank 的 C 函数指针
+func GetGoTraderOnRtnOpenAccountByBank() uintptr {
+	wrapper := func(userData uintptr, pOpenAccount *CThostFtdcOpenAccountField) {
+		goTraderOnRtnOpenAccountByBank(userData, unsafe.Pointer(pOpenAccount))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnCancelAccountByBank 获取 goTraderOnRtnCancelAccountByBank 的 C 函数指针
+func GetGoTraderOnRtnCancelAccountByBank() uintptr {
+	wrapper := func(userData uintptr, pCancelAccount *CThostFtdcCancelAccountField) {
+		goTraderOnRtnCancelAccountByBank(userData, unsafe.Pointer(pCancelAccount))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRtnChangeAccountByBank 获取 goTraderOnRtnChangeAccountByBank 的 C 函数指针
+func GetGoTraderOnRtnChangeAccountByBank() uintptr {
+	wrapper := func(userData uintptr, pChangeAccount *CThostFtdcChangeAccountField) {
+		goTraderOnRtnChangeAccountByBank(userData, unsafe.Pointer(pChangeAccount))
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryClassifiedInstrument 获取 goTraderOnRspQryClassifiedInstrument 的 C 函数指针
+func GetGoTraderOnRspQryClassifiedInstrument() uintptr {
+	wrapper := func(userData uintptr, pInstrument *CThostFtdcInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryClassifiedInstrument(userData, unsafe.Pointer(pInstrument), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryCombPromotionParam 获取 goTraderOnRspQryCombPromotionParam 的 C 函数指针
+func GetGoTraderOnRspQryCombPromotionParam() uintptr {
+	wrapper := func(userData uintptr, pCombPromotionParam *CThostFtdcCombPromotionParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryCombPromotionParam(userData, unsafe.Pointer(pCombPromotionParam), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRiskSettleInvstPosition 获取 goTraderOnRspQryRiskSettleInvstPosition 的 C 函数指针
+func GetGoTraderOnRspQryRiskSettleInvstPosition() uintptr {
+	wrapper := func(userData uintptr, pRiskSettleInvstPosition *CThostFtdcRiskSettleInvstPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRiskSettleInvstPosition(userData, unsafe.Pointer(pRiskSettleInvstPosition), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRiskSettleProductStatus 获取 goTraderOnRspQryRiskSettleProductStatus 的 C 函数指针
+func GetGoTraderOnRspQryRiskSettleProductStatus() uintptr {
+	wrapper := func(userData uintptr, pRiskSettleProductStatus *CThostFtdcRiskSettleProductStatusField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRiskSettleProductStatus(userData, unsafe.Pointer(pRiskSettleProductStatus), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPBMFutureParameter 获取 goTraderOnRspQrySPBMFutureParameter 的 C 函数指针
+func GetGoTraderOnRspQrySPBMFutureParameter() uintptr {
+	wrapper := func(userData uintptr, pSPBMFutureParameter *CThostFtdcSPBMFutureParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPBMFutureParameter(userData, unsafe.Pointer(pSPBMFutureParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPBMOptionParameter 获取 goTraderOnRspQrySPBMOptionParameter 的 C 函数指针
+func GetGoTraderOnRspQrySPBMOptionParameter() uintptr {
+	wrapper := func(userData uintptr, pSPBMOptionParameter *CThostFtdcSPBMOptionParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPBMOptionParameter(userData, unsafe.Pointer(pSPBMOptionParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPBMIntraParameter 获取 goTraderOnRspQrySPBMIntraParameter 的 C 函数指针
+func GetGoTraderOnRspQrySPBMIntraParameter() uintptr {
+	wrapper := func(userData uintptr, pSPBMIntraParameter *CThostFtdcSPBMIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPBMIntraParameter(userData, unsafe.Pointer(pSPBMIntraParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPBMInterParameter 获取 goTraderOnRspQrySPBMInterParameter 的 C 函数指针
+func GetGoTraderOnRspQrySPBMInterParameter() uintptr {
+	wrapper := func(userData uintptr, pSPBMInterParameter *CThostFtdcSPBMInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPBMInterParameter(userData, unsafe.Pointer(pSPBMInterParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPBMPortfDefinition 获取 goTraderOnRspQrySPBMPortfDefinition 的 C 函数指针
+func GetGoTraderOnRspQrySPBMPortfDefinition() uintptr {
+	wrapper := func(userData uintptr, pSPBMPortfDefinition *CThostFtdcSPBMPortfDefinitionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPBMPortfDefinition(userData, unsafe.Pointer(pSPBMPortfDefinition), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPBMInvestorPortfDef 获取 goTraderOnRspQrySPBMInvestorPortfDef 的 C 函数指针
+func GetGoTraderOnRspQrySPBMInvestorPortfDef() uintptr {
+	wrapper := func(userData uintptr, pSPBMInvestorPortfDef *CThostFtdcSPBMInvestorPortfDefField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPBMInvestorPortfDef(userData, unsafe.Pointer(pSPBMInvestorPortfDef), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorPortfMarginRatio 获取 goTraderOnRspQryInvestorPortfMarginRatio 的 C 函数指针
+func GetGoTraderOnRspQryInvestorPortfMarginRatio() uintptr {
+	wrapper := func(userData uintptr, pInvestorPortfMarginRatio *CThostFtdcInvestorPortfMarginRatioField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorPortfMarginRatio(userData, unsafe.Pointer(pInvestorPortfMarginRatio), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorProdSPBMDetail 获取 goTraderOnRspQryInvestorProdSPBMDetail 的 C 函数指针
+func GetGoTraderOnRspQryInvestorProdSPBMDetail() uintptr {
+	wrapper := func(userData uintptr, pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorProdSPBMDetail(userData, unsafe.Pointer(pInvestorProdSPBMDetail), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorCommoditySPMMMargin 获取 goTraderOnRspQryInvestorCommoditySPMMMargin 的 C 函数指针
+func GetGoTraderOnRspQryInvestorCommoditySPMMMargin() uintptr {
+	wrapper := func(userData uintptr, pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorCommoditySPMMMargin(userData, unsafe.Pointer(pInvestorCommoditySPMMMargin), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorCommodityGroupSPMMMargin 获取 goTraderOnRspQryInvestorCommodityGroupSPMMMargin 的 C 函数指针
+func GetGoTraderOnRspQryInvestorCommodityGroupSPMMMargin() uintptr {
+	wrapper := func(userData uintptr, pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorCommodityGroupSPMMMargin(userData, unsafe.Pointer(pInvestorCommodityGroupSPMMMargin), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPMMInstParam 获取 goTraderOnRspQrySPMMInstParam 的 C 函数指针
+func GetGoTraderOnRspQrySPMMInstParam() uintptr {
+	wrapper := func(userData uintptr, pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPMMInstParam(userData, unsafe.Pointer(pSPMMInstParam), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPMMProductParam 获取 goTraderOnRspQrySPMMProductParam 的 C 函数指针
+func GetGoTraderOnRspQrySPMMProductParam() uintptr {
+	wrapper := func(userData uintptr, pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPMMProductParam(userData, unsafe.Pointer(pSPMMProductParam), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQrySPBMAddOnInterParameter 获取 goTraderOnRspQrySPBMAddOnInterParameter 的 C 函数指针
+func GetGoTraderOnRspQrySPBMAddOnInterParameter() uintptr {
+	wrapper := func(userData uintptr, pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQrySPBMAddOnInterParameter(userData, unsafe.Pointer(pSPBMAddOnInterParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRCAMSCombProductInfo 获取 goTraderOnRspQryRCAMSCombProductInfo 的 C 函数指针
+func GetGoTraderOnRspQryRCAMSCombProductInfo() uintptr {
+	wrapper := func(userData uintptr, pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRCAMSCombProductInfo(userData, unsafe.Pointer(pRCAMSCombProductInfo), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRCAMSInstrParameter 获取 goTraderOnRspQryRCAMSInstrParameter 的 C 函数指针
+func GetGoTraderOnRspQryRCAMSInstrParameter() uintptr {
+	wrapper := func(userData uintptr, pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRCAMSInstrParameter(userData, unsafe.Pointer(pRCAMSInstrParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRCAMSIntraParameter 获取 goTraderOnRspQryRCAMSIntraParameter 的 C 函数指针
+func GetGoTraderOnRspQryRCAMSIntraParameter() uintptr {
+	wrapper := func(userData uintptr, pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRCAMSIntraParameter(userData, unsafe.Pointer(pRCAMSIntraParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRCAMSInterParameter 获取 goTraderOnRspQryRCAMSInterParameter 的 C 函数指针
+func GetGoTraderOnRspQryRCAMSInterParameter() uintptr {
+	wrapper := func(userData uintptr, pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRCAMSInterParameter(userData, unsafe.Pointer(pRCAMSInterParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRCAMSShortOptAdjustParam 获取 goTraderOnRspQryRCAMSShortOptAdjustParam 的 C 函数指针
+func GetGoTraderOnRspQryRCAMSShortOptAdjustParam() uintptr {
+	wrapper := func(userData uintptr, pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRCAMSShortOptAdjustParam(userData, unsafe.Pointer(pRCAMSShortOptAdjustParam), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRCAMSInvestorCombPosition 获取 goTraderOnRspQryRCAMSInvestorCombPosition 的 C 函数指针
+func GetGoTraderOnRspQryRCAMSInvestorCombPosition() uintptr {
+	wrapper := func(userData uintptr, pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRCAMSInvestorCombPosition(userData, unsafe.Pointer(pRCAMSInvestorCombPosition), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorProdRCAMSMargin 获取 goTraderOnRspQryInvestorProdRCAMSMargin 的 C 函数指针
+func GetGoTraderOnRspQryInvestorProdRCAMSMargin() uintptr {
+	wrapper := func(userData uintptr, pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorProdRCAMSMargin(userData, unsafe.Pointer(pInvestorProdRCAMSMargin), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRULEInstrParameter 获取 goTraderOnRspQryRULEInstrParameter 的 C 函数指针
+func GetGoTraderOnRspQryRULEInstrParameter() uintptr {
+	wrapper := func(userData uintptr, pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRULEInstrParameter(userData, unsafe.Pointer(pRULEInstrParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRULEIntraParameter 获取 goTraderOnRspQryRULEIntraParameter 的 C 函数指针
+func GetGoTraderOnRspQryRULEIntraParameter() uintptr {
+	wrapper := func(userData uintptr, pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRULEIntraParameter(userData, unsafe.Pointer(pRULEIntraParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryRULEInterParameter 获取 goTraderOnRspQryRULEInterParameter 的 C 函数指针
+func GetGoTraderOnRspQryRULEInterParameter() uintptr {
+	wrapper := func(userData uintptr, pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryRULEInterParameter(userData, unsafe.Pointer(pRULEInterParameter), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorProdRULEMargin 获取 goTraderOnRspQryInvestorProdRULEMargin 的 C 函数指针
+func GetGoTraderOnRspQryInvestorProdRULEMargin() uintptr {
+	wrapper := func(userData uintptr, pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorProdRULEMargin(userData, unsafe.Pointer(pInvestorProdRULEMargin), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
+}
+
+// GetGoTraderOnRspQryInvestorPortfSetting 获取 goTraderOnRspQryInvestorPortfSetting 的 C 函数指针
+func GetGoTraderOnRspQryInvestorPortfSetting() uintptr {
+	wrapper := func(userData uintptr, pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
+		goTraderOnRspQryInvestorPortfSetting(userData, unsafe.Pointer(pInvestorPortfSetting), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
+	}
+	return purego.NewCallback(wrapper)
 }

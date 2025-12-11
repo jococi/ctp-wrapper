@@ -132,11 +132,10 @@ func goMdOnRtnForQuoteRsp(userData uintptr, pForQuoteRsp unsafe.Pointer) {
 // ========== 辅助函数：使用 purego.NewCallback 获取 C 函数指针 ==========
 // 这些函数使用 purego.NewCallback 将 Go 函数转换为 C 函数指针，无需 CGO
 // purego.NewCallback 返回 uintptr，需要转换为函数类型
+// 注意：purego.NewCallback 不支持 unsafe.Pointer 参数，需要用具体指针类型的 wrapper
 
 // GetGoMdOnFrontConnected 获取 goMdOnFrontConnected 的 C 函数指针
-// 返回 uintptr，可以直接传递给 C API
 func GetGoMdOnFrontConnected() uintptr {
-	// 使用 purego.NewCallback 将 Go 函数转换为 C 函数指针
 	return purego.NewCallback(goMdOnFrontConnected)
 }
 
@@ -152,7 +151,6 @@ func GetGoMdOnHeartBeatWarning() uintptr {
 
 // GetGoMdOnRspUserLogin 获取 goMdOnRspUserLogin 的 C 函数指针
 func GetGoMdOnRspUserLogin() uintptr {
-	// 创建包装函数，将 Go 类型转换为 C 调用约定需要的类型
 	wrapper := func(userData uintptr, pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) {
 		goMdOnRspUserLogin(userData, unsafe.Pointer(pRspUserLogin), unsafe.Pointer(pRspInfo), nRequestID, bIsLast)
 	}

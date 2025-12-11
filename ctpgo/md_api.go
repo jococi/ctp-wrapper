@@ -55,39 +55,39 @@ type MdOnRtnForQuoteRspCallback func(userData uintptr, pForQuoteRsp *CThostFtdcF
 
 // MdSpiCallbacks 回调结构体（用于批量设置）
 type MdSpiCallbacks struct {
-	UserData                    uintptr
-	OnFrontConnected            MdOnFrontConnectedCallback
-	OnFrontDisconnected         MdOnFrontDisconnectedCallback
-	OnHeartBeatWarning          MdOnHeartBeatWarningCallback
-	OnRspUserLogin              MdOnRspUserLoginCallback
-	OnRspUserLogout             MdOnRspUserLogoutCallback
+	UserData uintptr
+	OnFrontConnected MdOnFrontConnectedCallback
+	OnFrontDisconnected MdOnFrontDisconnectedCallback
+	OnHeartBeatWarning MdOnHeartBeatWarningCallback
+	OnRspUserLogin MdOnRspUserLoginCallback
+	OnRspUserLogout MdOnRspUserLogoutCallback
 	OnRspQryMulticastInstrument MdOnRspQryMulticastInstrumentCallback
-	OnRspError                  MdOnRspErrorCallback
-	OnRspSubMarketData          MdOnRspSubMarketDataCallback
-	OnRspUnSubMarketData        MdOnRspUnSubMarketDataCallback
-	OnRspSubForQuoteRsp         MdOnRspSubForQuoteRspCallback
-	OnRspUnSubForQuoteRsp       MdOnRspUnSubForQuoteRspCallback
-	OnRtnDepthMarketData        MdOnRtnDepthMarketDataCallback
-	OnRtnForQuoteRsp            MdOnRtnForQuoteRspCallback
+	OnRspError MdOnRspErrorCallback
+	OnRspSubMarketData MdOnRspSubMarketDataCallback
+	OnRspUnSubMarketData MdOnRspUnSubMarketDataCallback
+	OnRspSubForQuoteRsp MdOnRspSubForQuoteRspCallback
+	OnRspUnSubForQuoteRsp MdOnRspUnSubForQuoteRspCallback
+	OnRtnDepthMarketData MdOnRtnDepthMarketDataCallback
+	OnRtnForQuoteRsp MdOnRtnForQuoteRspCallback
 }
 
 // ========== MdSpi 接口 ==========
 
 // MdSpi 行情回调接口
 type MdSpi interface {
-	OnFrontConnected()                                                                                                                                      // ========== 回调函数类型（带 userData） ========== 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
-	OnFrontDisconnected(nReason int32)                                                                                                                      // 0x2003 收到错误报文
-	OnHeartBeatWarning(nTimeLapse int32)                                                                                                                    // 心跳超时警告。当长时间未收到报文时，该方法被调用。
-	OnRspUserLogin(pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                            // 登录请求响应
-	OnRspUserLogout(pUserLogout *CThostFtdcUserLogoutField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                               // 登出请求响应
+	OnFrontConnected() // ========== 回调函数类型（带 userData） ========== 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
+	OnFrontDisconnected(nReason int32) // 0x2003 收到错误报文
+	OnHeartBeatWarning(nTimeLapse int32) // 心跳超时警告。当长时间未收到报文时，该方法被调用。
+	OnRspUserLogin(pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 登录请求响应
+	OnRspUserLogout(pUserLogout *CThostFtdcUserLogoutField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 登出请求响应
 	OnRspQryMulticastInstrument(pMulticastInstrument *CThostFtdcMulticastInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 请求查询组播合约响应
-	OnRspError(pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)                                                                            // 错误应答
-	OnRspSubMarketData(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)            // 订阅行情应答
-	OnRspUnSubMarketData(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)          // 取消订阅行情应答
-	OnRspSubForQuoteRsp(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)           // 订阅询价应答
-	OnRspUnSubForQuoteRsp(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool)         // 取消订阅询价应答
-	OnRtnDepthMarketData(pDepthMarketData *CThostFtdcDepthMarketDataField)                                                                                  // 深度行情通知
-	OnRtnForQuoteRsp(pForQuoteRsp *CThostFtdcForQuoteRspField)                                                                                              // 询价通知
+	OnRspError(pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 错误应答
+	OnRspSubMarketData(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 订阅行情应答
+	OnRspUnSubMarketData(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 取消订阅行情应答
+	OnRspSubForQuoteRsp(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 订阅询价应答
+	OnRspUnSubForQuoteRsp(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int32, bIsLast bool) // 取消订阅询价应答
+	OnRtnDepthMarketData(pDepthMarketData *CThostFtdcDepthMarketDataField) // 深度行情通知
+	OnRtnForQuoteRsp(pForQuoteRsp *CThostFtdcForQuoteRspField) // 询价通知
 }
 
 // ========== MdApi 结构体 ==========
@@ -107,39 +107,39 @@ type MdApi struct {
 var (
 	mdOnce sync.Once
 
-	_MdCreateFtdcMdApi                   func(*byte, bool, bool) uintptr
-	_MdGetApiVersion                     func() *byte
-	_MdRelease                           func(uintptr)
-	_MdInit                              func(uintptr)
-	_MdJoin                              func(uintptr) int32
-	_MdGetTradingDay                     func(uintptr) *byte
-	_MdRegisterFront                     func(uintptr, *byte)
-	_MdRegisterNameServer                func(uintptr, *byte)
-	_MdRegisterFensUserInfo              func(uintptr, *CThostFtdcFensUserInfoField)
-	_MdSubscribeMarketData               func(uintptr, **byte, int32) int32
-	_MdUnSubscribeMarketData             func(uintptr, **byte, int32) int32
-	_MdSubscribeForQuoteRsp              func(uintptr, **byte, int32) int32
-	_MdUnSubscribeForQuoteRsp            func(uintptr, **byte, int32) int32
-	_MdReqUserLogin                      func(uintptr, *CThostFtdcReqUserLoginField, int32) int32
-	_MdReqUserLogout                     func(uintptr, *CThostFtdcUserLogoutField, int32) int32
-	_MdReqQryMulticastInstrument         func(uintptr, *CThostFtdcQryMulticastInstrumentField, int32) int32
-	_MdSpiCreate                         func(uintptr) uintptr
-	_MdSpiDestroy                        func(uintptr)
-	_MdRegisterSpi                       func(uintptr, uintptr)
-	_MdSpiSetCallbacks                   func(uintptr, *MdSpiCallbacks)
-	_MdSpiSetOnFrontConnected            func(uintptr, uintptr) // 第二个参数是函数指针 (uintptr)
-	_MdSpiSetOnFrontDisconnected         func(uintptr, uintptr)
-	_MdSpiSetOnHeartBeatWarning          func(uintptr, uintptr)
-	_MdSpiSetOnRspUserLogin              func(uintptr, uintptr)
-	_MdSpiSetOnRspUserLogout             func(uintptr, uintptr)
+	_MdCreateFtdcMdApi func(*byte, bool, bool) uintptr
+	_MdGetApiVersion func() *byte
+	_MdRelease func(uintptr)
+	_MdInit func(uintptr)
+	_MdJoin func(uintptr) int32
+	_MdGetTradingDay func(uintptr) *byte
+	_MdRegisterFront func(uintptr, *byte)
+	_MdRegisterNameServer func(uintptr, *byte)
+	_MdRegisterFensUserInfo func(uintptr, *CThostFtdcFensUserInfoField)
+	_MdSubscribeMarketData func(uintptr, **byte, int32) int32
+	_MdUnSubscribeMarketData func(uintptr, **byte, int32) int32
+	_MdSubscribeForQuoteRsp func(uintptr, **byte, int32) int32
+	_MdUnSubscribeForQuoteRsp func(uintptr, **byte, int32) int32
+	_MdReqUserLogin func(uintptr, *CThostFtdcReqUserLoginField, int32) int32
+	_MdReqUserLogout func(uintptr, *CThostFtdcUserLogoutField, int32) int32
+	_MdReqQryMulticastInstrument func(uintptr, *CThostFtdcQryMulticastInstrumentField, int32) int32
+	_MdSpiCreate func(uintptr) uintptr
+	_MdSpiDestroy func(uintptr)
+	_MdRegisterSpi func(uintptr, uintptr)
+	_MdSpiSetCallbacks func(uintptr, *MdSpiCallbacks)
+	_MdSpiSetOnFrontConnected func(uintptr, uintptr)
+	_MdSpiSetOnFrontDisconnected func(uintptr, uintptr)
+	_MdSpiSetOnHeartBeatWarning func(uintptr, uintptr)
+	_MdSpiSetOnRspUserLogin func(uintptr, uintptr)
+	_MdSpiSetOnRspUserLogout func(uintptr, uintptr)
 	_MdSpiSetOnRspQryMulticastInstrument func(uintptr, uintptr)
-	_MdSpiSetOnRspError                  func(uintptr, uintptr)
-	_MdSpiSetOnRspSubMarketData          func(uintptr, uintptr)
-	_MdSpiSetOnRspUnSubMarketData        func(uintptr, uintptr)
-	_MdSpiSetOnRspSubForQuoteRsp         func(uintptr, uintptr)
-	_MdSpiSetOnRspUnSubForQuoteRsp       func(uintptr, uintptr)
-	_MdSpiSetOnRtnDepthMarketData        func(uintptr, uintptr)
-	_MdSpiSetOnRtnForQuoteRsp            func(uintptr, uintptr)
+	_MdSpiSetOnRspError func(uintptr, uintptr)
+	_MdSpiSetOnRspSubMarketData func(uintptr, uintptr)
+	_MdSpiSetOnRspUnSubMarketData func(uintptr, uintptr)
+	_MdSpiSetOnRspSubForQuoteRsp func(uintptr, uintptr)
+	_MdSpiSetOnRspUnSubForQuoteRsp func(uintptr, uintptr)
+	_MdSpiSetOnRtnDepthMarketData func(uintptr, uintptr)
+	_MdSpiSetOnRtnForQuoteRsp func(uintptr, uintptr)
 )
 
 // initMdApi 初始化行情 API 函数
@@ -271,8 +271,6 @@ func (api *MdApi) GetApiVersion() string {
 // Release 删除接口对象本身
 func (api *MdApi) Release() {
 	_MdRelease(api.handle)
-	// 从实例映射中注销，防止内存泄漏
-	unregisterMdInstance(api.userData)
 }
 
 // Init 初始化
@@ -384,83 +382,97 @@ func (api *MdApi) SpiSetCallbacks(callbacks *MdSpiCallbacks) {
 	_MdSpiSetCallbacks(api.handle, callbacks)
 }
 
-// SpiSetOnFrontConnected 单独设置回调 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
+// ========== SPI 回调设置方法 ==========
+
+// SpiSetOnFrontConnected ========== 回调函数类型（带 userData） ========== 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
 func (api *MdApi) SpiSetOnFrontConnected(callback MdOnFrontConnectedCallback) {
 	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnFrontConnected(api.handle, ptr)
+	_MdSpiSetOnFrontConnected(api.spiHandle, ptr)
 }
 
 // SpiSetOnFrontDisconnected 0x2003 收到错误报文
 func (api *MdApi) SpiSetOnFrontDisconnected(callback MdOnFrontDisconnectedCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnFrontDisconnected(api.handle, ptr)
+	_MdSpiSetOnFrontDisconnected(api.spiHandle, ptr)
 }
 
 // SpiSetOnHeartBeatWarning 心跳超时警告。当长时间未收到报文时，该方法被调用。
 func (api *MdApi) SpiSetOnHeartBeatWarning(callback MdOnHeartBeatWarningCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnHeartBeatWarning(api.handle, ptr)
+	_MdSpiSetOnHeartBeatWarning(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspUserLogin 登录请求响应
 func (api *MdApi) SpiSetOnRspUserLogin(callback MdOnRspUserLoginCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspUserLogin(api.handle, ptr)
+	_MdSpiSetOnRspUserLogin(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspUserLogout 登出请求响应
 func (api *MdApi) SpiSetOnRspUserLogout(callback MdOnRspUserLogoutCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspUserLogout(api.handle, ptr)
+	_MdSpiSetOnRspUserLogout(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspQryMulticastInstrument 请求查询组播合约响应
 func (api *MdApi) SpiSetOnRspQryMulticastInstrument(callback MdOnRspQryMulticastInstrumentCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspQryMulticastInstrument(api.handle, ptr)
+	_MdSpiSetOnRspQryMulticastInstrument(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspError 错误应答
 func (api *MdApi) SpiSetOnRspError(callback MdOnRspErrorCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspError(api.handle, ptr)
+	_MdSpiSetOnRspError(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspSubMarketData 订阅行情应答
 func (api *MdApi) SpiSetOnRspSubMarketData(callback MdOnRspSubMarketDataCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspSubMarketData(api.handle, ptr)
+	_MdSpiSetOnRspSubMarketData(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspUnSubMarketData 取消订阅行情应答
 func (api *MdApi) SpiSetOnRspUnSubMarketData(callback MdOnRspUnSubMarketDataCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspUnSubMarketData(api.handle, ptr)
+	_MdSpiSetOnRspUnSubMarketData(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspSubForQuoteRsp 订阅询价应答
 func (api *MdApi) SpiSetOnRspSubForQuoteRsp(callback MdOnRspSubForQuoteRspCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspSubForQuoteRsp(api.handle, ptr)
+	_MdSpiSetOnRspSubForQuoteRsp(api.spiHandle, ptr)
 }
 
 // SpiSetOnRspUnSubForQuoteRsp 取消订阅询价应答
 func (api *MdApi) SpiSetOnRspUnSubForQuoteRsp(callback MdOnRspUnSubForQuoteRspCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRspUnSubForQuoteRsp(api.handle, ptr)
+	_MdSpiSetOnRspUnSubForQuoteRsp(api.spiHandle, ptr)
 }
 
 // SpiSetOnRtnDepthMarketData 深度行情通知
 func (api *MdApi) SpiSetOnRtnDepthMarketData(callback MdOnRtnDepthMarketDataCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRtnDepthMarketData(api.handle, ptr)
+	_MdSpiSetOnRtnDepthMarketData(api.spiHandle, ptr)
 }
 
 // SpiSetOnRtnForQuoteRsp 询价通知
 func (api *MdApi) SpiSetOnRtnForQuoteRsp(callback MdOnRtnForQuoteRspCallback) {
+	// 将函数类型转换为 uintptr
 	ptr := *(*uintptr)(unsafe.Pointer(&callback))
-	_MdSpiSetOnRtnForQuoteRsp(api.handle, ptr)
+	_MdSpiSetOnRtnForQuoteRsp(api.spiHandle, ptr)
 }
 
 // SetSpi 设置回调接口
