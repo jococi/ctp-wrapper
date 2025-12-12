@@ -1,266 +1,271 @@
-# CTP接口封装项目
+# CTP 接口封装项目
 
 ## 项目简介
 
-本项目是一个对上海期货交易所CTP(Comprehensive Transaction Platform)交易接口的跨语言封装工具。它可以将CTP的C++接口转换为多种编程语言的接口，目前支持：
+本项目是一个对上海期货交易所 CTP (Comprehensive Transaction Platform) 交易接口的跨语言封装工具。它可以将 CTP 的 C++ 接口转换为多种编程语言的接口，目前支持：
 
-- C/C++动态链接库
-- Golang
-- Python
+- **C/C++ 动态链接库**：纯 C API，支持多实例，跨平台统一
+- **Golang**：使用 PureGo 实现，无需 CGO
+- **Python**：使用 ctypes 实现，Pythonic 接口
 
-通过这个项目，开发者可以在不同的编程语言环境中使用CTP接口进行期货交易和行情数据获取，无需深入了解底层C++实现细节。
+通过这个项目，开发者可以在不同的编程语言环境中使用 CTP 接口进行期货交易和行情数据获取，无需深入了解底层 C++ 实现细节。
 
 ## 项目目录结构
 
-```
-.
-├── ctpapi/              # 存放从CTP官网下载的SDK
-│   ├── linux/           # Linux平台SDK
-│   ├── macos/           # macOS平台SDK
-│   └── windows/         # Windows平台SDK
-├── wrapctp_gen/         # 接口封装代码生成工具
-│   ├── wrap_tpl/        # 模板文件
-│   └── wrapper_gen.go   # 代码生成器主程序
-├── csrc/                # 生成的C/C++封装代码
-│   ├── linux/           # Linux平台C/C++代码
-│   ├── macos/           # macOS平台C/C++代码
-│   └── windows/         # Windows平台C/C++代码
-├── pyctp/               # 生成的Python语言封装
-├── ctpgo/               # 生成的Golang语言封装
+```text
+ctp-wrapper/
+├── ctpapi/              # CTP 官方 API（需要从官网下载）
+│   ├── linux/           # Linux 平台 SDK
+│   ├── macos/           # macOS 平台 SDK
+│   └── windows/         # Windows 平台 SDK
+│   └── README.md        # CTP API 下载和安装说明
+├── codegen/             # 代码生成器
+│   ├── generate_c_api.py    # 生成 C API
+│   ├── generate_go_api.py   # 生成 Go 包装
+│   ├── generate_py_api.py   # 生成 Python 包装
+│   └── README.md        # 代码生成器使用说明
+├── csrc/                # 生成的 C API 代码
+│   ├── ctpmd_c_api.h/cpp      # 行情 API
+│   └── ctptrader_c_api.h/cpp  # 交易 API
+├── ctpgo/               # 生成的 Golang 语言封装
+├── pyctp/               # 生成的 Python 语言封装
 ├── libs/                # 编译后的动态库存放目录
 ├── example/             # 使用示例
-│   ├── test_py.py       # Python使用示例
-│   └── test_go.go       # Golang使用示例
-├── macos/               # macOS平台编译工程文件
-└── windows/             # Windows平台编译工程文件
+│   ├── main.go          # Go 使用示例
+│   ├── main.py          # Python 使用示例
+│   └── README.md        # 示例说明
+├── Makefile             # Linux/macOS 编译脚本
+├── build.bat            # Windows 编译脚本
+└── README.md            # 本文件
 ```
 
-## 编译步骤
+## 快速开始
 
-### 1. 准备CTP SDK
+### 1. 准备 CTP SDK
 
-1. 从[上期所仿真交易平台](https://www.simnow.com.cn/static/apiDownload.action)下载对应的行情和交易API文件
-2. 将下载的不同系统的接口文件，按照项目根目录下的`csource/ctpapi`的`linux`、`macos`、`windows`文件夹里的命名格式进行命名，并存放/替换到对应文件夹。
+**详细说明请参考**：[`ctpapi/README.md`](ctpapi/README.md)
 
-```
-ctpapi/
-├── linux/
-│   ├── ThostFtdcMdApi.h
-│   ├── ThostFtdcTraderApi.h
-│   ├── ThostFtdcUserApiDataType.h
-│   ├── ThostFtdcUserApiStruct.h
-│   ├── libthostmduserapi_se.so
-│   └── libthosttraderapi_se.so
-├── macos/
-│   ├── 
-│   ├── ThostFtdcTraderApi.h
-│   ├── ThostFtdcUserApiDataType.h
-│   ├── ThostFtdcUserApiStruct.h
-│   ├── libthostmduserapi_se.dylib
-│   └── libthosttraderapi_se.dylib
-└── windows/
-    ├── ThostFtdcMdApi.h
-    ├── ThostFtdcTraderApi.h
-    ├── ThostFtdcUserApiDataType.h
-    ├── ThostFtdcUserApiStruct.h
-    ├── thostmduserapi_se.dll
-    └── thosttraderapi_se.dll
-```
+简要步骤：
 
-**如果是MacOS平台，则需要先进入`ctpapi/macos/`，运行`sh setup_frameworks.sh`**
+1. 从[上期所仿真交易平台](https://www.simnow.com.cn/static/apiDownload.action)下载对应平台的行情和交易 API 文件
+2. 将下载的文件解压后，按照目录结构放置到 `ctpapi/linux/`、`ctpapi/macos/` 或 `ctpapi/windows/` 目录
+3. **macOS 平台重要**：进入 `ctpapi/macos/` 目录，运行 `sh setup_frameworks.sh` 脚本
 
 ### 2. 生成封装代码
 
-进入wrapctp_gen目录，使用以下命令生成各平台的接口代码：
+**详细说明请参考**：[`codegen/README.md`](codegen/README.md)
 
-```shell
-# 生成C/C++接口代码
-go run wrapper_gen.go -csys macos -lang c -srcpath ../ctpapi/ -outpath ../csrc/macos
-go run wrapper_gen.go -csys windows -lang c -srcpath ../ctpapi/ -outpath ../csrc/windows
-go run wrapper_gen.go -csys linux -lang c -srcpath ../ctpapi/ -outpath ../csrc/linux
+代码生成分为两个步骤：
 
-# 生成Python接口代码
-go run wrapper_gen.go -csys macos -lang python -srcpath ../ctpapi/ -outpath ../pyctp/macos
-go run wrapper_gen.go -csys windows -lang python -srcpath ../ctpapi/ -outpath ../pyctp/windows
-go run wrapper_gen.go -csys linux -lang python -srcpath ../ctpapi/ -outpath ../pyctp/linux
+#### 步骤 1: 生成 C API
 
-# 生成Golang接口代码
-go run wrapper_gen.go -csys macos -lang golang -srcpath ../ctpapi/ -outpath ../ctpgo/
-go run wrapper_gen.go -csys windows -lang golang -srcpath ../ctpapi/ -outpath ../ctpgo/
-go run wrapper_gen.go -csys linux -lang golang -srcpath ../ctpapi/ -outpath ../ctpgo/
+在 `codegen/` 目录下运行：
+
+```bash
+cd codegen
+
+# Linux 平台
+python3 generate_c_api.py --input ../ctpapi/linux --output ../csrc
+
+# macOS 平台
+python3 generate_c_api.py --input ../ctpapi/macos --output ../csrc
+
+# Windows 平台
+python3 generate_c_api.py --input ../ctpapi/windows --output ../csrc
 ```
 
-### 3. 编译C/C++动态链接库
+#### 步骤 2: 编译 C API 动态库
 
-#### macOS平台 (使用Clang)
+在项目根目录 `ctp-wrapper/` 下运行：
 
-```shell
-clang++ -shared -fPIC -std=c++11 -o libs/libctpquote_api.dylib \
-  -I. -I./ctpapi/macos -O3 -F./ctpapi/macos \
-  -framework thostmduserapi_se \
-  -install_name @rpath/libctpquote_api.dylib \
-  -Wl,-rpath,@loader_path/../ctpapi/macos \
-  csrc/macos/ctpquote_api.cpp
+**Linux / macOS**：
 
-clang++ -shared -fPIC -std=c++11 -o libs/libctptrade_api.dylib \
-  -I. -I./ctpapi/macos -O3 -F./ctpapi/macos \
-  -framework thosttraderapi_se -framework MacDataCollect \
-  -framework IOKit -framework Foundation -framework CoreFoundation \
-  -install_name @rpath/libctptrade_api.dylib \
-  -Wl,-rpath,@loader_path/../ctpapi/macos \
-  csrc/macos/ctptrade_api.cpp
+```bash
+# 编译所有库（行情API + 交易API）
+make
+
+# 仅编译行情API
+make md
+
+# 仅编译交易API
+make trader
+
+# 清理编译产物
+make clean
 ```
 
-#### macOS平台 (Xcode)
+**Windows**：
 
-打开项目根目录下的macos文件夹下的AlgoTrade工作空间，对其中项目进行编译。
+```batch
+REM 编译所有库
+build.bat
 
-**Xcode 设置说明：**
-
-1. **Framework Search Paths（对应 clang 的 `-F` 参数）**
-   - 选择 Target > Build Settings
-   - 搜索 "Framework Search Paths" 或 "FRAMEWORK_SEARCH_PATHS"
-   - 添加路径：`$(PROJECT_DIR)/../ctpapi/macos` 或 `../../ctpapi/macos`
-
-2. **Runpath Search Paths（对应 clang 的 `-Wl,-rpath,@loader_path/...` 参数）**
-   - 选择 Target > Build Settings
-   - 搜索 "Runpath Search Paths" 或 "LD_RUNPATH_SEARCH_PATHS"
-   - 添加路径：`@loader_path/../ctpapi/macos`
-   - 或者使用项目相对路径：`$(PROJECT_DIR)/../ctpapi/macos`
-
-3. **添加框架到项目**
-   - 选择 Target > General > Frameworks, Libraries, and Embedded Content
-   - 点击 "+" 添加框架：
-     - `thostmduserapi_se.framework`
-     - `thosttraderapi_se.framework`
-     - `MacDataCollect.framework`
-   - 设置每个框架的 Embed 为 **"Embed & Sign"**
-
-4. **系统框架**
-   - 同样在 Frameworks, Libraries, and Embedded Content 中添加：
-     - `IOKit.framework`
-     - `Foundation.framework`
-     - `CoreFoundation.framework`
-   - 系统框架通常设置为 "Do Not Embed"
-
-5. **设置 Install Name（重要：如果要将 dylib 拷贝到 libs 目录使用）**
-   - 选择 Target > Build Settings
-   - 搜索 "Installation Directory" 或 "INSTALL_PATH"
-   - 设置为：`@rpath`
-   - 搜索 "DYLIB_INSTALL_NAME_BASE" 或 "LD_DYLIB_INSTALL_NAME"
-   - 设置为：`@rpath/lib$(TARGET_NAME).dylib` 或 `@rpath/$(TARGET_NAME)`
-   - 这样编译出来的 dylib 的 install_name 就是 `@rpath/libctpquote_api.dylib`，而不是绝对路径
-   - 使用时，确保设置了正确的 rpath（见下面的 Runpath Search Paths）
-
-6. **其他编译设置**
-   - Build Settings > Apple Clang - Code Generation > Symbols Hidden by Default 设置为 `No`
-   - 或者在需要导出的函数前添加 `__attribute__((visibility("default")))`
-
-7. 将生成动态链接库文件，默认在项目根目录`macos/DerivedData/Build/Products/Release`下面的`.dylib`文件拷贝到项目根目录`libs`下。
-8. 如果设置了 `@rpath`，使用时需要确保设置了正确的 rpath（见 Runpath Search Paths 设置）。
-
-#### Linux平台 (使用G++)
-
-```shell
-g++ -shared -fPIC -std=c++11 \
-  -o libs/libctpquote_api.so \
-  -I. -O3 \
-  -L./ctpapi/linux \
-  -Wl,-rpath,'$ORIGIN' \
-  csrc/linux/ctpquote_api.cpp \
-  -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect
-
-g++ -shared -fPIC -std=c++11 \
-  -o libs/libctptrade_api.so \
-  -I. -O3 \
-  -L./ctpapi/linux \
-  -Wl,-rpath,'$ORIGIN' \
-  csrc/linux/ctptrade_api.cpp \
-  -lthostmduserapi_se -lthosttraderapi_se -lLinuxDataCollect
+REM 清理编译产物
+build.bat clean
 ```
 
-2. 将 _SFIT接口下载_ 的`.so`文件拷贝到项目根目录`libs/`下，并且将动态链接库所在路径即项目根目录`libs/`添加到系统路径里面，命令语句：`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<root of project>/libs/` （添加完成后需要`source <configuration file>`，立即生效）
+编译后的库文件会输出到 `libs/` 目录。
 
+#### 步骤 3: 生成 Go/Python 包装代码
 
-3. 设置Linux信息采集库权限`chmod u+s libLinuxDataCollect.so`
+在 `codegen/` 目录下运行：
 
-#### Windows平台 (使用Visual Studio)
+```bash
+cd codegen
 
-1. 使用Visual Studio打开项目根目录的`windows`文件夹下的AlgoTrade解决方案，对其中项目进行编译。
-2. 将生成动态链接库文件，默认在项目根目录`windows\x64\Release`下面的`.dll`文件和 _SFIT接口下载_ 的`.dll`文件拷贝到项目根目录`libs`下。
-3. 为了方便全局使用，将该路径添加到系统环境变量。（添加完成后，需要重启terminal/cmd）。
+# 生成 Go 包装代码
+python3 generate_go_api.py \
+    --input ../csrc \
+    --struct ../ctpapi/linux \
+    --output ../ctpgo
 
-### 4. 安装和使用
-
-#### Python使用方法
-
-开发模式安装:
-```shell
-pip3 install -e .
+# 生成 Python 包装代码
+python3 generate_py_api.py \
+    --input ../csrc \
+    --struct ../ctpapi/linux \
+    --output ../pyctp
 ```
 
-VSCode配置（使用代码提示的配置）:
-```json
-{
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.indexing": true,
-    "python.analysis.packageIndexDepths": [
-        {
-            "name": "pyctp",
-            "depth": 10
-        }
-    ],
-    "python.languageServer": "Pylance",
-    "python.analysis.extraPaths": [
-        "./ctp-wrapper"
-    ]
-}
-```
+**注意**：`--struct` 参数需要根据你的平台选择对应的目录（`linux`、`macos` 或 `windows`）。
 
-#### Golang使用方法
+### 3. 使用生成的代码
 
-在go.mod中添加replace指令:
-```
-replace ctpgo => /path/to/ctp-wrapper
-require ctpgo v0.0.1
-```
-
-## 使用示例
-
-### Python示例
+#### Python 使用示例
 
 ```python
-import pyctp
+from pyctp import MdApi, MdSpi, auto_load_library
 
-# 创建行情接口实例
-cq = pyctp.Quote()
-print(cq.GetApiVersion())
+class MyStrategy:
+    def __init__(self, name):
+        self.name = name
+    
+    def on_front_connected(self):
+        print(f"Strategy {self.name} connected!")
 
-# 创建交易接口实例
-ctpgo = pyctp.Trade()
-print(ctpgo.GetApiVersion())
+def main():
+    # 自动加载动态库
+    auto_load_library()
+    
+    # 创建 API 实例
+    api = MdApi.CreateFtdcMdApi("./log/", False, False)
+    
+    # 创建策略实例
+    strategy = MyStrategy("测试策略")
+    
+    # 创建 SPI 并设置回调
+    spi = MdSpi(strategy)
+    spi.set_on_front_connected(lambda user_data: 
+        user_data.on_front_connected())
+    
+    # 注册 SPI
+    api.RegisterSpi(spi)
+    
+    # 注册前置地址
+    api.RegisterFront("tcp://180.168.146.187:10131")
+    
+    # 初始化
+    api.Init()
+    
+    # 等待连接...
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Golang示例
+#### Go 使用示例
 
 ```go
 package main
 
 import (
-	"ctpgo/ctpgo"
-	"fmt"
+    "fmt"
+    "unsafe"
+    "github.com/your-org/ctpgo"
 )
 
-func main() {
-	// 创建行情接口实例
-	pq := ctpgo.InitQuote()
-	fmt.Println(pq.GetApiVersion())
+type MyStrategy struct {
+    name string
+}
 
-	// 创建交易接口实例
-	pt := ctpgo.InitTrade()
-	fmt.Println(pt.GetApiVersion())
+func (s *MyStrategy) OnFrontConnected() {
+    fmt.Printf("Strategy %s connected!\n", s.name)
+}
+
+func main() {
+    // 自动加载动态库
+    err := ctpgo.AutoLoadLibrary()
+    if err != nil {
+        panic(err)
+    }
+    
+    // 创建 API 实例
+    api := ctpgo.CreateFtdcMdApi("./log/", false, false)
+    defer api.Release()
+    
+    // 创建策略实例
+    strategy := &MyStrategy{name: "测试策略"}
+    
+    // 创建 SPI 并设置回调
+    spi := ctpgo.NewMdSpi(unsafe.Pointer(strategy))
+    spi.SetOnFrontConnected(func(userData unsafe.Pointer) {
+        s := (*MyStrategy)(userData)
+        s.OnFrontConnected()
+    })
+    
+    // 注册 SPI
+    api.RegisterSpi(spi)
+    
+    // 注册前置地址
+    api.RegisterFront("tcp://180.168.146.187:10131")
+    
+    // 初始化
+    api.Init()
+    
+    // 等待连接...
 }
 ```
 
-更多详细示例请参考`example`目录下的示例程序。
+更多详细示例请参考 [`example/`](example/) 目录下的示例程序。
+
+## 完整工作流程
+
+```bash
+# 1. 准备 CTP SDK（参考 ctpapi/README.md）
+# 下载并解压到 ctpapi/ 对应平台目录
+# macOS 需要运行: cd ctpapi/macos && sh setup_frameworks.sh
+
+# 2. 生成 C API
+cd codegen
+python3 generate_c_api.py --input ../ctpapi/linux --output ../csrc
+
+# 3. 编译 C API 动态库
+cd ..
+make  # 或 Windows: build.bat
+
+# 4. 生成 Go/Python 包装代码
+cd codegen
+python3 generate_go_api.py --input ../csrc --struct ../ctpapi/linux --output ../ctpgo
+python3 generate_py_api.py --input ../csrc --struct ../ctpapi/linux --output ../pyctp
+
+# 5. 使用生成的代码（参考 example/ 目录）
+```
+
+## 特性
+
+- **跨平台支持**：支持 Linux、macOS、Windows 三个平台
+- **多实例支持**：通过 userData 机制支持多实例，回调不会串台
+- **类型安全**：完整的类型定义和转换
+- **易于使用**：提供 Pythonic/Go 风格的接口
+- **自动生成**：代码自动生成，易于维护和更新
+
+## 相关文档
+
+- **CTP API 下载和安装**：[`ctpapi/README.md`](ctpapi/README.md)
+- **代码生成器使用**：[`codegen/README.md`](codegen/README.md)
+- **使用示例**：[`example/README.md`](example/README.md)
+- **上期所仿真交易平台**：[https://www.simnow.com.cn/](https://www.simnow.com.cn/)
+- **API 下载页面**：[https://www.simnow.com.cn/static/apiDownload.action](https://www.simnow.com.cn/static/apiDownload.action)
+
+## 许可证
+
+本项目代码遵循相应的开源许可证。CTP 官方 API 文件需要遵守上期所的相关规定和许可协议。
