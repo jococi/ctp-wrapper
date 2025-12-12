@@ -80,12 +80,12 @@ else ifeq ($(UNAME_S),Linux)
     SONAME_MD := -Wl,-soname,libctpmd_c_api.so
     SONAME_TRADER := -Wl,-soname,libctptrader_c_api.so
     
-    # $ORIGIN 表示该 .so 文件所在的目录（不是可执行文件所在目录）
-    # 编译后的 so 文件在 libs/ 目录下，依赖的官方 so 也在 libs/ 目录下
+    # $ORIGIN 表示加载该库的文件所在目录（对于库文件，就是库文件本身所在的目录）
     # 设置多个搜索路径：
-    # 1. $ORIGIN - so 文件所在目录（libs/），依赖的官方 so 也在这里
-    # 2. $ORIGIN/.. - 上一级目录（备用，如果 so 在其他位置）
-    LDFLAGS += $(LIB_PATH) -Wl,-rpath,$$ORIGIN -Wl,-rpath,$$ORIGIN/..
+    # 1. $ORIGIN - 库文件所在目录（libctpmd_c_api.so 和 thostmduserapi_se.so 都在 libs/ 目录）
+    # 2. $ORIGIN/../libs - 上一级目录的 libs/（备用，用于从其他目录加载的情况）
+    # 注意: 使用 shell 的 $$ 来防止 shell 展开 $ORIGIN，使其作为字面量传递给链接器
+    LDFLAGS += $(LIB_PATH) -Wl,-rpath,'$$ORIGIN' -Wl,-rpath,'$$ORIGIN/../libs' -Wl,-rpath,'$$ORIGIN/..'
     
 # else ifeq ($(OS),Windows_NT)
 #     # Windows (需要 MSVC)
