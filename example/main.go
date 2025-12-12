@@ -149,13 +149,12 @@ func main() {
 
 	// 3. 注册前置地址
 	mdApi.RegisterFront(mdFront)
-	time.Sleep(2 * time.Second)
 
 	// 4. 初始化
 	mdApi.Init()
 
 	// 5. 等待连接
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	// 6. 登录
 	loginReq := &ctpgo.CThostFtdcReqUserLoginField{}
@@ -170,7 +169,7 @@ func main() {
 	}
 
 	// 7. 等待登录响应
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	// 8. 订阅行情（需要替换为真实的合约代码）
 	instruments := []string{"rb2605", "lc2605"}
@@ -181,7 +180,7 @@ func main() {
 	}
 
 	fmt.Println("等待行情数据...")
-	time.Sleep(5 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	// 示例：使用交易 API
 	fmt.Println("\n=== 交易 API 示例 ===")
