@@ -71,9 +71,10 @@ else ifeq ($(UNAME_S),Linux)
     INCLUDE_COMMON := -I. -I$(CTPAPI_DIR)/linux -I$(CSRC_DIR)
     
     # 库路径和链接（编译时使用官方库）
+    # 使用 -l: 语法直接指定库文件名（不需要 lib 前缀）
     LIB_PATH := -L$(CTPAPI_DIR)/linux
-    MD_LIBS := -lthostmduserapi_se
-    TRADER_LIBS := -lthosttraderapi_se -lLinuxDataCollect
+    MD_LIBS := -l:thostmduserapi_se.so
+    TRADER_LIBS := -l:thosttraderapi_se.so -l:LinuxDataCollect.so
     
     # SONAME 设置（类似 macOS 的 install_name）
     SONAME_MD := -Wl,-soname,libctpmd_c_api.so
