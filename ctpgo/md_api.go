@@ -271,6 +271,7 @@ func (api *MdApi) GetApiVersion() string {
 // Release 删除接口对象本身
 func (api *MdApi) Release() {
 	_MdRelease(api.handle)
+	unregisterMdInstance(api.userData)
 }
 
 // Init 初始化

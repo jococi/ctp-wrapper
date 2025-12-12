@@ -145,6 +145,7 @@ func main() {
 	// 2. 创建并设置回调
 	mdSpi := &MyMdSpi{}
 	mdApi.SetSpi(mdSpi)
+	fmt.Println("mdApi.GetApiVersion()", mdApi.GetApiVersion())
 
 	// 3. 注册前置地址
 	mdApi.RegisterFront(mdFront)
@@ -205,6 +206,8 @@ func main() {
 		authChan: authChan,
 	}
 	traderApi.SetSpi(traderSpi)
+	fmt.Println("traderApi.GetApiVersion()", traderApi.GetApiVersion())
+	fmt.Println("ctpgo.GetDataCollectApiVersion()", ctpgo.GetDataCollectApiVersion())
 
 	// 3. 注册前置地址
 	traderApi.RegisterFront(traderFront)

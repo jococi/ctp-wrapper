@@ -598,7 +598,7 @@ def c_type_to_go_type(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypede
     返回:
         对应的 Go 类型字符串
     """
-    c_type = c_type.strip().replace('const', '').strip()
+    c_type = c_type.strip().replace('const', '').replace('*', '').strip()
     
     # 句柄类型: MdApiHandle, TraderApiHandle, etc.
     if c_type.endswith('Handle'):
@@ -636,9 +636,6 @@ def c_type_to_go_type(c_type: str, is_pointer: bool, typedefs: Dict[str, CTypede
     else:
         if c_type == 'void':
             return ''
-        # 处理 char* 返回类型（可能被解析为 "char *" 或 "*char"）
-        if c_type == 'char *' or c_type == '*char':
-            return '*byte'
         return CTP_TYPE_MAP.get(c_type, c_type)
 
 
@@ -1241,9 +1238,6 @@ def generate_md_api_go(functions: List[CFunction], callbacks: List[CallbackType]
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
-        # 修复 *char * 类型为 *byte
-        if ret_type == '*char *':
-            ret_type = '*byte'
         
         # 生成函数签名（统一使用单行格式）
         param_str = ', '.join(param_types) if param_types else ''
@@ -1402,16 +1396,18 @@ def generate_md_api_go(functions: List[CFunction], callbacks: List[CallbackType]
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
-        # 修复 *char * 类型为 *byte
-        if ret_type == '*char *':
-            ret_type = '*byte'
         
         # 生成方法
         comment = f'// {method_name} {func.comment}' if func.comment else f'// {method_name}'
         lines.append(comment)
         
         # 特殊处理方法
-        if method_name == 'GetApiVersion':
+        if method_name == 'Release':
+            # Release 方法需要先调用 C 函数，然后注销实例
+            lines.append(f'func (api *MdApi) {method_name}() {{')
+            lines.append(f'\t_{func.name}(api.handle)')
+            lines.append('\tunregisterMdInstance(api.userData)')
+        elif method_name == 'GetApiVersion':
             lines.append(f'func (api *MdApi) {method_name}() string {{')
             lines.append(f'\tptr := _{func.name}()')
             lines.append('\tif ptr == nil {')
@@ -1614,7 +1610,7 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('')
     
     for func in functions:
-        if not func.name.startswith('Trader'):
+        if not func.name.startswith('Trader') and not func.name.startswith('DC'):
             continue
         var_name = f'_{func.name}'
         
@@ -1630,9 +1626,6 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
-        # 修复 *char * 类型为 *byte
-        if ret_type == '*char *':
-            ret_type = '*byte'
         
         # 生成函数签名（统一使用单行格式）
         param_str = ', '.join(param_types) if param_types else ''
@@ -1656,7 +1649,7 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('\ttraderOnce.Do(func() {')
     
     for func in functions:
-        if not func.name.startswith('Trader'):
+        if not func.name.startswith('Trader') and not func.name.startswith('DC'):
             continue
         var_name = f'_{func.name}'
         lines.append(f'\t\tpurego.RegisterLibFunc(&{var_name}, lib, "{func.name}")')
@@ -1786,16 +1779,18 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
         
         # 返回类型
         ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
-        # 修复 *char * 类型为 *byte
-        if ret_type == '*char *':
-            ret_type = '*byte'
         
         # 生成方法
         comment = f'// {method_name} {func.comment}' if func.comment else f'// {method_name}'
         lines.append(comment)
         
         # 特殊处理方法
-        if method_name == 'GetApiVersion':
+        if method_name == 'Release':
+            # Release 方法需要先调用 C 函数，然后注销实例
+            lines.append(f'func (api *TraderApi) {method_name}() {{')
+            lines.append(f'\t_{func.name}(api.handle)')
+            lines.append('\tunregisterTraderInstance(api.userData)')
+        elif method_name == 'GetApiVersion':
             lines.append(f'func (api *TraderApi) {method_name}() string {{')
             lines.append(f'\tptr := _{func.name}()')
             lines.append('\tif ptr == nil {')
@@ -1890,6 +1885,63 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('\t_TraderRegisterSpi(api.handle, api.spiHandle)')
     lines.append('}')
     lines.append('')
+    
+    # 生成 DataCollect 函数（DC 开头的独立函数）
+    dc_functions = [f for f in functions if f.name.startswith('DC')]
+    if dc_functions:
+        lines.append('// ========== DataCollect 函数 ==========')
+        lines.append('')
+        
+        for func in dc_functions:
+            # 公开函数名去掉 DC 前缀
+            public_name = func.name[2:] if func.name.startswith('DC') else func.name
+            comment = f'// {public_name} {func.comment}' if func.comment else f'// {public_name}'
+            lines.append(comment)
+            
+            if func.name == 'DCGetDataCollectApiVersion':
+                # 返回字符串的函数
+                lines.append(f'func {public_name}() string {{')
+                lines.append(f'\tptr := _{func.name}()')
+                lines.append('\tif ptr == nil {')
+                lines.append('\t\treturn ""')
+                lines.append('\t}')
+                lines.append('\treturn GoString(ptr)')
+                lines.append('}')
+            elif func.name in ('DCGetSystemInfo', 'DCGetSystemInfoUnAesEncode'):
+                # 获取系统信息的函数，返回 ([]byte, error) 更符合 Go 风格
+                lines.append(f'func {public_name}() ([]byte, int32) {{')
+                lines.append('\t// 分配至少 270 字节的缓冲区')
+                lines.append('\tbuf := make([]byte, 512)')
+                lines.append('\tlen := int32(len(buf))')
+                lines.append(f'\tret := _{func.name}(&buf[0], &len)')
+                lines.append('\tif ret != 0 {')
+                lines.append('\t\treturn nil, ret')
+                lines.append('\t}')
+                lines.append('\treturn buf[:len], 0')
+                lines.append('}')
+            else:
+                # 其他 DC 函数（未来可能添加的）
+                params = []
+                call_args = []
+                for p in func.params:
+                    go_type = c_type_to_go_type(p.type, p.is_pointer, typedefs)
+                    if p.name:
+                        params.append(f'{p.name} {go_type}')
+                        call_args.append(p.name)
+                
+                param_str = ', '.join(params)
+                ret_type = c_type_to_go_type(func.return_type, '*' in func.return_type, typedefs)
+                
+                if ret_type:
+                    lines.append(f'func {public_name}({param_str}) {ret_type} {{')
+                    call_str = ', '.join(call_args)
+                    lines.append(f'\treturn _{func.name}({call_str})')
+                else:
+                    lines.append(f'func {public_name}({param_str}) {{')
+                    call_str = ', '.join(call_args)
+                    lines.append(f'\t_{func.name}({call_str})')
+                lines.append('')
+            lines.append('')
     
     return '\n'.join(lines)
 

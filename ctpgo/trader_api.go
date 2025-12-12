@@ -1103,6 +1103,9 @@ var (
 	_TraderSpiSetOnRspQryInvestorProdRULEMargin            func(uintptr, uintptr)
 	_TraderSpiSetOnRspQryInvestorPortfSetting              func(uintptr, uintptr)
 	_TraderReqUserLoginWithSystemInfo                      func(uintptr, *CThostFtdcReqUserLoginField, int32, int32, *byte) int32
+	_DCGetSystemInfo                                       func(*byte, *int32) int32
+	_DCGetSystemInfoUnAesEncode                            func(*byte, *int32) int32
+	_DCGetDataCollectApiVersion                            func() *byte
 )
 
 // initTraderApi 初始化交易 API 函数
@@ -1394,6 +1397,9 @@ func initTraderApi(lib uintptr) {
 		purego.RegisterLibFunc(&_TraderSpiSetOnRspQryInvestorProdRULEMargin, lib, "TraderSpiSetOnRspQryInvestorProdRULEMargin")
 		purego.RegisterLibFunc(&_TraderSpiSetOnRspQryInvestorPortfSetting, lib, "TraderSpiSetOnRspQryInvestorPortfSetting")
 		purego.RegisterLibFunc(&_TraderReqUserLoginWithSystemInfo, lib, "TraderReqUserLoginWithSystemInfo")
+		purego.RegisterLibFunc(&_DCGetSystemInfo, lib, "DCGetSystemInfo")
+		purego.RegisterLibFunc(&_DCGetSystemInfoUnAesEncode, lib, "DCGetSystemInfoUnAesEncode")
+		purego.RegisterLibFunc(&_DCGetDataCollectApiVersion, lib, "DCGetDataCollectApiVersion")
 	})
 }
 
@@ -1482,6 +1488,7 @@ func (api *TraderApi) GetApiVersion() string {
 // Release 删除接口对象本身
 func (api *TraderApi) Release() {
 	_TraderRelease(api.handle)
+	unregisterTraderInstance(api.userData)
 }
 
 // Init 初始化
@@ -3389,4 +3396,39 @@ func (api *TraderApi) SetSpi(spi TraderSpi) {
 
 	// 将 C SPI 注册到 API
 	_TraderRegisterSpi(api.handle, api.spiHandle)
+}
+
+// ========== DataCollect 函数 ==========
+
+// GetSystemInfo ========== DataCollect 函数 ========== 获取终端信息（AES+RSA 加密） pSystemInfo: 输出缓冲区，至少 270 字节 pLen: 输入缓冲区大小，输出实际数据长度 返回值: 0 成功，非 0 表示采集错误（按位判断）
+func GetSystemInfo() ([]byte, int32) {
+	// 分配至少 270 字节的缓冲区
+	buf := make([]byte, 512)
+	len := int32(len(buf))
+	ret := _DCGetSystemInfo(&buf[0], &len)
+	if ret != 0 {
+		return nil, ret
+	}
+	return buf[:len], 0
+}
+
+// GetSystemInfoUnAesEncode 获取终端信息（未 AES 加密）
+func GetSystemInfoUnAesEncode() ([]byte, int32) {
+	// 分配至少 270 字节的缓冲区
+	buf := make([]byte, 512)
+	len := int32(len(buf))
+	ret := _DCGetSystemInfoUnAesEncode(&buf[0], &len)
+	if ret != 0 {
+		return nil, ret
+	}
+	return buf[:len], 0
+}
+
+// GetDataCollectApiVersion 获取 DataCollect API 版本
+func GetDataCollectApiVersion() string {
+	ptr := _DCGetDataCollectApiVersion()
+	if ptr == nil {
+		return ""
+	}
+	return GoString(ptr)
 }
