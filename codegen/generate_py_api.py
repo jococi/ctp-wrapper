@@ -1967,87 +1967,127 @@ def generate_trader_api_py(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('    _register_trader_callback_impl(spi_handle, lib, callback_name, spi, user_data)')
     lines.append('')
     
-    # 生成 DataCollect 函数
-    lines.append('# ========== DataCollect 函数 ==========')
-    lines.append('')
-    lines.append('def GetSystemInfo() -> tuple[bytes, int]:')
-    lines.append('    """')
-    lines.append('    获取终端信息（AES+RSA 加密）')
-    lines.append('    ')
-    lines.append('    返回:')
-    lines.append('        tuple[bytes, int]: (系统信息字节数组, 错误码)')
-    lines.append('        错误码为 0 表示成功，非 0 表示采集错误（按位判断）')
-    lines.append('    """')
-    lines.append('    lib = get_trader_lib_handle()')
-    lines.append('    if lib is None:')
-    lines.append('        return None, -1')
-    lines.append('    ')
-    lines.append('    func = lib.DCGetSystemInfo')
-    lines.append('    func.argtypes = [ctypes.POINTER(ctypes.c_byte), ctypes.POINTER(ctypes.c_int32)]')
-    lines.append('    func.restype = ctypes.c_int32')
-    lines.append('    ')
-    lines.append('    # 分配至少 270 字节的缓冲区')
-    lines.append('    buf_size = 512')
-    lines.append('    buf = (ctypes.c_byte * buf_size)()')
-    lines.append('    buf_len = ctypes.c_int32(buf_size)')
-    lines.append('    ')
-    lines.append('    ret = func(ctypes.cast(buf, ctypes.POINTER(ctypes.c_byte)), ctypes.byref(buf_len))')
-    lines.append('    ')
-    lines.append('    if ret != 0:')
-    lines.append('        return None, ret')
-    lines.append('    ')
-    lines.append('    # 返回实际长度的字节数组')
-    lines.append('    return bytes(buf[:buf_len.value]), 0')
-    lines.append('')
-    lines.append('')
-    lines.append('def GetSystemInfoUnAesEncode() -> tuple[bytes, int]:')
-    lines.append('    """')
-    lines.append('    获取终端信息（未 AES 加密）')
-    lines.append('    ')
-    lines.append('    返回:')
-    lines.append('        tuple[bytes, int]: (系统信息字节数组, 错误码)')
-    lines.append('        错误码为 0 表示成功，非 0 表示采集错误（按位判断）')
-    lines.append('    """')
-    lines.append('    lib = get_trader_lib_handle()')
-    lines.append('    if lib is None:')
-    lines.append('        return None, -1')
-    lines.append('    ')
-    lines.append('    func = lib.DCGetSystemInfoUnAesEncode')
-    lines.append('    func.argtypes = [ctypes.POINTER(ctypes.c_byte), ctypes.POINTER(ctypes.c_int32)]')
-    lines.append('    func.restype = ctypes.c_int32')
-    lines.append('    ')
-    lines.append('    # 分配至少 270 字节的缓冲区')
-    lines.append('    buf_size = 512')
-    lines.append('    buf = (ctypes.c_byte * buf_size)()')
-    lines.append('    buf_len = ctypes.c_int32(buf_size)')
-    lines.append('    ')
-    lines.append('    ret = func(ctypes.cast(buf, ctypes.POINTER(ctypes.c_byte)), ctypes.byref(buf_len))')
-    lines.append('    ')
-    lines.append('    if ret != 0:')
-    lines.append('        return None, ret')
-    lines.append('    ')
-    lines.append('    # 返回实际长度的字节数组')
-    lines.append('    return bytes(buf[:buf_len.value]), 0')
-    lines.append('')
-    lines.append('')
-    lines.append('def GetDataCollectApiVersion() -> str:')
-    lines.append('    """')
-    lines.append('    获取 DataCollect API 版本')
-    lines.append('    ')
-    lines.append('    返回:')
-    lines.append('        str: API 版本字符串')
-    lines.append('    """')
-    lines.append('    lib = get_trader_lib_handle()')
-    lines.append('    if lib is None:')
-    lines.append('        return ""')
-    lines.append('    ')
-    lines.append('    func = lib.DCGetDataCollectApiVersion')
-    lines.append('    func.argtypes = []')
-    lines.append('    func.restype = ctypes.c_char_p')
-    lines.append('    ')
-    lines.append('    ptr = func()')
-    lines.append('    return go_string(ptr) if ptr else ""')
-    lines.append('')
+    # 生成 DataCollect 函数（DC 开头的独立函数）
+    dc_functions = [f for f in functions if f.name.startswith('DC')]
+    if dc_functions:
+        lines.append('# ========== DataCollect 函数 ==========')
+        lines.append('')
+        
+        for func in dc_functions:
+            # 公开函数名去掉 DC 前缀
+            public_name = func.name[2:] if func.name.startswith('DC') else func.name
+            comment = f'# {public_name} {func.comment}' if func.comment else f'# {public_name}'
+            lines.append(comment)
+            
+            if func.name == 'DCGetDataCollectApiVersion':
+                # 返回字符串的函数
+                lines.append(f'def {public_name}() -> str:')
+                lines.append('    """')
+                lines.append('    获取 DataCollect API 版本')
+                lines.append('    ')
+                lines.append('    返回:')
+                lines.append('        str: API 版本字符串')
+                lines.append('    """')
+                lines.append('    lib = get_trader_lib_handle()')
+                lines.append('    if lib is None:')
+                lines.append('        return ""')
+                lines.append('    ')
+                lines.append(f'    func = lib.{func.name}')
+                lines.append('    func.argtypes = []')
+                lines.append('    func.restype = ctypes.c_char_p')
+                lines.append('    ')
+                lines.append('    ptr = func()')
+                lines.append('    return go_string(ptr) if ptr else ""')
+            elif func.name in ('DCGetSystemInfo', 'DCGetSystemInfoUnAesEncode'):
+                # 获取系统信息的函数，返回 tuple[bytes, int]
+                doc_comment = '获取终端信息（AES+RSA 加密）' if func.name == 'DCGetSystemInfo' else '获取终端信息（未 AES 加密）'
+                lines.append(f'def {public_name}() -> tuple[bytes, int]:')
+                lines.append('    """')
+                lines.append(f'    {doc_comment}')
+                lines.append('    ')
+                lines.append('    返回:')
+                lines.append('        tuple[bytes, int]: (系统信息字节数组, 错误码)')
+                lines.append('        错误码为 0 表示成功，非 0 表示采集错误（按位判断）')
+                lines.append('    """')
+                lines.append('    lib = get_trader_lib_handle()')
+                lines.append('    if lib is None:')
+                lines.append('        return None, -1')
+                lines.append('    ')
+                lines.append(f'    func = lib.{func.name}')
+                lines.append('    func.argtypes = [ctypes.POINTER(ctypes.c_byte), ctypes.POINTER(ctypes.c_int32)]')
+                lines.append('    func.restype = ctypes.c_int32')
+                lines.append('    ')
+                lines.append('    # 分配至少 270 字节的缓冲区')
+                lines.append('    buf_size = 512')
+                lines.append('    buf = (ctypes.c_byte * buf_size)()')
+                lines.append('    buf_len = ctypes.c_int32(buf_size)')
+                lines.append('    ')
+                lines.append('    ret = func(ctypes.cast(buf, ctypes.POINTER(ctypes.c_byte)), ctypes.byref(buf_len))')
+                lines.append('    ')
+                lines.append('    if ret != 0:')
+                lines.append('        return None, ret')
+                lines.append('    ')
+                lines.append('    # 返回实际长度的字节数组')
+                lines.append('    return bytes(buf[:buf_len.value]), 0')
+            else:
+                # 其他 DC 函数（未来可能添加的）
+                params = []
+                call_args = []
+                
+                for p in func.params:
+                    py_type = c_type_to_py_ctypes_type(p.type, p.is_pointer, typedefs, p.is_array)
+                    param_name = p.name.replace('[]', '').strip() if p.name else ''
+                    
+                    if param_name:
+                        params.append(f'{param_name}: {py_type}')
+                        call_args.append(param_name)
+                
+                param_str = ', '.join(params)
+                ret_type = c_type_to_py_ctypes_type(func.return_type, '*' in func.return_type, typedefs)
+                
+                if ret_type:
+                    lines.append(f'def {public_name}({param_str}) -> {ret_type}:')
+                else:
+                    lines.append(f'def {public_name}({param_str}):')
+                
+                if func.comment:
+                    lines.append(f'    """{func.comment}"""')
+                else:
+                    lines.append(f'    """{public_name}"""')
+                
+                lines.append('    lib = get_trader_lib_handle()')
+                lines.append('    if lib is None:')
+                if ret_type:
+                    if ret_type == 'str':
+                        lines.append('        return ""')
+                    elif 'int' in ret_type:
+                        lines.append('        return -1')
+                    else:
+                        lines.append('        raise RuntimeError("CTP library not loaded")')
+                else:
+                    lines.append('        raise RuntimeError("CTP library not loaded")')
+                lines.append('    ')
+                lines.append(f'    func = lib.{func.name}')
+                
+                # 生成 argtypes
+                argtypes = []
+                for p in func.params:
+                    if p.is_array and p.type == 'char' and p.is_pointer:
+                        argtypes.append('ctypes.POINTER(ctypes.c_char_p)')
+                    else:
+                        py_type = c_type_to_py_ctypes_type(p.type, p.is_pointer, typedefs, p.is_array)
+                        argtypes.append(py_type)
+                
+                lines.append(f'    func.argtypes = [{", ".join(argtypes)}]')
+                lines.append(f'    func.restype = {ret_type if ret_type else "None"}')
+                
+                call_str = ', '.join(call_args)
+                if ret_type:
+                    lines.append(f'    return func({call_str})')
+                else:
+                    lines.append(f'    func({call_str})')
+            
+            lines.append('')
     
     return '\n'.join(lines)
 

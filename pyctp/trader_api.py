@@ -3127,6 +3127,7 @@ def _register_trader_callback(spi_handle: ctypes.c_void_p, lib: ctypes.CDLL, cal
 
 # ========== DataCollect 函数 ==========
 
+# GetSystemInfo ========== DataCollect 函数 ========== 获取终端信息（AES+RSA 加密） pSystemInfo: 输出缓冲区，至少 270 字节 pLen: 输入缓冲区大小，输出实际数据长度 返回值: 0 成功，非 0 表示采集错误（按位判断）
 def GetSystemInfo() -> tuple[bytes, int]:
     """
     获取终端信息（AES+RSA 加密）
@@ -3156,7 +3157,7 @@ def GetSystemInfo() -> tuple[bytes, int]:
     # 返回实际长度的字节数组
     return bytes(buf[:buf_len.value]), 0
 
-
+# GetSystemInfoUnAesEncode 获取终端信息（未 AES 加密）
 def GetSystemInfoUnAesEncode() -> tuple[bytes, int]:
     """
     获取终端信息（未 AES 加密）
@@ -3186,7 +3187,7 @@ def GetSystemInfoUnAesEncode() -> tuple[bytes, int]:
     # 返回实际长度的字节数组
     return bytes(buf[:buf_len.value]), 0
 
-
+# GetDataCollectApiVersion 获取 DataCollect API 版本
 def GetDataCollectApiVersion() -> str:
     """
     获取 DataCollect API 版本
