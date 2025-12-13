@@ -174,46 +174,35 @@ if __name__ == "__main__":
 
 #### Go 使用示例
 
+**推荐方式：使用 `SetSpi()` 方法（简单易用）**
+
 ```go
 package main
 
 import (
     "fmt"
-    "unsafe"
     "github.com/your-org/ctpgo"
 )
 
-type MyStrategy struct {
+// MyMdSpi 自定义行情回调实现
+// 嵌入 DefaultMdSpi 后，只需实现需要的方法
+type MyMdSpi struct {
+    ctpgo.DefaultMdSpi
     name string
 }
 
-func (s *MyStrategy) OnFrontConnected() {
+func (s *MyMdSpi) OnFrontConnected() {
     fmt.Printf("Strategy %s connected!\n", s.name)
 }
 
 func main() {
-    // 自动加载动态库
-    err := ctpgo.AutoLoadLibrary()
-    if err != nil {
-        panic(err)
-    }
-    
-    // 创建 API 实例
-    api := ctpgo.CreateFtdcMdApi("./log/", false, false)
+    // 创建 API 实例（会自动加载库）
+    api := ctpgo.NewMdApi("./flow/", false, false)
     defer api.Release()
     
-    // 创建策略实例
-    strategy := &MyStrategy{name: "测试策略"}
-    
-    // 创建 SPI 并设置回调
-    spi := ctpgo.NewMdSpi(unsafe.Pointer(strategy))
-    spi.SetOnFrontConnected(func(userData unsafe.Pointer) {
-        s := (*MyStrategy)(userData)
-        s.OnFrontConnected()
-    })
-    
-    // 注册 SPI
-    api.RegisterSpi(spi)
+    // 创建 SPI 并设置（推荐方式）
+    spi := &MyMdSpi{name: "测试策略"}
+    api.SetSpi(spi)  // SetSpi 会自动创建 C SPI 实例并注册所有回调
     
     // 注册前置地址
     api.RegisterFront("tcp://180.168.146.187:10131")
@@ -224,6 +213,14 @@ func main() {
     // 等待连接...
 }
 ```
+
+**为什么推荐使用 `SetSpi()`？**
+
+- ✅ **简单易用**：只需实现 `MdSpi` 接口，无需手动管理 SPI 实例
+- ✅ **自动管理**：自动创建和销毁 C SPI 实例
+- ✅ **类型安全**：使用 Go 接口，编译时检查
+- ✅ **多实例支持**：每个 API 实例有独立的 userData，回调不会串台
+- ✅ **无需 unsafe**：不需要使用 `unsafe.Pointer` 手动管理内存
 
 更多详细示例请参考 [`example/`](example/) 目录下的示例程序。
 

@@ -1,5 +1,26 @@
 package main
 
+// 多实例支持说明：
+// 本封装库支持创建多个独立的 API 实例，每个实例的回调会正确路由，不会串台。
+//
+// 创建多实例的要点：
+// 1. 每个实例必须使用不同的 flowPath（用于存储订阅信息文件）
+//    例如："./flow1", "./flow2", "./flow_strategy1" 等
+// 2. 每个实例可以设置不同的 SPI 实现（不同的策略）
+// 3. 每个实例可以连接相同或不同的前置地址
+// 4. 每个实例有独立的 userData ID，回调通过 userData 正确路由到对应实例
+//
+// 示例：
+//   mdApi1 := ctpgo.NewMdApi("./flow1", false, false)
+//   mdApi1.SetSpi(&Strategy1Spi{})
+//   mdApi1.RegisterFront("tcp://...")
+//
+//   mdApi2 := ctpgo.NewMdApi("./flow2", false, false)
+//   mdApi2.SetSpi(&Strategy2Spi{})
+//   mdApi2.RegisterFront("tcp://...")
+//
+// 两个实例可以同时运行，回调会正确路由到各自的 SPI。
+
 import (
 	"fmt"
 	"log"
@@ -143,6 +164,9 @@ func main() {
 	defer mdApi.Release()
 
 	// 2. 创建并设置回调
+	// 注意：SetSpi 方法内部会自动管理 userData
+	// userData 是 API 实例的 ID，用于在回调中定位对应的 API 实例
+	// 回调函数通过 userData 找到 API 实例，然后调用 api.spi 的方法
 	mdSpi := &MyMdSpi{}
 	mdApi.SetSpi(mdSpi)
 	fmt.Println("mdApi.GetApiVersion()", mdApi.GetApiVersion())
@@ -200,6 +224,9 @@ func main() {
 	defer traderApi.Release()
 
 	// 2. 创建并设置回调
+	// 注意：SetSpi 方法内部会自动管理 userData
+	// userData 是 API 实例的 ID，用于在回调中定位对应的 API 实例
+	// 回调函数通过 userData 找到 API 实例，然后调用 api.spi 的方法
 	authChan := make(chan bool, 1)
 	traderSpi := &MyTraderSpi{
 		authChan: authChan,
