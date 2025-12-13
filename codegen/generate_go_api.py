@@ -1132,6 +1132,8 @@ def generate_md_api_go(functions: List[CFunction], callbacks: List[CallbackType]
     lines.append('// CTP 行情 API 封装')
     lines.append('')
     lines.append('import (')
+    lines.append('\t"fmt"')
+    lines.append('\t"os"')
     lines.append('\t"path/filepath"')
     lines.append('\t"runtime"')
     lines.append('\t"sync"')
@@ -1339,6 +1341,13 @@ def generate_md_api_go(functions: List[CFunction], callbacks: List[CallbackType]
     lines.append('\t\tabsFlowPath += string(filepath.Separator)')
     lines.append('\t}')
     lines.append('')
+    lines.append('\t// 确保目录存在（CTP API 需要这个目录来创建 flow 文件）')
+    lines.append('\tif err := os.MkdirAll(absFlowPath, 0755); err != nil {')
+    lines.append('\t\t// 如果创建目录失败，记录错误但继续（CTP API 可能会自己创建）')
+    lines.append('\t\tfmt.Printf("警告: 无法创建 flow 目录 %s: %v\\n", absFlowPath, err)')
+    lines.append('\t\t// 这里不返回错误，让 CTP API 自己处理')
+    lines.append('\t}')
+    lines.append('')
     lines.append('\t// 将 flowPath 转换为 C 字符串并保存，防止被 GC 回收')
     lines.append('\t// CTP API 可能会在后续使用这个路径')
     lines.append('\tapi.flowPath = make([]byte, len(absFlowPath)+1)')
@@ -1520,6 +1529,8 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('// CTP 交易 API 封装')
     lines.append('')
     lines.append('import (')
+    lines.append('\t"fmt"')
+    lines.append('\t"os"')
     lines.append('\t"path/filepath"')
     lines.append('\t"runtime"')
     lines.append('\t"sync"')
@@ -1721,6 +1732,13 @@ def generate_trader_api_go(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('\t// 确保路径以路径分隔符结尾')
     lines.append('\tif len(absFlowPath) > 0 && absFlowPath[len(absFlowPath)-1] != filepath.Separator {')
     lines.append('\t\tabsFlowPath += string(filepath.Separator)')
+    lines.append('\t}')
+    lines.append('')
+    lines.append('\t// 确保目录存在（CTP API 需要这个目录来创建 flow 文件）')
+    lines.append('\tif err := os.MkdirAll(absFlowPath, 0755); err != nil {')
+    lines.append('\t\t// 如果创建目录失败，记录错误但继续（CTP API 可能会自己创建）')
+    lines.append('\t\tfmt.Printf("警告: 无法创建 flow 目录 %s: %v\\n", absFlowPath, err)')
+    lines.append('\t\t// 这里不返回错误，让 CTP API 自己处理')
     lines.append('\t}')
     lines.append('')
     lines.append('\t// 将 flowPath 转换为 C 字符串并保存，防止被 GC 回收')
@@ -2429,6 +2447,20 @@ func GetTraderLibHandle() uintptr {
 	return traderLib
 }
 
+// getExecutableDir 获取可执行文件所在目录
+func getExecutableDir() string {
+	execPath, err := os.Executable()
+	if err != nil {
+		return "."
+	}
+	// 解析符号链接，获取真实路径
+	realPath, err := filepath.EvalSymlinks(execPath)
+	if err != nil {
+		return filepath.Dir(execPath)
+	}
+	return filepath.Dir(realPath)
+}
+
 // autoLoadLibrary 自动加载库（只加载一次）
 // 优先使用环境变量 CTP_LIB_PATH，否则按顺序尝试默认路径列表
 func autoLoadLibrary() error {
@@ -2441,7 +2473,29 @@ func autoLoadLibrary() error {
 			return
 		}
 
-		// 按顺序尝试默认路径列表
+		// 获取可执行文件所在目录
+		execDir := getExecutableDir()
+
+		// 构建基于可执行文件位置的路径列表
+		execBasedPaths := []string{
+			filepath.Join(execDir, "libs"),                      // 可执行文件同目录下的 libs
+			filepath.Join(execDir, "..", "libs"),                // 可执行文件父目录下的 libs
+			filepath.Join(execDir, "..", "..", "libs"),          // 上两级目录下的 libs
+			filepath.Join(execDir, "ctp-wrapper", "libs"),       // 可执行文件同目录下的 ctp-wrapper/libs
+			filepath.Join(execDir, "..", "ctp-wrapper", "libs"), // 可执行文件父目录下的 ctp-wrapper/libs
+		}
+
+		// 先尝试基于可执行文件位置的路径
+		for _, path := range execBasedPaths {
+			err := LoadCTPLibrary(path)
+			if err == nil {
+				// 加载成功，直接返回
+				loadErr = nil
+				return
+			}
+		}
+
+		// 再按顺序尝试基于当前工作目录的默认路径列表
 		for _, path := range defaultLibPaths {
 			err := LoadCTPLibrary(path)
 			if err == nil {

@@ -4,6 +4,8 @@ package ctpgo
 // CTP 行情 API 封装
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 	"runtime"
 	"sync"
@@ -242,6 +244,13 @@ func NewMdApi(flowPath string, usingUdp, multicast bool) *MdApi {
 	// 确保路径以路径分隔符结尾（CTP API 可能需要这样才能识别为目录）
 	if len(absFlowPath) > 0 && absFlowPath[len(absFlowPath)-1] != filepath.Separator {
 		absFlowPath += string(filepath.Separator)
+	}
+
+	// 确保目录存在（CTP API 需要这个目录来创建 flow 文件）
+	if err := os.MkdirAll(absFlowPath, 0755); err != nil {
+		// 如果创建目录失败，记录错误但继续（CTP API 可能会自己创建）
+		fmt.Printf("警告: 无法创建 flow 目录 %s: %v\n", absFlowPath, err)
+		// 这里不返回错误，让 CTP API 自己处理
 	}
 
 	// 将 flowPath 转换为 C 字符串并保存，防止被 GC 回收

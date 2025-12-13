@@ -1211,6 +1211,21 @@ def get_trader_lib_handle() -> Optional[ctypes.CDLL]:
     return _trader_lib
 
 
+def get_executable_dir() -> str:
+    """获取脚本/可执行文件所在目录"""
+    try:
+        # 获取脚本文件路径（如果是打包后的可执行文件，会返回可执行文件路径）
+        if getattr(sys, 'frozen', False):
+            # PyInstaller 等打包工具
+            exec_path = sys.executable
+        else:
+            # 普通 Python 脚本
+            exec_path = __file__
+        return str(Path(exec_path).parent.resolve())
+    except Exception:
+        return "."
+
+
 def auto_load_library() -> None:
     """
     自动加载库（只加载一次）
@@ -1238,7 +1253,27 @@ def auto_load_library() -> None:
             _load_error = e
             raise
     
-    # 按顺序尝试默认路径列表
+    # 获取脚本/可执行文件所在目录
+    exec_dir = get_executable_dir()
+    
+    # 构建基于脚本/可执行文件位置的路径列表
+    exec_based_paths = [
+        str(Path(exec_dir) / "libs"),                      # 脚本同目录下的 libs
+        str(Path(exec_dir).parent / "libs"),               # 脚本父目录下的 libs
+        str(Path(exec_dir).parent.parent / "libs"),        # 上两级目录下的 libs
+        str(Path(exec_dir) / "ctp-wrapper" / "libs"),      # 脚本同目录下的 ctp-wrapper/libs
+        str(Path(exec_dir).parent / "ctp-wrapper" / "libs"), # 脚本父目录下的 ctp-wrapper/libs
+    ]
+    
+    # 先尝试基于脚本/可执行文件位置的路径
+    for path in exec_based_paths:
+        try:
+            load_ctp_library(path)
+            return
+        except (FileNotFoundError, OSError):
+            continue  # 继续尝试下一个路径
+    
+    # 再按顺序尝试基于当前工作目录的默认路径列表
     for path in _default_lib_paths:
         try:
             load_ctp_library(path)
@@ -1248,7 +1283,7 @@ def auto_load_library() -> None:
     
     # 所有路径都失败
     _load_error = FileNotFoundError(
-        f"Could not find CTP libraries in any of the following paths: {_default_lib_paths}"
+        f"Could not find CTP libraries in any of the following paths: {exec_based_paths + _default_lib_paths}"
     )
     raise _load_error
 '''
@@ -1378,6 +1413,14 @@ def generate_md_api_py(functions: List[CFunction], callbacks: List[CallbackType]
     lines.append('        # 确保路径以路径分隔符结尾（CTP API 可能需要这样才能识别为目录）')
     lines.append('        if abs_flow_path and not abs_flow_path.endswith(os.sep):')
     lines.append('            abs_flow_path += os.sep')
+    lines.append('')
+    lines.append('        # 确保目录存在（CTP API 需要这个目录来创建 flow 文件）')
+    lines.append('        try:')
+    lines.append('            os.makedirs(abs_flow_path, exist_ok=True)')
+    lines.append('        except OSError as e:')
+    lines.append('            # 如果创建目录失败，记录错误但继续（CTP API 可能会自己创建）')
+    lines.append('            print(f"警告: 无法创建 flow 目录 {abs_flow_path}: {e}")')
+    lines.append('            # 这里不抛出异常，让 CTP API 自己处理')
     lines.append('')
     lines.append('        # 将 flowPath 转换为 C 字符串并保存，防止被 GC 回收')
     lines.append('        # CTP API 可能会在后续使用这个路径')
@@ -1739,6 +1782,14 @@ def generate_trader_api_py(functions: List[CFunction], callbacks: List[CallbackT
     lines.append('        # 确保路径以路径分隔符结尾（CTP API 可能需要这样才能识别为目录）')
     lines.append('        if abs_flow_path and not abs_flow_path.endswith(os.sep):')
     lines.append('            abs_flow_path += os.sep')
+    lines.append('')
+    lines.append('        # 确保目录存在（CTP API 需要这个目录来创建 flow 文件）')
+    lines.append('        try:')
+    lines.append('            os.makedirs(abs_flow_path, exist_ok=True)')
+    lines.append('        except OSError as e:')
+    lines.append('            # 如果创建目录失败，记录错误但继续（CTP API 可能会自己创建）')
+    lines.append('            print(f"警告: 无法创建 flow 目录 {abs_flow_path}: {e}")')
+    lines.append('            # 这里不抛出异常，让 CTP API 自己处理')
     lines.append('')
     lines.append('        # 将 flowPath 转换为 C 字符串并保存，防止被 GC 回收')
     lines.append('        # CTP API 可能会在后续使用这个路径')

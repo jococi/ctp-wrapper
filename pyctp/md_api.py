@@ -176,6 +176,14 @@ class MdApi:
         if abs_flow_path and not abs_flow_path.endswith(os.sep):
             abs_flow_path += os.sep
 
+        # 确保目录存在（CTP API 需要这个目录来创建 flow 文件）
+        try:
+            os.makedirs(abs_flow_path, exist_ok=True)
+        except OSError as e:
+            # 如果创建目录失败，记录错误但继续（CTP API 可能会自己创建）
+            print(f"警告: 无法创建 flow 目录 {abs_flow_path}: {e}")
+            # 这里不抛出异常，让 CTP API 自己处理
+
         # 将 flowPath 转换为 C 字符串并保存，防止被 GC 回收
         # CTP API 可能会在后续使用这个路径
         self._flow_path = abs_flow_path.encode('utf-8') + b'\0'

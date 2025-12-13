@@ -164,6 +164,20 @@ func GetTraderLibHandle() uintptr {
 	return traderLib
 }
 
+// getExecutableDir 获取可执行文件所在目录
+func getExecutableDir() string {
+	execPath, err := os.Executable()
+	if err != nil {
+		return "."
+	}
+	// 解析符号链接，获取真实路径
+	realPath, err := filepath.EvalSymlinks(execPath)
+	if err != nil {
+		return filepath.Dir(execPath)
+	}
+	return filepath.Dir(realPath)
+}
+
 // autoLoadLibrary 自动加载库（只加载一次）
 // 优先使用环境变量 CTP_LIB_PATH，否则按顺序尝试默认路径列表
 func autoLoadLibrary() error {
@@ -176,7 +190,29 @@ func autoLoadLibrary() error {
 			return
 		}
 
-		// 按顺序尝试默认路径列表
+		// 获取可执行文件所在目录
+		execDir := getExecutableDir()
+
+		// 构建基于可执行文件位置的路径列表
+		execBasedPaths := []string{
+			filepath.Join(execDir, "libs"),                      // 可执行文件同目录下的 libs
+			filepath.Join(execDir, "..", "libs"),                // 可执行文件父目录下的 libs
+			filepath.Join(execDir, "..", "..", "libs"),          // 上两级目录下的 libs
+			filepath.Join(execDir, "ctp-wrapper", "libs"),       // 可执行文件同目录下的 ctp-wrapper/libs
+			filepath.Join(execDir, "..", "ctp-wrapper", "libs"), // 可执行文件父目录下的 ctp-wrapper/libs
+		}
+
+		// 先尝试基于可执行文件位置的路径
+		for _, path := range execBasedPaths {
+			err := LoadCTPLibrary(path)
+			if err == nil {
+				// 加载成功，直接返回
+				loadErr = nil
+				return
+			}
+		}
+
+		// 再按顺序尝试基于当前工作目录的默认路径列表
 		for _, path := range defaultLibPaths {
 			err := LoadCTPLibrary(path)
 			if err == nil {
